@@ -45,6 +45,8 @@ public class EventHandler {
 
 	public static void newEvent(String type, String content) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		//Hier gucken ahmed
+		params.add(new BasicNameValuePair("id", id));
 		params.add(new BasicNameValuePair("type", type));
 		params.add(new BasicNameValuePair("content", content));
 		makeHttpRequest(CREATE_URL, "POST", params);

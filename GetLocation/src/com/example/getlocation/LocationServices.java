@@ -14,7 +14,6 @@ public class LocationServices {
 	
 	public LocationServices(LocationManager locationManager, TextView displayLong, TextView displayLat){
 		enableGPSServices(locationManager, displayLong, displayLat);
-		
 	}
 
 	private void enableGPSServices(LocationManager locationManager, final TextView displayLong, final TextView displayLat) {
@@ -51,8 +50,13 @@ public class LocationServices {
 			}
 		};
 
-		// Register to get location updates - 1000: wait at least 1000ms to
-		// request an update, 10=10m
+		// Register to get location updates - 1000: wait at least 1000ms torequest an update, 10=10m
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000, 10, locationListener);
+	}
+	
+	public void removeUpdates(LocationManager locationManager, LocationListener locationListener)
+	{
+		locationManager.removeUpdates(locationListener);
+		
 	}
 }

@@ -17,8 +17,10 @@ public class MainActivity extends Activity {
 	TextView displayLat;
 	LocationManager locationManager;
 	LocationListener locationListener;
+	LocationServices locationServices;
+	EventHandler eHandler;
 
-	// Runs on app start
+	// Runs on when application starts 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -26,14 +28,8 @@ public class MainActivity extends Activity {
 		displayLong = (TextView) findViewById(R.id.displayLong);
 		displayLat = (TextView) findViewById(R.id.displayLat);
 		
-		EventHandler eHandler = new EventHandler();
-		LocationServices locationServices = new LocationServices((LocationManager) this.getSystemService(Context.LOCATION_SERVICE), displayLong, displayLat);
-
-		
-
-		
-		
-		//enableGPSServices();
+		eHandler = new EventHandler();
+		locationServices = new LocationServices((LocationManager) this.getSystemService(Context.LOCATION_SERVICE), displayLong, displayLat);
 	}
 
 	// Called when app is minimized
@@ -44,48 +40,9 @@ public class MainActivity extends Activity {
 	// Called when app is stopped
 	protected void onStop() {
 		super.onStop();
-		locationManager.removeUpdates(locationListener);
+		//locationManager.removeUpdates(locationListener);
+		locationServices.removeUpdates((LocationManager) this.getSystemService(Context.LOCATION_SERVICE), locationListener);
 	}
-
-	// Enables all GPS Services
-	/*private void enableGPSServices() {
-		// Gives access to the location service
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		// Creates LocationListener - listens to locationManager
-		locationListener = new LocationListener() {
-			// Called when location changed
-			public void onLocationChanged(Location location) {
-				if (location != null) {
-					double pLong = location.getLongitude();
-					double pLat = location.getLatitude();
-					displayLong.setText(Double.toString(pLong));
-					displayLat.setText(Double.toString(pLat));
-					Log.i("changedLongitude","Changed to: "+ String.valueOf(location.getLongitude()));
-					Log.i("changedLatitude","Changed to: "+ String.valueOf(location.getLatitude()));
-				}
-
-			}
-
-			public void onProviderDisabled(String provider) {
-				// TODO Auto-generated method stub
-				displayLong.setText("In order to dipsplay your coordinates:");
-				displayLat.setText("Please enable GPS Service");
-			}
-
-			public void onProviderEnabled(String provider) {
-				// TODO Auto-generated method stub
-			}
-
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
-				// TODO Auto-generated method stub
-			}
-		};
-
-		// Register to get location updates - 1000: wait at least 1000ms to
-		// request an update, 10=10m
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000, 10, locationListener);
-	}*/
 
 	// Display an info dialog
 	private void showDialog() {
