@@ -8,5 +8,6 @@
     <string name="longitude">Longitude:</string>
     <string name="currentTime">Time:</string>
     <string name="emptySpace">                                                 </string>
+    <string name="button">Show Dialoge</string>
 
 </resources>
