@@ -11,8 +11,14 @@ import android.widget.TextView;
 public class LocationServices {
 	LocationManager locationManager;
 	LocationListener locationListener;
+	TextView displayLong;
+	TextView displayLat;
 	
 	public LocationServices(LocationManager locationManager, TextView displayLong, TextView displayLat){
+		this.locationManager = locationManager;
+		this.locationListener = locationListener;
+		this.displayLong = displayLong;
+		this.displayLat = displayLat;
 		enableGPSServices(locationManager, displayLong, displayLat);
 	}
 
@@ -54,9 +60,9 @@ public class LocationServices {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000, 10, locationListener);
 	}
 	
-	public void removeUpdates(LocationManager locationManager, LocationListener locationListener)
+	public void removeUpdates()
 	{
-		locationManager.removeUpdates(locationListener);
+		locationManager.removeUpdates(this.locationListener);
 		
 	}
 }

@@ -9,5 +9,7 @@
     <string name="currentTime">Time:</string>
     <string name="emptySpace">                                                 </string>
     <string name="button">Show Dialoge</string>
+    <string name="tokenButton">Get Token!</string>
+    <string name="token">0000</string>
 
 </resources>

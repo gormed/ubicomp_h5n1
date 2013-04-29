@@ -22,7 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EventHandler {
+public class JsonHandler {
 	private static ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String, String>>();
 	private static JSONArray events;
 	private static String json;
@@ -34,44 +34,53 @@ public class EventHandler {
 	private static final String TAG_TYPE = "type";
 	private static final String TAG_TIME = "time";
 	private static final String TAG_ID = "id";
-	private static final String CREATE_URL = "http://localhost/ubicomp/create_event.php";
-	private static final String GET_All_URL = "http://localhost/ubicomp/get_all_events.php";
-	private static final String UPDATE_URL = "http://localhost/ubicomp/update_event.php";
+	private static final String CREATE_URL = "http://54.235.186.77/ubicomp/api/post/event";
 	private static final String DELETE_URL = "http://localhost/ubicomp/delete_event.php";
-	private static final String GET_URL = "http://localhost/ubicomp/get_event.php";
-
-	public EventHandler() {
+	private static final String GET_URL = "http://54.235.186.77/ubicomp/api/get/event/";
+	//Noch nicht auf dem Server verfügbar
+	//private static final String UPDATE_URL = "http://localhost/ubicomp/update_event.php";
+	//private static final String GET_All_URL = "http://localhost/ubicomp/get_all_events.php";
+	
+	public JsonHandler() {
 	}
 
-	public static void newEvent(String type, String content) {
+	public static void newEvent(String token, String event_type, String event_value, String event_device, String event_receiver) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		//Hier gucken ahmed
-		params.add(new BasicNameValuePair("id", id));
-		params.add(new BasicNameValuePair("type", type));
-		params.add(new BasicNameValuePair("content", content));
+		params.add(new BasicNameValuePair("token", token));
+		params.add(new BasicNameValuePair("event_type", event_type));
+		params.add(new BasicNameValuePair("event_value", event_value));
+		params.add(new BasicNameValuePair("event_device", event_device));
+		params.add(new BasicNameValuePair("event_receiver", event_receiver));
 		makeHttpRequest(CREATE_URL, "POST", params);
 	}
 
-	public static void updateEvent(String id, String type, String content) {
+	
+
+	public static void getEvent(String token, String device_id, String event_id) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair(TAG_ID, id));
-		params.add(new BasicNameValuePair(TAG_TYPE, type));
-		params.add(new BasicNameValuePair(TAG_CONTENT, content));
-		makeHttpRequest(UPDATE_URL, "POST", params);
+		params.add(new BasicNameValuePair("token", token));
+		params.add(new BasicNameValuePair("device_id", device_id));
+		params.add(new BasicNameValuePair("event_id", event_id));
+		makeHttpRequest(GET_URL+event_id, "GET", params);
 	}
 
-	public static void getEvent(String id) {
+	public static void deleteEvent(String token, String event_id) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("id", id));
-		makeHttpRequest(GET_URL, "GET", params);
-	}
-
-	public static void deleteEvent(String id) {
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("id", id));
+		params.add(new BasicNameValuePair("token", token));
+		params.add(new BasicNameValuePair("event_id", event_id));
 		makeHttpRequest(DELETE_URL, "POST", params);
 	}
 
+	/*Noch nicht auf dem Server verfügbar
+	public static void updateEvent(String id, String type, String content) {
+	List<NameValuePair> params = new ArrayList<NameValuePair>();
+	params.add(new BasicNameValuePair(TAG_ID, id));
+	params.add(new BasicNameValuePair(TAG_TYPE, type));
+	params.add(new BasicNameValuePair(TAG_CONTENT, content));
+	makeHttpRequest(UPDATE_URL, "POST", params);
+	}*/
+	
+	/* Noch nicht auf dem Server verfügbar
 	public static void getAllEvents() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		JSONObject getJsonObj = makeHttpRequest(GET_All_URL, "GET", params);
@@ -97,7 +106,7 @@ public class EventHandler {
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	public static JSONObject makeHttpRequest(String url, String method, List<NameValuePair> params) {
 		try {
@@ -126,8 +135,7 @@ public class EventHandler {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "iso-8859-1"), 8);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
