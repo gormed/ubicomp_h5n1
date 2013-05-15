@@ -42,6 +42,11 @@ public class MainActivity extends Activity {
 		locationServices.removeUpdates();
 	}
 	
+	public void updateInterface(double longitude, double latitude){
+		displayLong.setText(Double.toString(longitude));
+		displayLat.setText(Double.toString(latitude));
+	}
+	
 	public void serverTest(View view) {
-	 }
+	}
 }
