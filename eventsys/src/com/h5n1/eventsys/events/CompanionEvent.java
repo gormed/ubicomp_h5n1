@@ -12,7 +12,7 @@ import com.h5n1.eventsys.events.Event;
 // Signal verloren
 // Signal gefunden
 
-public class CompanionEvent extends Event {
+public class CompanionEvent extends Event<CompanionEvent.CompanionEventType> {
 
 	public enum CompanionEventType {
 		DANGER_SITUATION,
@@ -28,12 +28,24 @@ public class CompanionEvent extends Event {
 	private CompanionEventType type;
 	private String message;
 
+	public CompanionEvent(String json) {
+		String[] split = json.split("[,]");
+		
+		for (String s : split) {
+
+		}
+	}
+
 	public CompanionEvent(CompanionEventType type, String message) {
 		this.message = message;
 		this.type = type;
 	}
 
 	public String toJsonString() {
-		return getEventId() + ",COMPANION," + this.type + "," + message;
+		return message;
+	}
+
+	public CompanionEventType getType() {
+		return type;
 	}
 }

@@ -11,7 +11,7 @@ import com.h5n1.eventsys.events.Event;
 // Server push (änderung)
 // Gerät steht
 
-public class GPSEvent extends Event {
+public class GPSEvent extends Event<GPSEvent.GPSEventType> {
 
 	public enum GPSEventType {
 		SIGNAL_FOUND,
@@ -27,6 +27,10 @@ public class GPSEvent extends Event {
 	private float lo,la;
 	private GPSEventType type;
 
+	public GPSEvent(String json) {
+		
+	}
+
 	public GPSEvent(GPSEventType type, float lo, float la) {
 		this.type = type;
 		this. lo = lo;
@@ -34,6 +38,10 @@ public class GPSEvent extends Event {
 	}
 
 	public String toJsonString() {
-		return getEventId() + ",GPS," + this.type + "," + lo + "," + la;
+		return lo + "," + la;
+	}
+
+	public GPSEventType getType() {
+		return type;
 	}
 }

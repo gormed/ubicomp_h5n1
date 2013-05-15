@@ -3,7 +3,7 @@ package com.h5n1.eventsys.events;
 import com.h5n1.eventsys.events.Event;
 // 3) Bewegungs-Events
 
-public class MotionEvent extends Event {
+public class MotionEvent extends Event<MotionEvent.MotionEventType> {
 
 	public enum MotionEventType {
 		FALLEN_HUMAN,
@@ -17,6 +17,10 @@ public class MotionEvent extends Event {
 
 	private float[] motionVector;
 	private MotionEventType type;
+
+	public MotionEvent(String json) {
+		super();
+	}
 
 	public MotionEvent(MotionEventType type, float[] motionVector) {
 		super();
@@ -37,6 +41,6 @@ public class MotionEvent extends Event {
 	}
 
 	public String toJsonString() {
-		return getEventId() + ",MOTION," + this.type + "," + motionVector[0] +","+ motionVector[1]+","+motionVector[2];
+		return motionVector[0] +","+ motionVector[1]+","+motionVector[2];
 	}
 }

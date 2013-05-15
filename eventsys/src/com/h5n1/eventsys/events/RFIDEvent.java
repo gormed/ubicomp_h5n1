@@ -9,7 +9,7 @@ import com.h5n1.eventsys.events.Event;
 // -> TAG verbleibt
 // -> TAG verlässt/ entfernt
 
-public class RFIDEvent extends Event {
+public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 
 	public enum RFIDEventType {
 		NEW_TAG,
@@ -19,6 +19,10 @@ public class RFIDEvent extends Event {
 
 	private RFIDEventType type;
 	private String data;
+
+	public RFIDEvent(String json) {
+		
+	}
 
 	public RFIDEvent(RFIDEventType type, String data) {
 		this.type = type;
@@ -34,6 +38,6 @@ public class RFIDEvent extends Event {
 	}
 
 	public String toJsonString() {
-		return getEventId() + ",RFID," + this.type + "," + this.data;
+		return this.data;
 	}
 }

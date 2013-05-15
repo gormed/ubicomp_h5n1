@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -22,13 +24,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.h5n1.eventsys.events.Event;
+
 public class JsonRequester {
 	private static String json;
 	private static JSONObject jsonObj;
 	private static InputStream is;
 	private static ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String, String>>();
+	private static HashMap<Long, JSONObject> generatedEvents = new HashMap<Long, JSONObject>();
 	private static JSONArray events;
+	private static String token;
 	
+	private static Integer deviceID = (new Random(System.currentTimeMillis()).nextInt(Integer.MAX_VALUE));
+	public static Integer getDeviceID() {
+		return deviceID;
+	}
 	public static final String TAG_EVENTS = "events";
 	public static final String TAG_CONTENT = "content";
 	public static final String TAG_TYPE = "type";
@@ -40,12 +50,23 @@ public class JsonRequester {
 	private static final String UPDATE_URL = "http://localhost/ubicomp/update_event.php";
 	private static final String DELETE_URL = "http://localhost/ubicomp/delete_event.php";
 	private static final String GET_URL = "http://localhost/ubicomp/get_event.php";
+	// private static final String CREATE_URL = "http://54.235.186.77/ubicomp/api/post/event";
+	// private static final String DELETE_URL = "http://54.235.186.77/ubicomp/api/delete/event";
+	// private static final String GET_URL = "http://54.235.186.77/ubicomp/api/get/event/";
+	// private static final String TOKEN_URL = "http://54.235.186.77/ubicomp/api/get/token";
 
-	public static void newEvent(String type, String content) {
+//	public static void getToken() {
+//		List<NameValuePair> params = new ArrayList<NameValuePair>();
+//		JSONObject getJsonObj = makeHttpRequest(TOKEN_URL, "POST", params);	
+//		token = (String) getJsonObj.get("token");
+//		deviceID = (Integer) getJsonObj.get("device_id");
+//	}
+	
+	public static String newEvent(Event event) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair(TAG_TYPE, type));
-		params.add(new BasicNameValuePair(TAG_CONTENT, content));
-		makeHttpRequest(CREATE_URL, "POST", params);
+		params.add(new BasicNameValuePair("type", event.getClass().getSimpleName() + "_" + event.getType().toString()));
+		params.add(new BasicNameValuePair("content", event.toJsonString()));
+		return makeHttpRequest(CREATE_URL, "POST", params).toString();
 	}
 
 	public static void updateEvent(String id, String type, String content) {
@@ -58,7 +79,7 @@ public class JsonRequester {
 
 	public static void getEvent(String id) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair(TAG_ID, id));
+		params.add(new BasicNameValuePair("id", id));
 		makeHttpRequest(GET_URL, "GET", params);
 	}
 
@@ -68,7 +89,8 @@ public class JsonRequester {
 		makeHttpRequest(DELETE_URL, "POST", params);
 	}
 
-	public static void getAllEvents() {
+	public static ArrayList<HashMap<String, String>> getAllEvents() {
+		eventsList.clear();
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		JSONObject getJsonObj = makeHttpRequest(GET_All_URL, "GET", params);
 		try {
@@ -76,8 +98,8 @@ public class JsonRequester {
 			for (int i = 0; i < events.length(); i++) {
 				JSONObject c = events.getJSONObject(i);
 				String id = c.getString(TAG_ID);
-				String type = c.getString(TAG_ID);
-				String time = c.getString(TAG_CONTENT);
+				String type = c.getString(TAG_TYPE);
+				String time = c.getString(TAG_TIME);
 				String content = c.getString(TAG_CONTENT);
 				HashMap<String, String> map = new HashMap<String, String>();
 				map.put(TAG_ID, id);
@@ -86,9 +108,11 @@ public class JsonRequester {
 				map.put(TAG_CONTENT, content);
 				eventsList.add(map);
 			}
+			return eventsList;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	public static JSONObject makeHttpRequest(String url, String method,

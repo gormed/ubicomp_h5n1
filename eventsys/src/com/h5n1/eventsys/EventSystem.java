@@ -34,6 +34,7 @@ public class EventSystem {
 
 	public static void pushEvent(Event event) {
 		outgoingEvents.offer(event);
+
 	}
 
 	public static void pullEvent(Event event) {
@@ -45,6 +46,10 @@ public class EventSystem {
 		while (!incomingEvents.isEmpty()) {
 			temp = incomingEvents.poll();
 			raiseCheckedEvent(temp);
+		}
+		while (!outgoingEvents.isEmpty()) {
+			temp = outgoingEvents.poll();
+			JsonRequester.newEvent(temp);
 		}
 	}
 

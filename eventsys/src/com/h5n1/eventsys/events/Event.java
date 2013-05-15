@@ -5,20 +5,26 @@ package com.h5n1.eventsys.events;
 // 3) Bewegungs-Events
 // 4) Betreuer-Events
 
-public abstract class Event {
+public abstract class Event<T> implements EventType<T> {
 
 	private static long uniqueCounter = 0;
 	private static long getUniqueId() { return uniqueCounter++; }
 
 	private long id = getUniqueId();
-
-	public Event() {
-
-	}
-
+	private int recieverId;
 	public abstract String toJsonString();
 
 	public long getEventId() {
 		return id;
+	}
+
+	public abstract T getType();
+
+	public void setRecieverId(int recieverId) {
+		this.recieverId = recieverId;
+	}
+	
+	public int getReciever() {
+		return this.recieverId;
 	}
 }
