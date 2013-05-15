@@ -16,7 +16,6 @@ public class LocationServices {
 	
 	public LocationServices(LocationManager locationManager, TextView displayLong, TextView displayLat){
 		this.locationManager = locationManager;
-		this.locationListener = locationListener;
 		this.displayLong = displayLong;
 		this.displayLat = displayLat;
 		enableGPSServices(locationManager, displayLong, displayLat);
@@ -36,14 +35,14 @@ public class LocationServices {
 					displayLat.setText(Double.toString(pLat));
 					Log.i("changedLongitude","Changed to: "+ String.valueOf(location.getLongitude()));
 					Log.i("changedLatitude","Changed to: "+ String.valueOf(location.getLatitude()));
+					//MainActivity.updateInterface(pLong, pLat);
 				}
 
 			}
 
 			public void onProviderDisabled(String provider) {
 				// TODO Auto-generated method stub
-				displayLong.setText("In order to dipsplay your coordinates:");
-				displayLat.setText("Please enable GPS Service");
+				displayLong.setText("Turn on GPS!");
 			}
 
 			public void onProviderEnabled(String provider) {
