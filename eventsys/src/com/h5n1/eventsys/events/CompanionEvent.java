@@ -7,7 +7,7 @@ import com.h5n1.eventsys.events.Event;
 // Positions initialisierung
 // Positions Abgleich
 // Blinder auf Idle
-// Tag hinzugefÃ¼gt/entfernt
+// Tag hinzugefügt/entfernt
 // Blinder in Bewegung
 // Signal verloren
 // Signal gefunden
