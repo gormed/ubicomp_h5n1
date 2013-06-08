@@ -1,6 +1,5 @@
 package com.example.iseesomethingyoudont;
 
-import com.example.iseesomethingyoudont.ControlActivity.TTSListener;
 import com.example.iseesomethingyoudont.util.SystemUiHider;
 
 import android.annotation.TargetApi;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
@@ -31,6 +29,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 	private GestureDetectorCompat detector;
 	private static final String DEBUG_TAG = "Gestures";
 	private static final int DATA_CHECK_CODE = 0;
+	private EventToSpeechSynthesis eventToSpeechSynthesis;
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -90,16 +89,14 @@ public class ControlActivity extends Activity implements OnTouchListener {
 			return super.onTouchEvent(event);
 		}
 	}
-	
-	private TextToSpeech ttsEngine;
-	private TTSListener ttsListener;
-	
+
 	protected void onActivityResult(
 	        int requestCode, int resultCode, Intent data) {
 	    if (requestCode == DATA_CHECK_CODE) {
 	        if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 	            // success, create the TTS instance
-	            ttsEngine = new TextToSpeech(this, ttsListener = new TTSListener());
+	        	eventToSpeechSynthesis = new EventToSpeechSynthesis(this);
+;	            //ttsEngine = new TextToSpeech(this, ttsListener = new TTSListener());
 	        } else {
 	            // missing data, install it
 	            Intent installIntent = new Intent();
@@ -108,16 +105,6 @@ public class ControlActivity extends Activity implements OnTouchListener {
 	            startActivity(installIntent);
 	        }
 	    }
-	}
-	
-	class TTSListener implements OnInitListener {
-
-		@Override
-		public void onInit(int status) {
-			// TODO Auto-generated method stub
-			
-		}
-		
 	}
 
 	class BlindGesturesListener extends GestureDetector.SimpleOnGestureListener {
