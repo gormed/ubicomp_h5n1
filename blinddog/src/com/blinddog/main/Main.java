@@ -1,5 +1,12 @@
 package com.blinddog.main;
 
+import com.blinddog.entities.Person;
+import com.blinddog.entities.base.EntityManager;
+import com.blinddog.eventsystem.EventManager;
+import com.blinddog.eventsystem.InputHandler;
+import com.blinddog.eventsystem.listener.KeyInputListener;
+import com.blinddog.eventsystem.port.Collider3D;
+import com.blinddog.eventsystem.port.ScreenRayCast3D;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
@@ -32,29 +39,43 @@ import com.jme3.scene.shape.Box;
  * This collision code uses Physics and a custom Action Listener.
  * @author normen, with edits by Zathras
  */
-public class Main extends SimpleApplication
-        implements ActionListener, PhysicsCollisionListener {
+public class Main extends SimpleApplication{
  
   private Spatial sceneModel;
   private BulletAppState bulletAppState;
   private RigidBodyControl landscape;
   private CharacterControl blindPersonControl;
-  private BlindPerson blindPersonNode;
   private Vector3f walkDirection = new Vector3f();
   private CameraNode camNode;
   private boolean left = false, right = false, up = false, down = false;
+  private EventManager eventManager;
+  private EntityManager entityManager;
+    /** The single reference to the game. */
+    private static Main instance;
  
   public static void main(String[] args) {
-    Main app = new Main();
-    app.start();
+    getInstance().start();
   }
- 
+   public static Main getInstance() {
+           if (instance != null) {
+               return instance;
+           }
+           return instance = new Main();
+   }
+    private Person blindPerson;
+   
   public void simpleInitApp() {
+      
+         entityManager = EntityManager.getInstance();
+         
+        ScreenRayCast3D.getInstance().initialize();
+        Collider3D.getInstance().initialize();
+        entityManager.initialize();
     /** Set up Physics */
    
     // We load the scene from the zip file and adjust its size.
-    assetManager.registerLocator("assets/Scenes/town.zip", ZipLocator.class);
-    sceneModel = assetManager.loadModel("main.scene");
+    //assetManager.registerLocator("assets/Scenes/town/", ZipLocator.class);
+    sceneModel = assetManager.loadModel("Scenes/town/main.j3o");
     sceneModel.setLocalScale(2f);
  
     // We set up collision detection for the scene by creating a
@@ -67,19 +88,12 @@ public class Main extends SimpleApplication
     CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
     blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     
+     
+    blindPerson = entityManager.createPerson("blindPerson", new Vector3f(0f, 0f, 0f));
     
-    blindPersonNode = new BlindPerson("blindPersonNode");
-    rootNode.attachChild(blindPersonNode); 
-    Box b = new Box(Vector3f.ZERO, 1, 2, 1); // create cube shape at the origin
-    Geometry blindPersonModel = new Geometry("blindPerson", b);  // create cube geometry from the shape
-    Material mat = new Material(assetManager,
-      "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-    mat.setColor("Color", ColorRGBA.Green);   // set color of material to blue
-    blindPersonModel.setMaterial(mat);                   // set the cube's material
-    blindPersonNode.attachChild(blindPersonModel);  // make the cube appear in the scene
+    //rootNode.attachChild(blindPerson.getGeometryNode()); 
     
-
-    blindPersonNode.addControl(blindPersonControl);
+    blindPerson.getCollidableEntityNode().addControl(blindPersonControl);
     blindPersonControl.setJumpSpeed(20);
     blindPersonControl.setFallSpeed(30);
     blindPersonControl.setGravity(30);
@@ -93,7 +107,7 @@ public class Main extends SimpleApplication
     stateManager.attach(bulletAppState);
     bulletAppState.getPhysicsSpace().add(landscape);
     bulletAppState.getPhysicsSpace().add(blindPersonControl);
-    bulletAppState.getPhysicsSpace().addCollisionListener(this);
+    //bulletAppState.getPhysicsSpace().addCollisionListener(this);
 
      rootNode.attachChild(sceneModel);
     // We re-use the flyby camera for rotation, while positioning is handled by physics
@@ -105,11 +119,14 @@ public class Main extends SimpleApplication
     //This mode means that camera copies the movements of the target:
     camNode.setControlDir(ControlDirection.SpatialToCamera);
     //Attach the camNode to the target:
-    blindPersonNode.attachChild(camNode);
+    blindPerson.getCollidableEntityNode().attachChild(camNode);
     //Move camNode, e.g. behind and above the target:
     camNode.setLocalTranslation(new Vector3f(0, 50, 0));
     //Rotate the camNode to look at the target:
-    camNode.lookAt(blindPersonNode.getLocalTranslation(), Vector3f.UNIT_Y);
+    camNode.lookAt(blindPerson.getCollidableEntityNode().getLocalTranslation(), Vector3f.UNIT_Y);
+            // EventManager init
+        eventManager = EventManager.getInstance();
+
     setUpKeys();
     setUpLight();
  
@@ -129,33 +146,31 @@ public class Main extends SimpleApplication
  
   /** Setup Key Mapping **/
   private void setUpKeys() {
-    inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-    inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-    inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
-    inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-    inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-    inputManager.addListener(this, "Left");
-    inputManager.addListener(this, "Right");
-    inputManager.addListener(this, "Up");
-    inputManager.addListener(this, "Down");
-    inputManager.addListener(this, "Jump");
-  }
- 
-  /** These are our custom actions triggered by key presses.
-   * We do not walk yet, we just keep track of the direction the user pressed. */
-  public void onAction(String binding, boolean value, float tpf) {
-    if (binding.equals("Left")) {
-      left = value;
-    } else if (binding.equals("Right")) {
-      right = value;
-    } else if (binding.equals("Up")) {
-      up = value;
-    } else if (binding.equals("Down")) {
-      down = value;
-    } else if (binding.equals("Jump")) {
-      blindPersonControl.jump();
+    eventManager.addKeyInputEvent("Left", new KeyTrigger(KeyInput.KEY_A));
+    eventManager.addKeyInputEvent("Right", new KeyTrigger(KeyInput.KEY_D));
+    eventManager.addKeyInputEvent("Up", new KeyTrigger(KeyInput.KEY_W));
+    eventManager.addKeyInputEvent("Down", new KeyTrigger(KeyInput.KEY_S));
+    eventManager.addKeyInputEvent("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+    eventManager.addKeyInputListener(new KeyInputListener() {
+
+            //EVtl auslagern in InputHolder
+          public void onAction(String name, boolean isPressed, float tpf) {
+              if (name.equals("Left")) {
+                left = isPressed;
+              } else if (name.equals("Right")) {
+                right = isPressed;
+              } else if (name.equals("Up")) {
+                up = isPressed;
+              } else if (name.equals("Down")) {
+                down = isPressed;
+              } else if (name.equals("Jump")) {
+                blindPersonControl.jump();
     }
+          }
+      }, "Left","Right","Up","Down","Jump");
+   
   }
+
  
 //  private void collisionDetection(Node a,Spatial b){
 //        // Calculate detection results
@@ -179,16 +194,25 @@ public class Main extends SimpleApplication
 // UPDATE 
   @Override
   public void simpleUpdate(float tpf) {
-//    Vector3f camDir = cam.getDirection().clone().multLocal(0.6f);
-//    Vector3f camLeft = cam.getLeft().clone().multLocal(0.4f);
-    Vector3f vDir = new Vector3f(0,0,0.5f);
-    Vector3f vLeft = new Vector3f(0.5f,0,0);
-    walkDirection.set(0, 0, 0);
-    if (left)  { walkDirection.addLocal(vLeft); }
-    if (right) { walkDirection.addLocal(vLeft.negate()); }
-    if (up)    { walkDirection.addLocal(vDir); }
-    if (down)  { walkDirection.addLocal(vDir.negate()); }
-    blindPersonControl.setWalkDirection(walkDirection);
+        
+        //    Vector3f camDir = cam.getDirection().clone().multLocal(0.6f);
+        //    Vector3f camLeft = cam.getLeft().clone().multLocal(0.4f);
+            Vector3f vDir = new Vector3f(0,0,0.5f);
+            Vector3f vLeft = new Vector3f(0.5f,0,0);
+            Vector3f oldPos = blindPerson.getPosition();
+            walkDirection.set(0, 0, 0);
+            if (left)  { walkDirection.addLocal(vLeft); }
+            if (right) { walkDirection.addLocal(vLeft.negate()); }
+            if (up)    { walkDirection.addLocal(vDir); }
+            if (down)  { walkDirection.addLocal(vDir.negate()); }
+            blindPersonControl.setWalkDirection(walkDirection);
+            oldPos = oldPos.add(walkDirection);
+            blindPerson.moveTo(oldPos);
+            System.out.println(blindPerson.getPosition());
+            
+    
+    eventManager.update(tpf);
+    entityManager.update(tpf);
     //blindPersonNode.setPosition(new Vector3f(1,1,1));
     
     
@@ -196,9 +220,4 @@ public class Main extends SimpleApplication
     
   }
 
-    public void collision(PhysicsCollisionEvent event) {
-       //TODO
-       fpsText.setText("Collision NodeA: "+event.getNodeA()+"Collision NodeB: "+event.getNodeB());     
-
-    }
 }
