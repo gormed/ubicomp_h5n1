@@ -1,5 +1,8 @@
 package com.h5n1.eventsys.events;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.h5n1.eventsys.events.Event;
 // 1) RFID-Events
 
@@ -12,19 +15,19 @@ import com.h5n1.eventsys.events.Event;
 public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 
 	public enum RFIDEventType {
-		NEW_TAG,
-		UPDATE_TAG,
-		REMOVE_TAG	
+		NEW_TAG, UPDATE_TAG, REMOVE_TAG
 	}
 
 	private RFIDEventType type;
 	private String data;
 
-	public RFIDEvent(String json) {
-		
+	public RFIDEvent(String deviceid, JSONObject json) {
+		super();
+		this.deviceId = deviceid;
+
 	}
 
-	public RFIDEvent(RFIDEventType type, String data) {
+	public RFIDEvent(String deviceid, RFIDEventType type, String data) {
 		this.type = type;
 		this.data = data;
 	}
@@ -38,6 +41,12 @@ public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 	}
 
 	public String toJsonString() {
-		return this.data;
+		JSONObject obj = new JSONObject();
+		try {
+			obj.accumulate("data", data);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj.toString();
 	}
 }

@@ -1,7 +1,8 @@
-package com.example.iseesomethingyoudont;
+package com.ubicomp.iseesomethingyoudont;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -17,8 +18,7 @@ public class EventToSpeechSynthesis implements OnInitListener {
 
 	@Override
 	public void onInit(int arg0) {
-		// TODO Auto-generated method stub
-		
+		ttsEngine.setLanguage(Locale.GERMAN);
 	}
 	
 	public TextToSpeech getTtsEngine() {

@@ -1,4 +1,4 @@
-package com.example.iseesomethingyoudont.util;
+package com.ubicomp.iseesomethingyoudont.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

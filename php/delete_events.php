@@ -9,9 +9,8 @@
 $response = array();
  
 // check for required fields
-if (isset($_POST['deviceid']) && isset($_POST['eventid'])) {
+if (isset($_POST['deviceid'])) {
     $deviceid = $_POST['deviceid'];
-    $eventid = $_POST['eventid'];
  
     // include db connect class
     require_once __DIR__ . '/db_connect.php';
@@ -20,12 +19,12 @@ if (isset($_POST['deviceid']) && isset($_POST['eventid'])) {
     $db = new DB_CONNECT();
  
     // mysql update row with matched id
-    $result = mysql_query("DELETE FROM events WHERE eventid = $eventid AND deviceid = '$deviceid'");
+    $result = mysql_query("DELETE FROM events WHERE deviceid = '$deviceid'");
  
     // check if row deleted or not
     if (mysql_affected_rows() > 0) {
         // successfully updated
-        $response["message"] = "Event successfully deleted";
+        $response["message"] = "Events successfully deleted";
  
         // echoing JSON response
         echo json_encode($response);
@@ -38,7 +37,7 @@ if (isset($_POST['deviceid']) && isset($_POST['eventid'])) {
     }
 } else {
     // required field is missing
-    $response["message"] = "Required field(s) is missing";
+    $response["message"] = "Required field(s) missing";
  
     // echoing JSON response
     echo json_encode($response);
