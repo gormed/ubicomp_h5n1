@@ -1,22 +1,18 @@
 package com.h5n1.hardwareServices;
 
 import android.app.Activity;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-public class GestureRecognitionServices extends GestureDetector.SimpleOnGestureListener {
+public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	private static final String DEBUG_TAG = "Gestures";
 	private TextView gestureText;
 	private HapticalFeedbackServices vibrator;
 	
-	
-	
-	
-	public GestureRecognitionServices(TextView gestureText, Activity activity){
-		vibrator = new HapticalFeedbackServices(activity.getApplicationContext());
+	public GestureServices(TextView gestureText, HapticalFeedbackServices vibrator){
+		this.vibrator = vibrator;
 		this.gestureText = gestureText;
 	}	
 	

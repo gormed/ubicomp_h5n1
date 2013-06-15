@@ -3,16 +3,15 @@ package com.h5n1.hardwareServices;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Vibrator;
-import com.ubicomp.iseesomethingyoudont.*;
 
 public class HapticalFeedbackServices {
 
 	private Vibrator vibrator;
 
 	// Creates a vibrator
-	public HapticalFeedbackServices(Context context) {
+	public HapticalFeedbackServices(Activity activity) {
 		// Enable Vibrator
-		vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+		vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	// Vibrate for msecons = time in milliseconds
