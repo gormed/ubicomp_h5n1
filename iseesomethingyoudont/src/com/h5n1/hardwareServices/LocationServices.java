@@ -5,30 +5,32 @@ import com.h5n1.eventsys.JsonRequester;
 import com.h5n1.eventsys.events.EventState;
 import com.h5n1.eventsys.events.GPSEvent;
 import com.h5n1.eventsys.events.GPSEvent.GPSEventType;
-import com.ubicomp.iseesomethingyoudont.R;
-import com.ubicomp.iseesomethingyoudont.R.drawable;
 
+import android.app.Activity;
+import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.util.Log;
 
 public class LocationServices {
 	public static final int ACCURACY_GPS_TIME = 1000;
 	public static final float ACCURACY_GPS_LOCATION = 0;
-	LocationManager locationManager;
-	LocationListener locationListener;
+	private LocationManager locationManager;
+	private LocationListener locationListener;
 	private GPSEvent updateLocation;
 	private String deviceid;
 
-	public LocationServices(LocationManager locationManager) {
+	public LocationServices(Activity activity) {
 		this.deviceid = JsonRequester.getDeviceID();
 		updateLocation = new GPSEvent(deviceid, GPSEventType.UPDATE_LOCATION, 0, 0);
 		updateLocation.setState(EventState.NEW_UPDATE_EVENT);
-		this.locationManager = locationManager;
+		
+		locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+		
+		//this.locationManager = locationManager;
 		enableGPSServices(locationManager);
 	}
 
@@ -41,22 +43,12 @@ public class LocationServices {
 			// Called when location changed
 			public void onLocationChanged(Location location) {
 				if (location != null) {
-
 					double pLong = location.getLongitude();
 					double pLat = location.getLatitude();
 					updateLocation.setLa(pLat);
 					updateLocation.setLo(pLong);
 					EventSystem.pushEvent(updateLocation);
-
-					// Log.i("changedLongitude",
-					// "Changed to: "
-					// + String.valueOf(location.getLongitude()));
-					// Log.i("changedLatitude",
-					// "Changed to: "
-					// + String.valueOf(location.getLatitude()));
-					// MainActivity.updateInterface(pLong, pLat);
 				}
-
 			}
 
 			public void onProviderDisabled(String provider) {
@@ -83,25 +75,23 @@ public class LocationServices {
 					default:
 						break;
 				}
-
 			}
 		};
 
 		// Register to get location updates - 1000: wait at least 1000ms
 		// torequest an update, 10=10m
-		Criteria c = new Criteria();
-		c.setAccuracy(Criteria.ACCURACY_FINE);
-		c.setCostAllowed(false);
-		c.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
-		c.setSpeedRequired(true);
-		c.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
-		c.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		criteria.setCostAllowed(false);
+		criteria.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
+		criteria.setSpeedRequired(true);
+		criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+		criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
 
-		locationManager.requestLocationUpdates(ACCURACY_GPS_TIME, ACCURACY_GPS_LOCATION, c, locationListener, null);
+		locationManager.requestLocationUpdates(ACCURACY_GPS_TIME, ACCURACY_GPS_LOCATION, criteria, locationListener, null);
 	}
 
 	public void removeUpdates() {
 		locationManager.removeUpdates(this.locationListener);
-
 	}
 }

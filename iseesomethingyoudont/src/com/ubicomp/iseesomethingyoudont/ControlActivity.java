@@ -13,8 +13,6 @@ import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.view.GestureDetectorCompat;
 import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -22,7 +20,7 @@ import android.widget.TextView;
 
 import com.h5n1.eventsys.EventSystem;
 import com.h5n1.eventsys.JsonRequester;
-import com.h5n1.hardwareServices.GestureRecognitionServices;
+import com.h5n1.hardwareServices.GestureServices;
 import com.h5n1.hardwareServices.HapticalFeedbackServices;
 import com.h5n1.hardwareServices.LocationServices;
 import com.ubicomp.iseesomethingyoudont.util.SystemUiHider;
@@ -45,6 +43,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 	private LocationServices locationServices = null;
 	private String deviceId = "42";
 	private HapticalFeedbackServices vibrator;
+	private GestureServices gestures;
 
 	// DEBUG
 	private TextView gestureText = null;
@@ -262,13 +261,17 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		createDeviceId();
 		JsonRequester.setDeviceID(deviceId);
 		contentView.setOnTouchListener(this);
-		GestureRecognitionServices gestureServices = new GestureRecognitionServices(gestureText, this);
-		detector = new GestureDetectorCompat(this, gestureServices);
-
-		eventSystem = EventSystem.getInstance();
-		locationServices = new LocationServices((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
-		vibrator = new HapticalFeedbackServices(getApplicationContext());
 		
+		
+		// Creates a vibrator mechanism
+		vibrator = new HapticalFeedbackServices(this);
+		// Creates the recognition of gestures
+		gestures = new GestureServices(gestureText, vibrator);
+		detector = new GestureDetectorCompat(this, gestures);
+		// Creates location Services, GPS and WIFI Location
+		locationServices = new LocationServices(this);
+		
+		eventSystem = EventSystem.getInstance();
 		
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
