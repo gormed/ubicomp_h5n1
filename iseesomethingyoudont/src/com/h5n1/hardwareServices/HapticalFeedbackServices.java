@@ -26,4 +26,17 @@ public class HapticalFeedbackServices {
 		vibrator.vibrate(pattern, repeat);
 	}
 
+	public void vibratePattern(FeedbackPattern pattern) {
+		switch (pattern) {
+		case PATTERN_ONE:
+			vibrateSpecificTime(100);
+			break;
+		case PATTERN_TWO:
+			long[] p = {100, 100, 100};
+			vibratePattern(p, -1);
+			break;
+		default:
+			break;
+		}
+	}
 }
