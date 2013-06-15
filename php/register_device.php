@@ -3,7 +3,7 @@ $response = array();
 require_once __DIR__ . '/db_connect.php';
 $db = new DB_CONNECT();
 
-if (isset($_POST['receiverid'])) {
+if (isset($_POST['deviceid'])) {
 	$deviceid = $_POST['deviceid'];
 	$result = mysql_query("INSERT INTO devices(deviceid) VALUES('$deviceid')");
 	

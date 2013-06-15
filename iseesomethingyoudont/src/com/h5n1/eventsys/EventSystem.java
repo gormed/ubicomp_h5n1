@@ -173,7 +173,7 @@ public class EventSystem {
 				break;
 			case REGISTER_DEVICE:
 				if (temp instanceof ApplicationEvent) {
-					obj = JsonRequester.registerDevice(temp.getDeviceId());
+					obj = JsonRequester.registerDevice();
 				}
 				break;
 			case CREATE_DEVICE_TABLE:

@@ -49,8 +49,8 @@ public class EventHandler {
 		//register device 
 		ApplicationEvent registerDevice = new ApplicationEvent(
 				JsonRequester.getDeviceID(),
-				ApplicationEventType.CREATE_DEVICE_TABLE);
-		registerDevice.setState(EventState.CREATE_DEVICE_TABLE);
+				ApplicationEventType.REGISTER_DEVICE);
+		registerDevice.setState(EventState.REGISTER_DEVICE);
 		EventSystem.pushEvent(registerDevice);
 		//create device table
 		ApplicationEvent createTable = new ApplicationEvent(
