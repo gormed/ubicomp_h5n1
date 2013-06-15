@@ -111,7 +111,7 @@ public class EventHandler {
 			@Override
 			public void fired(NavigationEvent event) {
 				event.setState(EventState.DELETE_EVENT);
-				eventToSpeechSynthesis.getTtsEngine().speak("Achtung, Hinderniss vorraus! " + event.getData()[0] + " meter. Typ " + event.getType().toString(), TextToSpeech.QUEUE_FLUSH, null);
+				eventToSpeechSynthesis.speakNavigaionEvent(event);
 				EventSystem.pushEvent(event);
 			}
 		};
