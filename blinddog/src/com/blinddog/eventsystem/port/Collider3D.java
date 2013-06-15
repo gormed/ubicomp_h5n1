@@ -160,13 +160,9 @@ public class Collider3D {
         
         collisionResults = new CollisionResults();
         
-
-        //collisionNode.collideWith(boundingVolume, collisionResults);
-        for (Spatial s : collisionNode.getChildren()) {
-            s.collideWith(boundingVolume, collisionResults);
-        }
+        collisionNode.collideWith(boundingVolume, collisionResults);
         
-        CollisionEvent event = new CollisionEvent(collisionNode, collisionResults);
+        CollisionEvent event = new CollisionEvent(boundingVolume, collisionResults);
         if (collisionResults.size() > 0) {
             if (boundingVolume instanceof Collidable3D) {
                 ((Collidable3D) boundingVolume).onCollision3D(event);
