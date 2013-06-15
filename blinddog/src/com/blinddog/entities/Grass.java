@@ -58,6 +58,7 @@ public class Grass extends CollidableEntity {
     private Material material;
     
       private RigidBodyControl landscape;
+     
     
     /** The position. */
     private Vector3f position;
@@ -138,7 +139,7 @@ public class Grass extends CollidableEntity {
         //sceneModel.setCullHint(CullHint.Always);
         //debugGeometry.setLocalTranslation(0, CREEP_HEIGHT * 0.5f + 0.01f, 0);
         ScreenRayCast3D.getInstance().addClickableObject(sceneModel);
-        EventManager.getInstance().addCollisionListener(this, sceneModel.getWorldBound());
+
     }
 
     public RigidBodyControl getLandscape() {
@@ -166,6 +167,6 @@ public class Grass extends CollidableEntity {
             System.out.println("grass");
     }
     
-   
+
   
 }

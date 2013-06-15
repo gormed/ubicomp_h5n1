@@ -308,7 +308,7 @@ public class Person extends CollidableEntity {
 
     private void createBoundingSphere() {
         this.boundingSphere = new BoundingSphere();
-        this.boundingSphere.setRadius(2.0f);
+        this.boundingSphere.setRadius(20.0f);
         debugGeometry.getMesh().setBound(boundingSphere);
     }
 
