@@ -154,7 +154,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
 	 */
-	private static final boolean AUTO_HIDE = true;
+	private static final boolean AUTO_HIDE = false;
 
 	/**
 	 * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
@@ -188,6 +188,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		final View contentView = findViewById(R.id.fullscreen_content);
 		gestureText = (TextView) findViewById(R.id.gestureText);
 
+		
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
 		mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
@@ -241,7 +242,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+		//findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
 		// ============================================================================
 		// # Own code goes below
@@ -274,7 +275,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		// Trigger the initial hide() shortly after the activity has been
 		// created, to briefly hint to the user that UI controls
 		// are available.
-		delayedHide(100);
+		//delayedHide(100);
 	}
 	
 	public HapticalFeedbackServices getVibrator(){
