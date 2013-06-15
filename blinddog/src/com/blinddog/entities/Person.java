@@ -35,6 +35,10 @@ import java.util.Queue;
 import java.util.Random;
 import com.blinddog.main.Main;
 import com.jme3.bounding.BoundingSphere;
+import com.jme3.bounding.BoundingVolume;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 
 
 /**
@@ -54,7 +58,7 @@ public class Person extends CollidableEntity {
     public static final float PERSON_BASE_SPEED = 1.1f;
     
     /** The Constant CREEP_HEIGHT. */
-    public static final float PERSON_HEIGHT = 10.0f;
+    public static final float PERSON_HEIGHT = 2.0f;
     
     /** The Constant CREEP_MIN_DISTANCE. */
     public static final float PERSON_MIN_DISTANCE = 0.5f;
@@ -75,7 +79,7 @@ public class Person extends CollidableEntity {
     /** The material. */
     private Material material;
     
-    private BoundingSphere boundingSphere;
+    private BoundingVolume boundingSphere;
     
     /** The position. */
     private Vector3f position;
@@ -166,8 +170,6 @@ public class Person extends CollidableEntity {
       
     }
 
-
-
     /**
      * Creates debug geometry for pathfind-debug.
      * @param game the mazetd game
@@ -217,6 +219,7 @@ public class Person extends CollidableEntity {
         createBoundingSphere();
         EventManager.getInstance().addCollisionListener(this, boundingSphere);
 
+        collidableEntityNode.attachChild(debugGeometry);
     }
 
 
@@ -307,10 +310,9 @@ public class Person extends CollidableEntity {
     }
 
     private void createBoundingSphere() {
-        this.boundingSphere = new BoundingSphere();
-        this.boundingSphere.setRadius(20.0f);
-        debugGeometry.getMesh().setBound(boundingSphere);
+        this.boundingSphere = debugGeometry.getMesh().getBound();
+//        this.boundingSphere.setRadius(20.0f);
+//        debugGeometry.getMesh().setBound(boundingSphere);
     }
-
   
 }

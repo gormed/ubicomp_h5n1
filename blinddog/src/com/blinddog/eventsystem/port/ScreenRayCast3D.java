@@ -137,7 +137,7 @@ public class ScreenRayCast3D implements MouseInputListener {
             return;
         }
         clickable3D = new Node("Clickable3DNodes");
-        game.getRootNode().attachChild(clickable3D);
+        //game.getRootNode().attachChild(clickable3D);
         inputManager.setCursorVisible(true);
 
         EventManager.getInstance().addMouseInputListener(
