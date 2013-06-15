@@ -1,11 +1,15 @@
 package com.blinddog.entities.base;
 
+import com.blinddog.entities.Buergersteig;
+import com.blinddog.entities.CollidableEntity;
+import com.blinddog.entities.Grass;
 import com.jme3.math.Vector2f;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.blinddog.entities.Person ;
 import com.blinddog.entities.ModelObject;
+import com.blinddog.entities.Street;
 import com.blinddog.eventsystem.PersonHandler;
 import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
 import com.blinddog.eventsystem.port.Collider3D;
@@ -67,7 +71,7 @@ public class EntityManager {
     private HashMap<Integer, AbstractEntity> entityHashMap = new HashMap<Integer, AbstractEntity>();
     
     /** The tower hash map. */
-    private HashMap<Integer, ModelObject> objectHashMap = new HashMap<Integer, ModelObject>();
+    private HashMap<Integer, AbstractEntity> objectHashMap = new HashMap<Integer, AbstractEntity>();
     
     /** The creep hash map. */
     private HashMap<Integer, Person> personHashMap = new HashMap<Integer, Person>();
@@ -163,16 +167,48 @@ public class EntityManager {
      * @param square the map square to posit the tower
      * @return the tower just created
      */
-    public ModelObject createModelObject(String name, Vector3f position) {
-        ModelObject t = new ModelObject(name, position);
+    public Buergersteig createBuergersteig(String name, Vector3f position) {
+        Buergersteig t = new Buergersteig(name, position);
 
         addEntity(t);
         objectHashMap.put(t.getEntityId(), t);
         Node geometryNode = t.createNode(game);
-        rayCast3D.addClickableObject(geometryNode);
+        Collider3D.getInstance().addCollisonObject(geometryNode);
+        //ScreenRayCast3D.getInstance().addClickableObject(geometryNode);
         return t;
     }
+/**
+     * Creates a tower on a given position.
+     * @param name the towers name
+     * @param square the map square to posit the tower
+     * @return the tower just created
+     */
+    public Street createStreet(String name, Vector3f position) {
+        Street t = new Street(name, position);
 
+        addEntity(t);
+        objectHashMap.put(t.getEntityId(), t);
+        Node geometryNode = t.createNode(game);
+        Collider3D.getInstance().addCollisonObject(geometryNode);
+        //ScreenRayCast3D.getInstance().addClickableObject(geometryNode);
+        return t;
+    }
+    /**
+     * Creates a tower on a given position.
+     * @param name the towers name
+     * @param square the map square to posit the tower
+     * @return the tower just created
+     */
+    public Grass createGrass(String name, Vector3f position) {
+        Grass t = new Grass(name, position);
+
+        addEntity(t);
+        objectHashMap.put(t.getEntityId(), t);
+        Node geometryNode = t.createNode(game);
+        Collider3D.getInstance().addCollisonObject(geometryNode);
+        //ScreenRayCast3D.getInstance().addClickableObject(geometryNode);
+        return t;
+    }
     /**
      * Creates a creep on a given position.
      * @param name the creeps name
@@ -187,7 +223,7 @@ public class EntityManager {
         addEntity(c);
         personHashMap.put(c.getEntityId(), c);
         Node geometryNode = c.createNode(game);
-        collider3D.addCollisonObject(geometryNode);
+        Collider3D.getInstance().addCollisonObject(geometryNode);
         PersonHandler.getInstance().
                 invokePersonAction(
                 PersonEventType.Created, c, null);
@@ -207,7 +243,7 @@ public class EntityManager {
      * Gets the hashmap with all towers with their entityid as key.
      * @return all the towers in a hashmap keyed by its entity-ids
      */
-    public HashMap<Integer, ModelObject> getObjectHashMap() {
+    public HashMap<Integer, AbstractEntity> getObjectHashMap() {
         return objectHashMap;
     }
 }

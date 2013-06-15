@@ -135,6 +135,7 @@ public class Person extends CollidableEntity {
      */
     @Override
     public void onCollision(CollisionResults collisionResults) {
+        System.out.println("person collides");
     }
 
     /* (non-Javadoc)
@@ -161,41 +162,7 @@ public class Person extends CollidableEntity {
       
     }
 
-    /**
-     * Creates the creeps geometry and attaches it to the 
-     * collidableEntityNode.
-     * @param game the MazeTDGame reference
-     */
-    private void createPersonGeometry(Main game) {
-        // Material
-        material = new Material(
-                game.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        //material.setBoolean("UseMaterialColors", true);  // Set some parameters, e.g. blue.
-        material.setColor("Color", ColorRGBA.Blue);
-        //material.setColor("Specular", ColorRGBA.White);
-        //material.setColor("Ambient", ColorRGBA.Black);   // ... color of this object
-        // material.setColor("Diffuse", ColorRGBA.Gray);   // ... color of light being reflected
 
-        // Geometry
-        float[] angles = {(float) Math.PI / 2, 0, 0};
-
-        Cylinder c = new Cylinder(
-                PERSON_SAMPLES,
-                PERSON_SAMPLES,
-                PERSON_RADIUS,
-                PERSON_HEIGHT,
-                true, false);
-
-        geometry = new Geometry("Person_Geometry_" + name, c);
-        geometry.setMaterial(material);
-        geometry.setLocalTranslation(0, PERSON_HEIGHT * 0.5f + 0.01f, 0);
-        geometry.setLocalRotation(new Quaternion(angles));
-        //geometry.setQueueBucket(Bucket.Inherit);
-
-        collidableEntityNode.attachChild(geometry);
-        collidableEntityNode.setLocalTranslation(position);
-        //collidableEntityNode.setShadowMode(ShadowMode.CastAndReceive);
-    }
 
     /**
      * Creates debug geometry for pathfind-debug.

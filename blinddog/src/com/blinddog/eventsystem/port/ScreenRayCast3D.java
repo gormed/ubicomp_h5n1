@@ -256,7 +256,7 @@ public class ScreenRayCast3D implements MouseInputListener {
             // 3. Collect intersections between Ray and Shootables in results list.
             clickable3D.collideWith(ray, results);
             // 4. Print the results
-            System.out.println("----- 3D Collisions? " + results.size() + "-----");
+            //System.out.println("----- 3D Collisions? " + results.size() + "-----");
             for (int i = 0; i < results.size(); i++) {
                 // For each hit, we know distance, impact point, name of geometry.
                 float dist = results.getCollision(i).getDistance();
@@ -380,7 +380,7 @@ public class ScreenRayCast3D implements MouseInputListener {
             // 3. Collect intersections between Ray and Shootables in results list.
             clickable3D.collideWith(ray, results);
             // 4. Print the results
-            System.out.println("----- 3D Collisions? " + results.size() + "-----");
+            //System.out.println("----- 3D Collisions? " + results.size() + "-----");
             for (int i = 0; i < results.size(); i++) {
                 // For each hit, we know distance, impact point, name of geometry.
                 float dist = results.getCollision(i).getDistance();

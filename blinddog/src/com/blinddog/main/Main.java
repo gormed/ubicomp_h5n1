@@ -1,38 +1,28 @@
 package com.blinddog.main;
 
+import com.blinddog.entities.Buergersteig;
+import com.blinddog.entities.Grass;
 import com.blinddog.entities.Person;
+import com.blinddog.entities.Street;
 import com.blinddog.entities.base.EntityManager;
 import com.blinddog.eventsystem.EventManager;
-import com.blinddog.eventsystem.InputHandler;
 import com.blinddog.eventsystem.listener.KeyInputListener;
 import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
-import com.jme3.scene.shape.Box;
  
 /**
  * 
@@ -63,36 +53,29 @@ public class Main extends SimpleApplication{
            return instance = new Main();
    }
     private Person blindPerson;
+    private Buergersteig buergersteig;
+    private Street street;
+    private Grass grass;
    
   public void simpleInitApp() {
-      
-         entityManager = EntityManager.getInstance();
-         
+
+        entityManager = EntityManager.getInstance();
+        eventManager = EventManager.getInstance();
+        entityManager.initialize();
         ScreenRayCast3D.getInstance().initialize();
         Collider3D.getInstance().initialize();
-        entityManager.initialize();
     /** Set up Physics */
    
-    // We load the scene from the zip file and adjust its size.
-    //assetManager.registerLocator("assets/Scenes/town/", ZipLocator.class);
-    sceneModel = assetManager.loadModel("Scenes/town/main.j3o");
-    sceneModel.setLocalScale(2f);
- 
-    // We set up collision detection for the scene by creating a
-    // compound collision shape and a static RigidBodyControl with mass zero.
-    CollisionShape sceneShape =
-            CollisionShapeFactory.createMeshShape((Node) sceneModel);
-    landscape = new RigidBodyControl(sceneShape, 0);
-    sceneModel.addControl(landscape);
+    buergersteig = entityManager.createBuergersteig("Buergersteig",  new Vector3f(0f, 0f, 0f));
+    street = entityManager.createStreet("Street",  new Vector3f(0f, 0f, 0f));
+    grass = entityManager.createGrass("grass",  new Vector3f(0f, 0f, 0f));
 
     CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
     blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     
      
     blindPerson = entityManager.createPerson("blindPerson", new Vector3f(0f, 0f, 0f));
-    
-    //rootNode.attachChild(blindPerson.getGeometryNode()); 
-    
+
     blindPerson.getCollidableEntityNode().addControl(blindPersonControl);
     blindPersonControl.setJumpSpeed(20);
     blindPersonControl.setFallSpeed(30);
@@ -105,11 +88,12 @@ public class Main extends SimpleApplication{
     
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
-    bulletAppState.getPhysicsSpace().add(landscape);
+    bulletAppState.getPhysicsSpace().add(buergersteig.getLandscape());
+    bulletAppState.getPhysicsSpace().add(street.getLandscape());
+    bulletAppState.getPhysicsSpace().add(grass.getLandscape());
     bulletAppState.getPhysicsSpace().add(blindPersonControl);
     //bulletAppState.getPhysicsSpace().addCollisionListener(this);
 
-     rootNode.attachChild(sceneModel);
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
     // Disable the default flyby cam
@@ -125,7 +109,7 @@ public class Main extends SimpleApplication{
     //Rotate the camNode to look at the target:
     camNode.lookAt(blindPerson.getCollidableEntityNode().getLocalTranslation(), Vector3f.UNIT_Y);
             // EventManager init
-        eventManager = EventManager.getInstance();
+    
 
     setUpKeys();
     setUpLight();
@@ -208,9 +192,8 @@ public class Main extends SimpleApplication{
             blindPersonControl.setWalkDirection(walkDirection);
             oldPos = oldPos.add(walkDirection);
             blindPerson.moveTo(oldPos);
-            System.out.println(blindPerson.getPosition());
-            
-    
+            System.out.println(Collider3D.getInstance().getCollisionNode().getChildren());
+            //System.out.println("Objects: " + entityManager.getObjectHashMap());
     eventManager.update(tpf);
     entityManager.update(tpf);
     //blindPersonNode.setPosition(new Vector3f(1,1,1));
