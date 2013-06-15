@@ -25,6 +25,7 @@ import com.blinddog.entities.base.EntityManager;
 import com.blinddog.entities.geometry.ClickableGeometry;
 import com.blinddog.entities.nodes.CollidableEntityNode;
 import com.blinddog.eventsystem.PersonHandler;
+import com.blinddog.eventsystem.events.CollisionEvent;
 import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
 import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
@@ -88,12 +89,7 @@ public class Buergersteig extends CollidableEntity {
 
     }
 
-    /* (non-Javadoc)
-     * @see entities.base.CollidableEntity#onCollision(com.jme3.collision.CollisionResults)
-     */
-    @Override
-    public void onCollision(CollisionResults collisionResults) {
-    }
+
 
     /* (non-Javadoc)
      * @see entities.base.CollidableEntity#createNode(mazetd.MazeTDGame)
@@ -160,6 +156,10 @@ public class Buergersteig extends CollidableEntity {
      */
     public Vector3f getPosition() {
         return position;
+    }
+
+    public void onCollision(CollisionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
   

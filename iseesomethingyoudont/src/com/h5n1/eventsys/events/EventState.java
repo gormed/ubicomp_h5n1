@@ -1,0 +1,12 @@
+package com.h5n1.eventsys.events;
+
+public enum EventState {
+	NEW_EVENT,
+	NEW_UPDATE_EVENT,
+	UPDATE_EVENT,
+	NEW_DELETE_EVENT,
+	DELETE_EVENT,
+	DELETE_ALL_EVENTS,
+	GET_ALL_EVENTS,
+	GET_EVENT
+}

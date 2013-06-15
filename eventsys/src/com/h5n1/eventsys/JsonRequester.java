@@ -45,11 +45,11 @@ public class JsonRequester {
 	public static final String TAG_TIME = "time";
 	public static final String TAG_ID = "id";
 
-	private static final String CREATE_URL = "http://localhost/ubicomp/create_event.php";
-	private static final String GET_All_URL = "http://localhost/ubicomp/get_all_events.php";
-	private static final String UPDATE_URL = "http://localhost/ubicomp/update_event.php";
-	private static final String DELETE_URL = "http://localhost/ubicomp/delete_event.php";
-	private static final String GET_URL = "http://localhost/ubicomp/get_event.php";
+	private static final String CREATE_URL = "http://192.168.1.92/ubicomp/create_event.php";
+	private static final String GET_All_URL = "http://192.168.1.92/ubicomp/get_all_events.php";
+	private static final String UPDATE_URL = "http://192.168.1.92/ubicomp/update_event.php";
+	private static final String DELETE_URL = "http://192.168.1.92/ubicomp/delete_event.php";
+	private static final String GET_URL = "http://192.168.1.92/ubicomp/get_event.php";
 	// private static final String CREATE_URL = "http://54.235.186.77/ubicomp/api/post/event";
 	// private static final String DELETE_URL = "http://54.235.186.77/ubicomp/api/delete/event";
 	// private static final String GET_URL = "http://54.235.186.77/ubicomp/api/get/event/";
@@ -62,31 +62,31 @@ public class JsonRequester {
 //		deviceID = (Integer) getJsonObj.get("device_id");
 //	}
 	
-	public static String newEvent(Event event) {
+	public static JSONObject newEvent(Event event) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("type", event.getClass().getSimpleName() + "_" + event.getType().toString()));
 		params.add(new BasicNameValuePair("content", event.toJsonString()));
-		return makeHttpRequest(CREATE_URL, "POST", params).toString();
+		return makeHttpRequest(CREATE_URL, "POST", params);
 	}
 
-	public static void updateEvent(String id, String type, String content) {
+	public static JSONObject updateEvent(String id, String type, String content) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(TAG_ID, id));
 		params.add(new BasicNameValuePair(TAG_TYPE, type));
 		params.add(new BasicNameValuePair(TAG_CONTENT, content));
-		makeHttpRequest(UPDATE_URL, "POST", params);
+		return makeHttpRequest(UPDATE_URL, "POST", params);
 	}
 
-	public static void getEvent(String id) {
+	public static JSONObject getEvent(String id) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("id", id));
-		makeHttpRequest(GET_URL, "GET", params);
+		return makeHttpRequest(GET_URL, "GET", params);
 	}
 
-	public static void deleteEvent(String id) {
+	public static JSONObject deleteEvent(String id) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("id", id));
-		makeHttpRequest(DELETE_URL, "POST", params);
+		return makeHttpRequest(DELETE_URL, "POST", params);
 	}
 
 	public static ArrayList<HashMap<String, String>> getAllEvents() {

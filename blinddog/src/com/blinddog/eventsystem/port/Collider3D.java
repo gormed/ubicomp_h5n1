@@ -35,6 +35,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.blinddog.eventsystem.port;
 
+import com.blinddog.eventsystem.events.CollisionEvent;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.CollisionResults;
 import com.jme3.scene.Node;
@@ -156,17 +157,19 @@ public class Collider3D {
      */
     public CollisionResults objectCollides(BoundingVolume boundingVolume) {
         currentCollidable = boundingVolume;
-
+        
         collisionResults = new CollisionResults();
+        
 
         //collisionNode.collideWith(boundingVolume, collisionResults);
         for (Spatial s : collisionNode.getChildren()) {
             s.collideWith(boundingVolume, collisionResults);
         }
-
+        
+        CollisionEvent event = new CollisionEvent(collisionNode, collisionResults);
         if (collisionResults.size() > 0) {
             if (boundingVolume instanceof Collidable3D) {
-                ((Collidable3D) boundingVolume).onCollision3D(collisionResults);
+                ((Collidable3D) boundingVolume).onCollision3D(event);
             }
             return collisionResults;
         } else {

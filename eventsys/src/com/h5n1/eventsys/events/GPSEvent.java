@@ -7,9 +7,9 @@ import com.h5n1.eventsys.events.Event;
 // Server Anfrage
 // Kein Signal erreichbar
 // GPS Update
-// Gerät bewegt sich
-// Server push (änderung)
-// Gerät steht
+// Geraet bewegt sich
+// Server push (Aenderung)
+// Geraet steht
 
 public class GPSEvent extends Event<GPSEvent.GPSEventType> {
 
@@ -24,14 +24,14 @@ public class GPSEvent extends Event<GPSEvent.GPSEventType> {
 		MOVEMENT_STOPPED
 	}
 
-	private float lo,la;
+	private double lo,la;
 	private GPSEventType type;
 
 	public GPSEvent(String json) {
 		
 	}
 
-	public GPSEvent(GPSEventType type, float lo, float la) {
+	public GPSEvent(GPSEventType type, double lo, double la) {
 		this.type = type;
 		this. lo = lo;
 		this.la = la;

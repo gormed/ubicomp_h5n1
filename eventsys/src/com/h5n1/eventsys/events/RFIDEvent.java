@@ -3,7 +3,7 @@ package com.h5n1.eventsys.events;
 import com.h5n1.eventsys.events.Event;
 // 1) RFID-Events
 
-// TAG ist in der Nähe
+// TAG ist in der Naehe
 
 // -> TAG entdeckt
 // -> TAG verbleibt

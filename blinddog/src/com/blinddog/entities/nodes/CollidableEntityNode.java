@@ -4,6 +4,7 @@ import com.jme3.collision.CollisionResults;
 import com.blinddog.entities.CollidableEntity;
 import com.blinddog.eventsystem.interfaces.Collidable3D;
 import com.blinddog.entities.nodes.EntityNode;
+import com.blinddog.eventsystem.events.CollisionEvent;
 
 /**
  * The class CollidableEntityNode which has as child all geometry that will be
@@ -36,8 +37,8 @@ public class CollidableEntityNode extends EntityNode implements Collidable3D {
      * @see eventsystem.interfaces.Collidable3D#onCollision3D(com.jme3.collision.CollisionResults)
      */
     @Override
-    public void onCollision3D(CollisionResults collisionResults) {
-        entity.onCollision(collisionResults);
+    public void onCollision3D(CollisionEvent e) {
+        entity.onCollision(e);
     }
 
     /* (non-Javadoc)
