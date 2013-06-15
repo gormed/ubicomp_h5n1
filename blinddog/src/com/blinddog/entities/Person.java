@@ -24,7 +24,9 @@ import com.blinddog.entities.CollidableEntity;
 import com.blinddog.entities.base.EntityManager;
 import com.blinddog.entities.geometry.ClickableGeometry;
 import com.blinddog.entities.nodes.CollidableEntityNode;
+import com.blinddog.eventsystem.EventManager;
 import com.blinddog.eventsystem.PersonHandler;
+import com.blinddog.eventsystem.events.CollisionEvent;
 import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
 import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
@@ -32,6 +34,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Random;
 import com.blinddog.main.Main;
+import com.jme3.bounding.BoundingSphere;
 
 
 /**
@@ -72,6 +75,8 @@ public class Person extends CollidableEntity {
     /** The material. */
     private Material material;
     
+    private BoundingSphere boundingSphere;
+    
     /** The position. */
     private Vector3f position;
     
@@ -89,8 +94,6 @@ public class Person extends CollidableEntity {
     
 
    
-    /** The target. */
-    private ModelObject target;
 
   
     /** The speed. */
@@ -127,6 +130,7 @@ public class Person extends CollidableEntity {
     public Person(String name, Vector3f position) {
         super(name);
         this.position = position;
+        
 
     }
 
@@ -134,8 +138,8 @@ public class Person extends CollidableEntity {
      * @see entities.base.CollidableEntity#onCollision(com.jme3.collision.CollisionResults)
      */
     @Override
-    public void onCollision(CollisionResults collisionResults) {
-        System.out.println("person collides");
+     public void onCollision(CollisionEvent e){
+        System.out.println(this.getName() + " collides with " + e.getWith());
     }
 
     /* (non-Javadoc)
@@ -210,6 +214,8 @@ public class Person extends CollidableEntity {
         debugGeometry.setLocalTranslation(0, PERSON_HEIGHT * 0.5f + 0.01f, 0);
         debugGeometry.setLocalRotation(new Quaternion(angles));
         ScreenRayCast3D.getInstance().addClickableObject(debugGeometry);
+        createBoundingSphere();
+        EventManager.getInstance().addCollisionListener(this, boundingSphere);
 
     }
 
@@ -298,6 +304,12 @@ public class Person extends CollidableEntity {
      */
     public float getSpeed() {
         return speed;
+    }
+
+    private void createBoundingSphere() {
+        this.boundingSphere = new BoundingSphere();
+        this.boundingSphere.setRadius(2.0f);
+        debugGeometry.getMesh().setBound(boundingSphere);
     }
 
   

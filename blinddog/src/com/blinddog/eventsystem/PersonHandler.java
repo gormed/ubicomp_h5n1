@@ -1,7 +1,7 @@
 package com.blinddog.eventsystem;
 
+import com.blinddog.entities.CollidableEntity;
 import com.blinddog.entities.Person;
-import com.blinddog.entities.ModelObject;
 import com.blinddog.eventsystem.events.PersonEvent;
 import com.blinddog.eventsystem.listener.PersonListener;
 import java.util.HashMap;
@@ -105,7 +105,7 @@ public class PersonHandler {
      */
     public void invokePersonAction(
             PersonEvent.PersonEventType actionType, Person person,
-            ModelObject target) {
+            CollidableEntity target) {
         if (personListeners.isEmpty()) {
             return;
         }
