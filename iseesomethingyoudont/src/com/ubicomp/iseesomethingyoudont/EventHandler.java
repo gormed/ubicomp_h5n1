@@ -46,12 +46,18 @@ public class EventHandler {
 	private ApplicationEvent getAllEvents;
 
 	public EventHandler(final EventSystem system, final EventToSpeechSynthesis eventToSpeechSynthesis) {
-		// delete all previous events
+		//create device table
 		ApplicationEvent appEvent = new ApplicationEvent(
 				JsonRequester.getDeviceID(),
-				ApplicationEventType.DELETE_ALL_EVENTS);
-		appEvent.setState(EventState.DELETE_ALL_EVENTS);
+				ApplicationEventType.CREATE_DEVICE_TABLE);
+		appEvent.setState(EventState.CREATE_DEVICE_TABLE);
 		EventSystem.pushEvent(appEvent);
+		// delete all previous events
+		ApplicationEvent deleteAllEvents = new ApplicationEvent(
+				JsonRequester.getDeviceID(),
+				ApplicationEventType.DELETE_ALL_EVENTS);
+		deleteAllEvents.setState(EventState.DELETE_ALL_EVENTS);
+		EventSystem.pushEvent(deleteAllEvents);
 		// test event
 		double[] val = { 1,2,3 };
 		NavigationEvent nav = new NavigationEvent(JsonRequester.getDeviceID(), NavigationEventType.OBSTACLE_HUMAN, val);

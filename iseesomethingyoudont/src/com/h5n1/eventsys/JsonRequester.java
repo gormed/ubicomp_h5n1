@@ -52,6 +52,7 @@ public class JsonRequester {
 	public static final String TAG_EVENTID = "eventid";
 	public static final String TAG_RECEIVERID = "receiverid";
 
+	private static final String CREATE_DEVICE_URL = "http://192.168.1.92/ubicomp/create_device.php";
 	private static final String CREATE_URL = "http://192.168.1.92/ubicomp/create_event.php";
 	private static final String GET_ALL_URL = "http://192.168.1.92/ubicomp/get_all_events.php";
 	private static final String UPDATE_URL = "http://192.168.1.92/ubicomp/update_event.php";
@@ -108,6 +109,12 @@ public class JsonRequester {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
 		return makeHttpRequest(DELETE_ALL_URL, "POST", params);
+	}
+	
+	public static JSONObject createDeviceTable(String deviceid) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
+		return makeHttpRequest(CREATE_DEVICE_URL, "POST", params);
 	}
 
 	public static JSONObject getAllEvents(String deviceid, String receiverid) {
