@@ -192,7 +192,6 @@ public class Main extends SimpleApplication{
             blindPersonControl.setWalkDirection(walkDirection);
             oldPos = oldPos.add(walkDirection);
             blindPerson.moveTo(oldPos);
-            System.out.println(Collider3D.getInstance().getCollisionNode().getChildren());
             //System.out.println("Objects: " + entityManager.getObjectHashMap());
     eventManager.update(tpf);
     entityManager.update(tpf);

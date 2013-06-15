@@ -35,8 +35,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.blinddog.eventsystem.events;
 
+import com.blinddog.entities.CollidableEntity;
 import com.blinddog.entities.Person;
-import com.blinddog.entities.ModelObject;
 
 /**
  * The class CreepEvent that capsules all data of a creep action.
@@ -68,7 +68,7 @@ public class PersonEvent extends AbstractEvent {
     private PersonEvent.PersonEventType type;
     
     /** The target. */
-    private ModelObject target;
+    private CollidableEntity target;
     
     /** The creep. */
     private Person person;
@@ -81,7 +81,7 @@ public class PersonEvent extends AbstractEvent {
      * @param creep the creep that triggers the event
      * @param target the tower if creep was killed or attacks the tower, null otherwise
      */
-    public PersonEvent(PersonEvent.PersonEventType type, Person person, ModelObject target) {
+    public PersonEvent(PersonEvent.PersonEventType type, Person person, CollidableEntity target) {
         super(person);
         this.person = person;
         this.target = target;
@@ -101,7 +101,7 @@ public class PersonEvent extends AbstractEvent {
      * creep.
      * @return the tower
      */
-    public ModelObject getTarget() {
+    public CollidableEntity getTarget() {
         return target;
     }
 

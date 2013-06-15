@@ -35,6 +35,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.blinddog.eventsystem.listener;
 
+import com.blinddog.entities.nodes.CollidableEntityNode;
 import com.blinddog.eventsystem.events.CollisionEvent;
 import java.util.EventListener;
 
@@ -51,5 +52,8 @@ public interface CollisionListener extends EventListener {
      * @see CollisionEvent
      */
     public void onCollision(CollisionEvent e);
+    
+    public CollidableEntityNode getCollidableEntityNode();
+    
 }
 

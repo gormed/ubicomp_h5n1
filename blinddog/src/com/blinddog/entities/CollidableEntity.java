@@ -4,6 +4,8 @@ import com.jme3.collision.CollisionResults;
 import com.blinddog.entities.base.SimpleCollidable;
 import com.blinddog.entities.base.AbstractEntity;
 import com.blinddog.entities.nodes.CollidableEntityNode;
+import com.blinddog.eventsystem.events.CollisionEvent;
+import com.blinddog.eventsystem.listener.CollisionListener;
 import com.blinddog.main.Main;
 
 /**
@@ -11,7 +13,7 @@ import com.blinddog.main.Main;
  * @author Hans Ferchland
  * @version 0.2
  */
-public abstract class CollidableEntity extends AbstractEntity implements SimpleCollidable {
+public abstract class CollidableEntity extends AbstractEntity implements CollisionListener {
 
     //==========================================================================
     //===   Private Fields
@@ -48,18 +50,13 @@ public abstract class CollidableEntity extends AbstractEntity implements SimpleC
 
         return collidableEntityNode;
     }
-
-    /* (non-Javadoc)
-     * @see entities.base.low.SimpleCollidable#getCollidableEntityNode()
-     */
+    
     @Override
-    public CollidableEntityNode getCollidableEntityNode() {
+    public CollidableEntityNode getCollidableEntityNode(){
         return collidableEntityNode;
+    
+    
     }
+    
 
-    /* (non-Javadoc)
-     * @see entities.base.low.SimpleCollidable#onCollision(com.jme3.collision.CollisionResults)
-     */
-    @Override
-    public abstract void onCollision(CollisionResults collisionResults);
 }

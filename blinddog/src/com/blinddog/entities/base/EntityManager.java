@@ -8,7 +8,6 @@ import com.blinddog.eventsystem.port.ScreenRayCast3D;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.blinddog.entities.Person ;
-import com.blinddog.entities.ModelObject;
 import com.blinddog.entities.Street;
 import com.blinddog.eventsystem.PersonHandler;
 import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;

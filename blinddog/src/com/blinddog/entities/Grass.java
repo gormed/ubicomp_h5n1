@@ -24,7 +24,9 @@ import com.blinddog.entities.CollidableEntity;
 import com.blinddog.entities.base.EntityManager;
 import com.blinddog.entities.geometry.ClickableGeometry;
 import com.blinddog.entities.nodes.CollidableEntityNode;
+import com.blinddog.eventsystem.EventManager;
 import com.blinddog.eventsystem.PersonHandler;
+import com.blinddog.eventsystem.events.CollisionEvent;
 import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
 import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
@@ -32,6 +34,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Random;
 import com.blinddog.main.Main;
+import com.jme3.bounding.BoundingSphere;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -66,6 +69,8 @@ public class Grass extends CollidableEntity {
     /** The debug path toggle. */
     private boolean debugPathToggle = false;
     
+    private BoundingSphere boundingSphere;
+    
 
   
     
@@ -88,12 +93,7 @@ public class Grass extends CollidableEntity {
 
     }
 
-    /* (non-Javadoc)
-     * @see entities.base.CollidableEntity#onCollision(com.jme3.collision.CollisionResults)
-     */
-    @Override
-    public void onCollision(CollisionResults collisionResults) {
-    }
+
 
     /* (non-Javadoc)
      * @see entities.base.CollidableEntity#createNode(mazetd.MazeTDGame)
@@ -138,7 +138,7 @@ public class Grass extends CollidableEntity {
         //sceneModel.setCullHint(CullHint.Always);
         //debugGeometry.setLocalTranslation(0, CREEP_HEIGHT * 0.5f + 0.01f, 0);
         ScreenRayCast3D.getInstance().addClickableObject(sceneModel);
-
+        EventManager.getInstance().addCollisionListener(this, sceneModel.getWorldBound());
     }
 
     public RigidBodyControl getLandscape() {
@@ -161,6 +161,11 @@ public class Grass extends CollidableEntity {
     public Vector3f getPosition() {
         return position;
     }
+
+    public void onCollision(CollisionEvent e) {
+            System.out.println("grass");
+    }
     
+   
   
 }

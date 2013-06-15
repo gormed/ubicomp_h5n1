@@ -35,6 +35,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.blinddog.eventsystem.interfaces;
 
+import com.blinddog.eventsystem.events.CollisionEvent;
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResults;
 import com.blinddog.eventsystem.port.Collider3D;
@@ -53,5 +54,5 @@ public interface Collidable3D extends Collidable {
      * Collider3D and a collision with this object happens.
      * @param collisionResults the results of the collision
      */
-    public void onCollision3D(CollisionResults collisionResults);
+    public void onCollision3D(CollisionEvent e);
 }
