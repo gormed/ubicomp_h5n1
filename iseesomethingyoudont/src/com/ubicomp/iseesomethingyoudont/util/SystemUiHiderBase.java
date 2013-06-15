@@ -1,4 +1,4 @@
-package com.example.iseesomethingyoudont.util;
+package com.ubicomp.iseesomethingyoudont.util;
 
 import android.app.Activity;
 import android.view.View;

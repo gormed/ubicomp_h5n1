@@ -1,20 +1,28 @@
-package com.example.iseesomethingyoudont;
+package com.ubicomp.iseesomethingyoudont;
 
-import com.example.iseesomethingyoudont.util.SystemUiHider;
+import java.util.UUID;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.MotionEventCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
+
+import com.h5n1.eventsys.EventSystem;
+import com.h5n1.eventsys.JsonRequester;
+import com.ubicomp.iseesomethingyoudont.util.SystemUiHider;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -24,71 +32,58 @@ import android.widget.TextView;
  */
 public class ControlActivity extends Activity implements OnTouchListener {
 
-	private GestureDetectorCompat detector;
+	private GestureDetectorCompat detector = null;
 	private static final String DEBUG_TAG = "Gestures";
+	private static final int DATA_CHECK_CODE = 0;
+	private EventToSpeechSynthesis eventToSpeechSynthesis = null;
+	private EventSystem eventSystem;
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		// this.detector.onTouchEvent(event);
-		//
-		// int action = MotionEventCompat.getActionMasked(event);
-		//
-		// switch (action) {
-		// case (MotionEvent.ACTION_DOWN):
-		// Log.d(DEBUG_TAG, "Action was DOWN");
-		// return true;
-		// case (MotionEvent.ACTION_MOVE):
-		// Log.d(DEBUG_TAG, "Action was MOVE");
-		// return true;
-		// case (MotionEvent.ACTION_UP):
-		// Log.d(DEBUG_TAG, "Action was UP");
-		// return true;
-		// case (MotionEvent.ACTION_CANCEL):
-		// Log.d(DEBUG_TAG, "Action was CANCEL");
-		// return true;
-		// case (MotionEvent.ACTION_OUTSIDE):
-		// Log.d(DEBUG_TAG, "Movement occurred outside bounds "
-		// + "of current screen element");
-		// return true;
-		// default:
-		// // Be sure to call the superclass implementation
-		// return super.onTouchEvent(event);
-		// }
-		return false;
-	}
+	private EventHandler eventHandler = null;
+	private LocationServices locationServices = null;
+	private String deviceId = "42";
+	
+	//DEBUG
+	private TextView gestureText = null;
 
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 		this.detector.onTouchEvent(event);
+		return super.onTouchEvent(event);
+	}
+	
+	private void createDeviceId() {
+		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 
-		int action = MotionEventCompat.getActionMasked(event);
+	    final String tmDevice, tmSerial, androidId;
+	    tmDevice = "" + tm.getDeviceId();
+	    tmSerial = "" + tm.getSimSerialNumber();
+	    androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 
-		switch (action) {
-		case (MotionEvent.ACTION_DOWN):
-			Log.d(DEBUG_TAG, "Action was DOWN");
-			return true;
-		case (MotionEvent.ACTION_MOVE):
-			Log.d(DEBUG_TAG, "Action was MOVE");
-			return true;
-		case (MotionEvent.ACTION_UP):
-			Log.d(DEBUG_TAG, "Action was UP");
-			return true;
-		case (MotionEvent.ACTION_CANCEL):
-			Log.d(DEBUG_TAG, "Action was CANCEL");
-			return true;
-		case (MotionEvent.ACTION_OUTSIDE):
-			Log.d(DEBUG_TAG, "Movement occurred outside bounds "
-					+ "of current screen element");
-			return true;
-		default:
-			// Be sure to call the superclass implementation
-			return super.onTouchEvent(event);
-		}
+	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+	    deviceId = deviceUuid.toString();
+	}
+
+	protected void onActivityResult(
+	        int requestCode, int resultCode, Intent data) {
+	    if (requestCode == DATA_CHECK_CODE) {
+	        if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+	            // success, create the TTS instance
+	        	eventToSpeechSynthesis = new EventToSpeechSynthesis(this);
+	    		eventHandler = new EventHandler(eventSystem, eventToSpeechSynthesis);
+	        	//ttsEngine = new TextToSpeech(this, ttsListener = new TTSListener());
+	        } else {
+	            // missing data, install it
+	            Intent installIntent = new Intent();
+	            installIntent.setAction(
+	                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+	            startActivity(installIntent);
+	        }
+	    }
 	}
 
 	class BlindGesturesListener extends GestureDetector.SimpleOnGestureListener {
 		private static final String DEBUG_TAG = "Gestures";
-		final TextView gestureText = (TextView) findViewById(R.id.gestureText);
+		
 		
 	    @Override
 	    public boolean onDown(MotionEvent event) { 
@@ -185,7 +180,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
 	private SystemUiHider mSystemUiHider;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -194,7 +189,8 @@ public class ControlActivity extends Activity implements OnTouchListener {
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
-
+		gestureText = (TextView) findViewById(R.id.gestureText);
+		
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
 		mSystemUiHider = SystemUiHider.getInstance(this, contentView,
@@ -265,8 +261,19 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		// Instantiate the gesture detector with the
 		// application context and an implementation of
 		// GestureDetector.OnGestureListener
+		createDeviceId();
+		JsonRequester.setDeviceID(deviceId);
 		contentView.setOnTouchListener(this);
 		detector = new GestureDetectorCompat(this, new BlindGesturesListener());
+		
+		eventSystem = EventSystem.getInstance();
+		locationServices = new LocationServices((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
+		
+
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, DATA_CHECK_CODE);
+
 	}
 
 	@Override

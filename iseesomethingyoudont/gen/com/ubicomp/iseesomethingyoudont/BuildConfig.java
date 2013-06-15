@@ -1,5 +1,5 @@
 /** Automatically generated file. DO NOT MODIFY */
-package com.example.iseesomethingyoudont;
+package com.ubicomp.iseesomethingyoudont;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;
