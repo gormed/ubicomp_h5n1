@@ -20,6 +20,8 @@ if (!isset($_GET['deviceid']) || !isset($_GET['receiverid'])) {
     exit();
 }
 
+// connecting to db
+$db = new DB_CONNECT();
 
 if ($_GET['deviceid'] != "0") {
     $deviceid = $_GET['deviceid'];
@@ -31,9 +33,6 @@ if ($_GET['deviceid'] != "0") {
     $sql = "SELECT * FROM $table";
 }
 
-// connecting to db
-$db = new DB_CONNECT();
- 
 // get all events from events table
 $result = mysql_query($sql) or die(mysql_error());
  
