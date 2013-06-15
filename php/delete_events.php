@@ -10,6 +10,7 @@ $response = array();
  
 // check for required fields
 if (isset($_POST['deviceid'])) {
+    $table = "d".$_POST['deviceid'];
     $deviceid = $_POST['deviceid'];
  
     // include db connect class
@@ -19,7 +20,7 @@ if (isset($_POST['deviceid'])) {
     $db = new DB_CONNECT();
  
     // mysql update row with matched id
-    $result = mysql_query("DELETE FROM events WHERE deviceid = '$deviceid'");
+    $result = mysql_query("DELETE FROM $table WHERE deviceid = '$deviceid'");
  
     // check if row deleted or not
     if (mysql_affected_rows() > 0) {

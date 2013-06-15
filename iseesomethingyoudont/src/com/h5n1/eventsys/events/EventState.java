@@ -1,6 +1,7 @@
 package com.h5n1.eventsys.events;
 
 public enum EventState {
+	REGISTER_DEVICE,
 	CREATE_DEVICE_TABLE,
 	NEW_EVENT,
 	NEW_UPDATE_EVENT,

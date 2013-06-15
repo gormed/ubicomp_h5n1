@@ -16,14 +16,15 @@ $db = new DB_CONNECT();
  
 // check for post data
 if (isset($_POST['deviceid']) && isset($_POST['eventid']) && isset($_POST['receiverid'])) {
+	$table = "d".$_POST['deviceid'];
 	$deviceid = $_POST['deviceid'];
 	$eventid = $_POST['eventid'];
 	$receiverid = $_POST['receiverid'];
 
 	if ($receiverid.length > 0) {
-		$sql = "SELECT * FROM events WHERE eventid = $eventid AND deviceid = '$deviceid' AND receiverid = '$receiverid'";
+		$sql = "SELECT * FROM $table WHERE eventid = $eventid AND deviceid = '$deviceid' AND receiverid = '$receiverid'";
 	} else {
-		$sql = "SELECT * FROM events WHERE eventid = $eventid AND deviceid = '$deviceid'";
+		$sql = "SELECT * FROM $table WHERE eventid = $eventid AND deviceid = '$deviceid'";
 	}
 
 	// get a event from events table

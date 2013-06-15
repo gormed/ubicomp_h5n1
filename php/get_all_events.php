@@ -12,6 +12,7 @@ require_once __DIR__ . '/db_connect.php';
 
 if (!isset($_GET['deviceid']) || !isset($_GET['receiverid'])) {
         // required field is missing
+    $table = "d".$_POST['deviceid'];
     $response["message"] = "Required field(s) missing";
  
     // echoing JSON response
@@ -19,20 +20,19 @@ if (!isset($_GET['deviceid']) || !isset($_GET['receiverid'])) {
     exit();
 }
 
+// connecting to db
+$db = new DB_CONNECT();
 
 if ($_GET['deviceid'] != "0") {
     $deviceid = $_GET['deviceid'];
-    $sql = "SELECT * FROM events WHERE deviceid = '$deviceid'";
+    $sql = "SELECT * FROM $table WHERE deviceid = '$deviceid'";
 } else if ($_GET['receiverid'] != "0"){
     $receiverid = $_GET['receiverid'];
-    $sql = "SELECT * FROM events WHERE receiverid = '$receiverid'";
+    $sql = "SELECT * FROM $table WHERE receiverid = '$receiverid'";
 } else {
-    $sql = "SELECT * FROM events";
+    $sql = "SELECT * FROM $table";
 }
 
-// connecting to db
-$db = new DB_CONNECT();
- 
 // get all events from events table
 $result = mysql_query($sql) or die(mysql_error());
  
