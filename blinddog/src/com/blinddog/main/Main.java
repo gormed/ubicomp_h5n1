@@ -70,7 +70,7 @@ public class Main extends SimpleApplication{
     street = entityManager.createStreet("Street",  new Vector3f(0f, 0f, 0f));
     grass = entityManager.createGrass("grass",  new Vector3f(0f, 0f, 0f));
 
-    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(Person.PERSON_RADIUS, Person.PERSON_HEIGHT, 1);
     blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     
      
@@ -80,7 +80,7 @@ public class Main extends SimpleApplication{
     blindPersonControl.setJumpSpeed(20);
     blindPersonControl.setFallSpeed(30);
     blindPersonControl.setGravity(30);
-    blindPersonControl.setPhysicsLocation(new Vector3f(0, 10, 0));
+    blindPersonControl.setPhysicsLocation(new Vector3f(0, 0, 0));
  
     // We attach the scene and the player to the rootNode and the physics space,
     // to make them appear in the game world.
@@ -97,17 +97,18 @@ public class Main extends SimpleApplication{
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
     // Disable the default flyby cam
-    flyCam.setEnabled(false);
-    //create the camera Node
-    camNode = new CameraNode("Camera Node", cam);
-    //This mode means that camera copies the movements of the target:
-    camNode.setControlDir(ControlDirection.SpatialToCamera);
-    //Attach the camNode to the target:
-    blindPerson.getCollidableEntityNode().attachChild(camNode);
-    //Move camNode, e.g. behind and above the target:
-    camNode.setLocalTranslation(new Vector3f(0, 50, 0));
-    //Rotate the camNode to look at the target:
-    camNode.lookAt(blindPerson.getCollidableEntityNode().getLocalTranslation(), Vector3f.UNIT_Y);
+    flyCam.setEnabled(true);
+    flyCam.setMoveSpeed(20f);
+//    //create the camera Node
+//    camNode = new CameraNode("Camera Node", cam);
+//    //This mode means that camera copies the movements of the target:
+//    camNode.setControlDir(ControlDirection.SpatialToCamera);
+//    //Attach the camNode to the target:
+////    blindPerson.getCollidableEntityNode().attachChild(camNode);
+//    //Move camNode, e.g. behind and above the target:
+//    camNode.setLocalTranslation(new Vector3f(0, 50, 0));
+//    //Rotate the camNode to look at the target:
+//    camNode.lookAt(blindPerson.getPosition(), Vector3f.UNIT_Y);
             // EventManager init
     
 
@@ -130,10 +131,10 @@ public class Main extends SimpleApplication{
  
   /** Setup Key Mapping **/
   private void setUpKeys() {
-    eventManager.addKeyInputEvent("Left", new KeyTrigger(KeyInput.KEY_A));
-    eventManager.addKeyInputEvent("Right", new KeyTrigger(KeyInput.KEY_D));
-    eventManager.addKeyInputEvent("Up", new KeyTrigger(KeyInput.KEY_W));
-    eventManager.addKeyInputEvent("Down", new KeyTrigger(KeyInput.KEY_S));
+    eventManager.addKeyInputEvent("Left", new KeyTrigger(KeyInput.KEY_J));
+    eventManager.addKeyInputEvent("Right", new KeyTrigger(KeyInput.KEY_L));
+    eventManager.addKeyInputEvent("Up", new KeyTrigger(KeyInput.KEY_I));
+    eventManager.addKeyInputEvent("Down", new KeyTrigger(KeyInput.KEY_K));
     eventManager.addKeyInputEvent("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
     eventManager.addKeyInputListener(new KeyInputListener() {
 
