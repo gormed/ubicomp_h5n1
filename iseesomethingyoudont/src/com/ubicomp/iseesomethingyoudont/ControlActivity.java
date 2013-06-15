@@ -1,12 +1,10 @@
 package com.ubicomp.iseesomethingyoudont;
 
 import java.util.UUID;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
-
 import com.h5n1.eventsys.EventSystem;
 import com.h5n1.eventsys.JsonRequester;
 import com.h5n1.hardwareServices.GestureServices;
@@ -28,9 +25,9 @@ import com.ubicomp.iseesomethingyoudont.util.SystemUiHider;
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
- * 
  * @see SystemUiHider
  */
+
 public class ControlActivity extends Activity implements OnTouchListener {
 
 	private GestureDetectorCompat detector = null;
@@ -38,10 +35,9 @@ public class ControlActivity extends Activity implements OnTouchListener {
 	private static final int DATA_CHECK_CODE = 0;
 	private EventToSpeechSynthesis eventToSpeechSynthesis = null;
 	private EventSystem eventSystem;
-
 	private EventHandler eventHandler = null;
-	private LocationServices locationServices = null;
 	private String deviceId = "42";
+	private LocationServices locationServices;
 	private HapticalFeedbackServices vibrator;
 	private GestureServices gestures;
 
@@ -250,27 +246,19 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		// ============================================================================
 		// # Own code goes below
 		// ============================================================================
-
-		// Instantiate the gesture detector with the
-		// application context and an implementation of
-		// GestureDetector.OnGestureListener
-		
-		
-		
-		
 		createDeviceId();
 		JsonRequester.setDeviceID(deviceId);
+		// apply a touch listener to the view
 		contentView.setOnTouchListener(this);
-		
-		
 		// Creates a vibrator mechanism
 		vibrator = new HapticalFeedbackServices(this);
 		// Creates the recognition of gestures
-		gestures = new GestureServices(gestureText, vibrator);
+		gestures = new GestureServices(gestureText, vibrator, this);
+		// implementation of GestureDetector.OnGestureListener
 		detector = new GestureDetectorCompat(this, gestures);
 		// Creates location Services, GPS and WIFI Location
-		locationServices = new LocationServices(this);
-		
+		locationServices = new LocationServices(vibrator, this);
+		// Creates event system
 		eventSystem = EventSystem.getInstance();
 		
 		Intent checkIntent = new Intent();
@@ -287,6 +275,10 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		// created, to briefly hint to the user that UI controls
 		// are available.
 		delayedHide(100);
+	}
+	
+	public HapticalFeedbackServices getVibrator(){
+		return vibrator;
 	}
 
 	/**

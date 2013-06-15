@@ -5,6 +5,7 @@ import com.h5n1.eventsys.JsonRequester;
 import com.h5n1.eventsys.events.EventState;
 import com.h5n1.eventsys.events.GPSEvent;
 import com.h5n1.eventsys.events.GPSEvent.GPSEventType;
+import com.ubicomp.iseesomethingyoudont.ControlActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,15 +24,19 @@ public class LocationServices {
 	private GPSEvent updateLocation;
 	private String deviceid;
 
-	public LocationServices(Activity activity) {
+	public LocationServices(HapticalFeedbackServices vibrator, Activity activity) {
 		this.deviceid = JsonRequester.getDeviceID();
 		updateLocation = new GPSEvent(deviceid, GPSEventType.UPDATE_LOCATION, 0, 0);
 		updateLocation.setState(EventState.NEW_UPDATE_EVENT);
-		
+		// Creates the locationManager within the application context
 		locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-		
-		//this.locationManager = locationManager;
 		enableGPSServices(locationManager);
+		
+		// Check if gps connection or location per wifi is enabled
+	    if (!locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+	        long[] pattern = {100,200,100,500,100,200,100};
+	    	vibrator.vibratePattern(pattern, -1);
+	    }	
 	}
 
 	private void enableGPSServices(LocationManager locationManager) {

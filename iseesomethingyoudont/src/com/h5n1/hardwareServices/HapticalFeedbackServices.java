@@ -25,5 +25,4 @@ public class HapticalFeedbackServices {
 		vibrator.cancel();
 		vibrator.vibrate(pattern, repeat);
 	}
-
 }
