@@ -1,13 +1,16 @@
 package com.h5n1.eventsys;
 
-import com.h5n1.eventsys.events.*;
-import com.h5n1.eventsys.listener.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import com.h5n1.eventsys.events.CompanionEvent;
+import com.h5n1.eventsys.events.Event;
+import com.h5n1.eventsys.events.GPSEvent;
+import com.h5n1.eventsys.events.MotionEvent;
+import com.h5n1.eventsys.events.RFIDEvent;
 import com.h5n1.eventsys.listener.EventListener;
 
-import java.lang.Integer;
-import java.util.*;
-
-import javax.activation.UnsupportedDataTypeException;
 
 public class EventSystem {
 	private static EventSystem instance;
@@ -27,10 +30,10 @@ public class EventSystem {
 	private static Queue<Event> incomingEvents = new LinkedList<Event> ();
 	private static Queue<Event> outgoingEvents = new LinkedList<Event> ();
 
-	private ArrayList<EventListener<RFIDEvent>> rfidEventListeners;
-	private ArrayList<EventListener<GPSEvent>> gpsEventListeners;
-	private ArrayList<EventListener<MotionEvent>> motionEventListeners;
-	private ArrayList<EventListener<CompanionEvent>> companionEventListeners;
+	private ArrayList<EventListener<RFIDEvent>> rfidEventListeners = new ArrayList<>();
+	private ArrayList<EventListener<GPSEvent>> gpsEventListeners = new ArrayList<>();
+	private ArrayList<EventListener<MotionEvent>> motionEventListeners = new ArrayList<>();
+	private ArrayList<EventListener<CompanionEvent>> companionEventListeners = new ArrayList<>();
 
 	public static void pushEvent(Event event) {
 		outgoingEvents.offer(event);
@@ -41,7 +44,7 @@ public class EventSystem {
 		incomingEvents.offer(event);
 	}
 
-	public void updateEvents(float timeGap) throws UnsupportedDataTypeException {
+	public void updateEvents(float timeGap) {
 		Event temp;
 		while (!incomingEvents.isEmpty()) {
 			temp = incomingEvents.poll();
@@ -49,7 +52,7 @@ public class EventSystem {
 		}
 		while (!outgoingEvents.isEmpty()) {
 			temp = outgoingEvents.poll();
-			JsonRequester.newEvent(temp);
+			System.out.println( JsonRequester.newEvent(temp).toString() );
 		}
 	}
 
@@ -79,7 +82,7 @@ public class EventSystem {
 		companionEventListeners.remove(listener);
 	}
 
-	private void raiseCheckedEvent(Event event) throws UnsupportedDataTypeException {
+	private void raiseCheckedEvent(Event event) {
 		if (event instanceof RFIDEvent) {
 			raiseRFIDEvent((RFIDEvent) event);
 		} else if (event instanceof GPSEvent) {
@@ -89,7 +92,7 @@ public class EventSystem {
 		} else if (event instanceof CompanionEvent) {
 			raiseCompanionEvent((CompanionEvent) event);
 		} else {
-			throw new UnsupportedDataTypeException("The event-type is not supported!");
+			System.err.println("The event-type is not supported!");
 		}
 	}
 

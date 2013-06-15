@@ -9,12 +9,32 @@ $response = array();
  
 // include db connect class
 require_once __DIR__ . '/db_connect.php';
+
+if (!isset($_GET['deviceid']) || !isset($_GET['receiverid'])) {
+        // required field is missing
+    $response["message"] = "Required field(s) missing";
  
+    // echoing JSON response
+    echo json_encode($response);
+    exit();
+}
+
+
+if ($_GET['deviceid'] != "0") {
+    $deviceid = $_GET['deviceid'];
+    $sql = "SELECT * FROM events WHERE deviceid = '$deviceid'";
+} else if ($_GET['receiverid'] != "0"){
+    $receiverid = $_GET['receiverid'];
+    $sql = "SELECT * FROM events WHERE receiverid = '$receiverid'";
+} else {
+    $sql = "SELECT * FROM events";
+}
+
 // connecting to db
 $db = new DB_CONNECT();
  
 // get all events from events table
-$result = mysql_query("SELECT *FROM events") or die(mysql_error());
+$result = mysql_query($sql) or die(mysql_error());
  
 // check for empty result
 if (mysql_num_rows($result) > 0) {
@@ -26,6 +46,9 @@ if (mysql_num_rows($result) > 0) {
         // temp user array
         $event = array();
         $event ["id"] = $row["id"];
+        $event ["eventid"] = $row["eventid"];
+        $event ["receiverid"] = $row["receiverid"];
+        $event ["deviceid"] = $row["deviceid"];
         $event ["type"] = $row["type"];
         $event ["content"] = $row["content"];
         $event ["time"] = $row["time"];
@@ -41,7 +64,7 @@ if (mysql_num_rows($result) > 0) {
 } else {
     // no events found
     $response["message"] = "No events found";
- 
+    $response["events"] = array();
     // echo no users JSON
     echo json_encode($response);
 }
