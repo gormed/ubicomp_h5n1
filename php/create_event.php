@@ -4,7 +4,7 @@ $response = array();
  
 // check for required fields
 if (isset($_POST['type']) && isset($_POST['content']) && isset($_POST['receiverid']) && isset($_POST['deviceid'])&& isset($_POST['eventid'])) {
- 
+ 	$table = "d".$_POST['deviceid'];
 	$deviceid = $_POST['deviceid'];
 	$eventid = $_POST['eventid'];
 	$type = $_POST['type'];
@@ -18,7 +18,7 @@ if (isset($_POST['type']) && isset($_POST['content']) && isset($_POST['receiveri
 	$db = new DB_CONNECT();
  
 	// mysql inserting a new row
-	$result = mysql_query("INSERT INTO events(deviceid, receiverid, eventid, type, content) VALUES('$deviceid', '$receiverid' ,$eventid, '$type', '$content')");
+	$result = mysql_query("INSERT INTO  $table(deviceid, receiverid, eventid, type, content) VALUES('$deviceid', '$receiverid' ,$eventid, '$type', '$content')");
 	
 
 	// check if row inserted or not

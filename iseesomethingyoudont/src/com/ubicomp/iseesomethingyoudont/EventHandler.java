@@ -46,12 +46,18 @@ public class EventHandler {
 	private ApplicationEvent getAllEvents;
 
 	public EventHandler(final EventSystem system, final EventToSpeechSynthesis eventToSpeechSynthesis) {
-		//create device table
-		ApplicationEvent appEvent = new ApplicationEvent(
+		//register device 
+		ApplicationEvent registerDevice = new ApplicationEvent(
 				JsonRequester.getDeviceID(),
 				ApplicationEventType.CREATE_DEVICE_TABLE);
-		appEvent.setState(EventState.CREATE_DEVICE_TABLE);
-		EventSystem.pushEvent(appEvent);
+		registerDevice.setState(EventState.CREATE_DEVICE_TABLE);
+		EventSystem.pushEvent(registerDevice);
+		//create device table
+		ApplicationEvent createTable = new ApplicationEvent(
+				JsonRequester.getDeviceID(),
+				ApplicationEventType.CREATE_DEVICE_TABLE);
+		createTable.setState(EventState.CREATE_DEVICE_TABLE);
+		EventSystem.pushEvent(createTable);
 		// delete all previous events
 		ApplicationEvent deleteAllEvents = new ApplicationEvent(
 				JsonRequester.getDeviceID(),
