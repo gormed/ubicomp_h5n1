@@ -67,6 +67,12 @@ public class EventSystem {
 					continue;
 
 				switch (evt.getState()) {
+				case REGISTER_DEVICE:
+
+					break;
+				case CREATE_DEVICE_TABLE:
+
+					break;
 				case NEW_EVENT:
 
 					break;
@@ -164,6 +170,16 @@ public class EventSystem {
 
 				obj = JsonRequester.deleteEvent(temp.getDeviceId(),
 						temp.getEventId());
+				break;
+			case REGISTER_DEVICE:
+				if (temp instanceof ApplicationEvent) {
+					obj = JsonRequester.registerDevice(temp.getDeviceId());
+				}
+				break;
+			case CREATE_DEVICE_TABLE:
+				if (temp instanceof ApplicationEvent) {
+					obj = JsonRequester.createDeviceTable(temp.getDeviceId());
+				}
 				break;
 			case DELETE_ALL_EVENTS:
 				if (temp instanceof ApplicationEvent) {

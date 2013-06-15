@@ -10,7 +10,7 @@ $response = array();
  
 // check for required fields
 if (isset($_POST['deviceid']) && isset($_POST['receiverid']) && isset($_POST['eventid']) && isset($_POST['content'])) {
- 
+    $table = "d".$_POST['deviceid'];   
     $deviceid = $_POST['deviceid'];
     $eventid = $_POST['eventid'];
     $content = $_POST['content'];
@@ -23,7 +23,7 @@ if (isset($_POST['deviceid']) && isset($_POST['receiverid']) && isset($_POST['ev
     $db = new DB_CONNECT();
  
     // mysql update row with matched id
-    $result = mysql_query("UPDATE events SET content = '$content', receiverid = '$receiverid' WHERE eventid = $eventid AND deviceid = '$deviceid'");
+    $result = mysql_query("UPDATE $table SET content = '$content', receiverid = '$receiverid' WHERE eventid = $eventid AND deviceid = '$deviceid'");
  
     // check if row inserted or not
     if ($result) {

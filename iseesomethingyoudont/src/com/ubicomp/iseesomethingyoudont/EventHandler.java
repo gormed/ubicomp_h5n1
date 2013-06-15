@@ -46,12 +46,24 @@ public class EventHandler {
 	private ApplicationEvent getAllEvents;
 
 	public EventHandler(final EventSystem system, final EventToSpeechSynthesis eventToSpeechSynthesis) {
+		//register device 
+		ApplicationEvent registerDevice = new ApplicationEvent(
+				JsonRequester.getDeviceID(),
+				ApplicationEventType.CREATE_DEVICE_TABLE);
+		registerDevice.setState(EventState.CREATE_DEVICE_TABLE);
+		EventSystem.pushEvent(registerDevice);
+		//create device table
+		ApplicationEvent createTable = new ApplicationEvent(
+				JsonRequester.getDeviceID(),
+				ApplicationEventType.CREATE_DEVICE_TABLE);
+		createTable.setState(EventState.CREATE_DEVICE_TABLE);
+		EventSystem.pushEvent(createTable);
 		// delete all previous events
-		ApplicationEvent appEvent = new ApplicationEvent(
+		ApplicationEvent deleteAllEvents = new ApplicationEvent(
 				JsonRequester.getDeviceID(),
 				ApplicationEventType.DELETE_ALL_EVENTS);
-		appEvent.setState(EventState.DELETE_ALL_EVENTS);
-		EventSystem.pushEvent(appEvent);
+		deleteAllEvents.setState(EventState.DELETE_ALL_EVENTS);
+		EventSystem.pushEvent(deleteAllEvents);
 		// test event
 		double[] val = { 1,2,3 };
 		NavigationEvent nav = new NavigationEvent(JsonRequester.getDeviceID(), NavigationEventType.OBSTACLE_HUMAN, val);
@@ -105,7 +117,7 @@ public class EventHandler {
 			@Override
 			public void fired(NavigationEvent event) {
 				event.setState(EventState.DELETE_EVENT);
-				eventToSpeechSynthesis.getTtsEngine().speak("Achtung, Hinderniss vorraus! " + event.getData()[0] + " meter. Typ " + event.getType().toString(), TextToSpeech.QUEUE_FLUSH, null);
+				eventToSpeechSynthesis.speakNavigaionEvent(event);
 				EventSystem.pushEvent(event);
 			}
 		};

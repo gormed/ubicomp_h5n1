@@ -8,6 +8,8 @@ import com.h5n1.eventsys.events.GPSEvent.GPSEventType;
 public class ApplicationEvent extends Event<ApplicationEvent.ApplicationEventType> {
 	
 	public enum ApplicationEventType {
+		REGISTER_DEVICE,
+		CREATE_DEVICE_TABLE,
 		DELETE_ALL_EVENTS,
 		GET_ALL_EVENTS,
 		CONNECT_DEVICE,
