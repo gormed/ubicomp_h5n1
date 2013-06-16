@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -19,7 +18,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,8 +29,8 @@ public class JsonRequester {
 	private static JSONObject jsonObj;
 	private static InputStream is;
 //	private static HashMap<Long, JSONObject> generatedEvents = new HashMap<Long, JSONObject>();
-	private static JSONArray events;
-	private static String token;
+//	private static JSONArray events;
+//	private static String token;
 	
 	private static String deviceID = "42";
 	public static String getDeviceID() {

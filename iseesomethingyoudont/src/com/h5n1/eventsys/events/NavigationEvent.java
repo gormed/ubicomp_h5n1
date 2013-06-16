@@ -4,17 +4,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.h5n1.eventsys.JsonRequester;
-import com.h5n1.eventsys.events.Event;
-// 2) GPS-Events
-import com.h5n1.eventsys.events.GPSEvent.GPSEventType;
+// 5) Nav-Events
 
-// Signal gefunden
-// Server Anfrage
-// Kein Signal erreichbar
-// GPS Update
-// Geraet bewegt sich
-// Server push (Aenderung)
-// Geraet steht
 
 public class NavigationEvent extends Event<NavigationEvent.NavigationEventType> {
 

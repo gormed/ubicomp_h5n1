@@ -1,21 +1,14 @@
 package com.ubicomp.iseesomethingyoudont;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.json.JSONArray;
-
-import android.speech.tts.TextToSpeech;
 
 import com.h5n1.eventsys.EventSystem;
 import com.h5n1.eventsys.JsonRequester;
 import com.h5n1.eventsys.events.ApplicationEvent;
 import com.h5n1.eventsys.events.ApplicationEvent.ApplicationEventType;
 import com.h5n1.eventsys.events.CompanionEvent;
-import com.h5n1.eventsys.events.Event;
 import com.h5n1.eventsys.events.EventState;
 import com.h5n1.eventsys.events.GPSEvent;
 import com.h5n1.eventsys.events.MotionEvent;

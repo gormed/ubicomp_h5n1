@@ -2,15 +2,11 @@ package com.ubicomp.iseesomethingyoudont;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Locale;
+
+import android.speech.tts.TextToSpeech;
 
 import com.h5n1.eventsys.events.NavigationEvent;
 import com.h5n1.eventsys.events.NavigationEvent.NavigationEventType;
-
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
-import android.util.Log;
-import android.widget.Toast;
 
 public class EventToSpeechSynthesis {
 

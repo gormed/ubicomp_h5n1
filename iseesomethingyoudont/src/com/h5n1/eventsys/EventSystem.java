@@ -63,9 +63,6 @@ public class EventSystem {
 			if (eventContent == null)
 				continue;
 			try {
-				if (eventContent == null)
-					continue;
-
 				switch (evt.getState()) {
 				case REGISTER_DEVICE:
 
