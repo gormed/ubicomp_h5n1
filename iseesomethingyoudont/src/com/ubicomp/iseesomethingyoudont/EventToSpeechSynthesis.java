@@ -18,7 +18,7 @@ public class EventToSpeechSynthesis {
 		eventSymbols = new Hashtable<String, String>();
 		fillNavigationDictionary();
 	}
-
+	
 	private void fillNavigationDictionary() {
 		String[] navigation = { "kleines Objekt", "mittleres Objekt",
 				"goßes Objekt", "Mensch", "Straße", "Wand", "Tür", "Auto",
@@ -49,5 +49,9 @@ public class EventToSpeechSynthesis {
 
 	TextToSpeech getTtsengine() {
 		return ttsEngine;
+	}
+	
+	public void stopSpeaking(){
+		ttsEngine.stop();
 	}
 }

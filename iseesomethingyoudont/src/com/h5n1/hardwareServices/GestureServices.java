@@ -22,8 +22,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		this.vibrator = vibrator;
 		this.gestureText = gestureText;
 		this.activity = activity;
-		//ttsengine = eventToSpeechSynthesis;
-		//ttsengine.speakTest();
+		ttsengine = eventToSpeechSynthesis;
 	}
 	
 	// Anzeige nur zu DEBUG ZWECKEN!!
@@ -37,6 +36,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onDown(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDown: " + event.toString());
 		gestureText.setText("Down".toCharArray(), 0, "Down".length());
+		//vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 
@@ -44,6 +44,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
 		Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
 		gestureText.setText("Fling".toCharArray(), 0, "Fling".length());
+		//vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 
@@ -51,12 +52,14 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public void onLongPress(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onLongPress: " + event.toString());
 		gestureText.setText("LongPress".toCharArray(), 0, "LongPress".length());
+		vibrator.vibrateSpecificTime(500);
 	}
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		Log.d(DEBUG_TAG, "onScroll: " + e1.toString() + e2.toString());
 		gestureText.setText("Scroll".toCharArray(), 0, "Scroll".length());
+		//vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 
@@ -70,12 +73,14 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onSingleTapUp(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
 		gestureText.setText("SingleTapUp".toCharArray(), 0, "SingleTapUp".length());
+		//vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 
 	public boolean onDoubleTap(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDoubleTap: " + event.toString());
 		gestureText.setText("DoubleTap".toCharArray(), 0, "DoubleTap".length());
+		//vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 
@@ -83,6 +88,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onDoubleTapEvent(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDoubleTapEvent: " + event.toString());
 		gestureText.setText("DoubleTapEvent".toCharArray(), 0, "DoubleTapEvent".length());
+		vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 
@@ -91,6 +97,8 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		Log.d(DEBUG_TAG, "onSingleTapConfirmed: " + event.toString());
 		gestureText.setText("SingleTapConfirmed".toCharArray(), 0, "SingleTapConfirmed".length());
 		vibrator.vibrateSpecificTime(100);
+		ttsengine.stopSpeaking();
+		ttsengine.speakTest("Ein Druck");
 		return true;
 	}
 }
