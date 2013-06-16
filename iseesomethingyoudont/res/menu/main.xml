@@ -24,6 +24,11 @@
                 android:orderInCategory="100"
                 android:showAsAction="ifRoom|withText"
                 android:title="@string/obstacle"/>
+            <item
+                android:id="@+id/exitMenu"
+                android:orderInCategory="100"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/exit"/>
         </menu>
     </item>
 </menu>

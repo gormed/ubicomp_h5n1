@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class LocationServices {
+	
 	public static final int ACCURACY_GPS_TIME = 1000;
 	public static final float ACCURACY_GPS_LOCATION = 0;
 	private LocationManager locationManager;
@@ -43,8 +44,8 @@ public class LocationServices {
 	        long[] pattern = {200,100,200,100,500};
 	    	vibrator.vibrateSpecificTime(200);
 	    	showToast(activity, "GPS ist aus!");
-	    	ttsengine.stopSpeaking();
-	    	ttsengine.speakTest("Achtung: GPS ist deaktiviert");
+	    	//ttsengine.stopSpeaking();
+	    	//ttsengine.speakTest("Achtung: GPS ist deaktiviert");
 	    } 
 	}
 	
@@ -67,12 +68,12 @@ public class LocationServices {
 
 			public void onProviderDisabled(String provider) {
 				EventSystem.pushEvent(new GPSEvent(deviceid, GPSEventType.SIGNAL_LOST, 0, 0));
-				// TODO Auto-generated method stub
-				// displayLong.setText("Turn on GPS!");
+				ttsengine.speakTest("Achtung: GPS wurde ausgeschaltet. Stehen bleiben");
 			}
 
 			public void onProviderEnabled(String provider) {
 				EventSystem.pushEvent(new GPSEvent(deviceid, GPSEventType.SIGNAL_FOUND, 0, 0));
+				ttsengine.speakTest("GPS wurde aktiviert");
 			}
 
 			public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -94,7 +95,6 @@ public class LocationServices {
 				}
 			}
 		};
-
 		// Register to get location updates - 1000: wait at least 1000ms, torequest an update, 10=10m
 		locationManager.requestLocationUpdates(ACCURACY_GPS_TIME, ACCURACY_GPS_LOCATION, createCriteria(), locationListener, null);
 	}
@@ -111,6 +111,11 @@ public class LocationServices {
 		return criteria;
 	}
 
+	// Checks if GPS is enabled
+	public boolean checkGPSOn(){
+		return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	}
+	
 	// Removes all Updates
 	public void removeUpdates() {
 		locationManager.removeUpdates(this.locationListener);
@@ -122,4 +127,9 @@ public class LocationServices {
 		Toast toast = Toast.makeText(activity.getApplicationContext(), text, duration);
 		toast.show();
 	}
+
+	public GPSEvent getUpdateLocation() {
+		return updateLocation;
+	}
+	
 }
