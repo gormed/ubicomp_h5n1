@@ -26,11 +26,11 @@ public class LocationServices {
 	private LocationListener locationListener;
 	private GPSEvent updateLocation;
 	private String deviceid;
-	private EventToSpeechSynthesis eventToSpeechSynthesis;
+	private EventToSpeechSynthesis ttsengine;
 
-	public LocationServices(HapticalFeedbackServices vibrator, EventToSpeechSynthesis eventToSpeechSynthesis, Activity activity) {
+	public LocationServices(HapticalFeedbackServices vibrator, EventToSpeechSynthesis ttsengine, Activity activity) {
 		this.deviceid = JsonRequester.getDeviceID();
-		this.eventToSpeechSynthesis = eventToSpeechSynthesis;
+		this.ttsengine = ttsengine;
 		updateLocation = new GPSEvent(deviceid, GPSEventType.UPDATE_LOCATION, 0, 0);
 		updateLocation.setState(EventState.NEW_UPDATE_EVENT);
 		// Creates the locationManager within the application context
@@ -42,31 +42,15 @@ public class LocationServices {
 	        long[] pattern = {200,100,200,100,500};
 	    	vibrator.vibrateSpecificTime(200);
 	    	showToast(activity, "GPS ist aus!");
-	    	
-	    	try{
-	    		eventToSpeechSynthesis.speakTest("Achtung: GPS ist deaktiviert");
-	    	} catch (Exception e){
-	    		//String msg = e.getMessage();
-	    		//Log.i("EXCEPTIONHATATA", msg);
-	    	}
-	    	
-	    	//eventToSpeechSynthesis.speakTest("Achtung: GPS ist deaktiviert");
-	    	
+	    	ttsengine.stopSpeaking();
+	    	ttsengine.speakTest("Achtung: GPS ist deaktiviert");
 	    } 
 	}
 	
-	// Anzeige nur zu DEBUG ZWECKEN!!
-	private void showToast(Activity activity, String text){
-		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(activity.getApplicationContext(), text, duration);
-		toast.show();
-	}
-
 	// Gives acces to all gps services
 	private void enableGPSServices(LocationManager locationManager) {
 		// Gives access to the location service
 		this.locationManager = locationManager;
-		
 		// Creates LocationListener - listens to locationManager
 		locationListener = new LocationListener() {
 			// Called when location changed
@@ -94,12 +78,15 @@ public class LocationServices {
 				switch (status) {
 					case LocationProvider.OUT_OF_SERVICE:
 						EventSystem.pushEvent(new GPSEvent(deviceid, GPSEventType.SIGNAL_LOST, 0, 0));
+						ttsengine.speakTest("Achtung: GPS Verbindung verloren. Stehen bleiben");
 						break;
 					case LocationProvider.AVAILABLE:
 						EventSystem.pushEvent(new GPSEvent(deviceid, GPSEventType.SIGNAL_FOUND, 0, 0));
+						ttsengine.speakTest("GPS Verbindung wieder hergestellt");
 						break;
 					case LocationProvider.TEMPORARILY_UNAVAILABLE:
 						EventSystem.pushEvent(new GPSEvent(deviceid, GPSEventType.NO_SIGNAL, 0, 0));
+						ttsengine.speakTest("Achtung: GPS Verbindung verloren. Stehen bleiben");
 						break;
 					default:
 						break;
@@ -107,8 +94,12 @@ public class LocationServices {
 			}
 		};
 
-		// Register to get location updates - 1000: wait at least 1000ms
-		// torequest an update, 10=10m
+		// Register to get location updates - 1000: wait at least 1000ms, torequest an update, 10=10m
+		locationManager.requestLocationUpdates(ACCURACY_GPS_TIME, ACCURACY_GPS_LOCATION, createCriteria(), locationListener, null);
+	}
+	
+	// Creates criteria for location updates
+	private Criteria createCriteria(){
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		criteria.setCostAllowed(false);
@@ -116,12 +107,18 @@ public class LocationServices {
 		criteria.setSpeedRequired(true);
 		criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
 		criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
-
-		locationManager.requestLocationUpdates(ACCURACY_GPS_TIME, ACCURACY_GPS_LOCATION, criteria, locationListener, null);
+		return criteria;
 	}
 
 	// Removes all Updates
 	public void removeUpdates() {
 		locationManager.removeUpdates(this.locationListener);
+	}
+
+	// Anzeige nur zu DEBUG ZWECKEN!!
+	private void showToast(Activity activity, String text){
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(activity.getApplicationContext(), text, duration);
+		toast.show();
 	}
 }
