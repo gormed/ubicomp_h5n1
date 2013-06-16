@@ -23,7 +23,6 @@ public class EventToSpeechSynthesis {
 		fillNavigationDictionary();
 	}
 	
-
 	private void fillNavigationDictionary() {
 		String[] navigation = { "kleines Objekt", "mittleres Objekt", "goßes Objekt", "Mensch", "Straße", "Wand", "Tür", "Auto", "Motorad", "Fahrrad", "Mysterium" };
 		int i = 0;
@@ -46,5 +45,9 @@ public class EventToSpeechSynthesis {
 	
 	TextToSpeech getTtsengine(){
 		return ttsEngine;
+	}
+	
+	public void stopSpeaking(){
+		ttsEngine.stop();
 	}
 }
