@@ -16,13 +16,14 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	private TextView gestureText;
 	private HapticalFeedbackServices vibrator;
 	private Activity activity;
-	private TextToSpeech ttsengine;
+	private EventToSpeechSynthesis ttsengine;
 
 	public GestureServices(TextView gestureText, HapticalFeedbackServices vibrator, EventToSpeechSynthesis eventToSpeechSynthesis, Activity activity) {
 		this.vibrator = vibrator;
 		this.gestureText = gestureText;
 		this.activity = activity;
-		ttsengine = eventToSpeechSynthesis.getTtsEngine();
+		//ttsengine = eventToSpeechSynthesis;
+		//ttsengine.speakTest();
 	}
 	
 	// Anzeige nur zu DEBUG ZWECKEN!!
@@ -36,9 +37,6 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onDown(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDown: " + event.toString());
 		gestureText.setText("Down".toCharArray(), 0, "Down".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 		return true;
 	}
 
@@ -46,18 +44,12 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
 		Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
 		gestureText.setText("Fling".toCharArray(), 0, "Fling".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 		return true;
 	}
 
 	@Override
 	public void onLongPress(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onLongPress: " + event.toString());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 		gestureText.setText("LongPress".toCharArray(), 0, "LongPress".length());
 	}
 
@@ -65,9 +57,6 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		Log.d(DEBUG_TAG, "onScroll: " + e1.toString() + e2.toString());
 		gestureText.setText("Scroll".toCharArray(), 0, "Scroll".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 		return true;
 	}
 
@@ -75,27 +64,18 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public void onShowPress(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
 		gestureText.setText("ShowPress".toCharArray(), 0, "ShowPress".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 	}
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
 		gestureText.setText("SingleTapUp".toCharArray(), 0, "SingleTapUp".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 		return true;
 	}
 
 	public boolean onDoubleTap(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDoubleTap: " + event.toString());
 		gestureText.setText("DoubleTap".toCharArray(), 0, "DoubleTap".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 		return true;
 	}
 
@@ -103,9 +83,6 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onDoubleTapEvent(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDoubleTapEvent: " + event.toString());
 		gestureText.setText("DoubleTapEvent".toCharArray(), 0, "DoubleTapEvent".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
 		return true;
 	}
 
@@ -113,10 +90,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onSingleTapConfirmed(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onSingleTapConfirmed: " + event.toString());
 		gestureText.setText("SingleTapConfirmed".toCharArray(), 0, "SingleTapConfirmed".length());
-		// long[] pattern = {100,100,100};
-		vibrator.vibrateSpecificTime(300);
-		// vibrator.vibratePattern(pattern, -1);
-		//ttsengine.speak("hallo", TextToSpeech.QUEUE_FLUSH, null);
+		vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 }

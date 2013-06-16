@@ -46,32 +46,25 @@ public class EventHandler {
 	private ApplicationEvent getAllEvents;
 
 	public EventHandler(final EventSystem system, final EventToSpeechSynthesis eventToSpeechSynthesis) {
-		//register device 
-		ApplicationEvent registerDevice = new ApplicationEvent(
-				JsonRequester.getDeviceID(),
-				ApplicationEventType.CREATE_DEVICE_TABLE);
+		// register device
+		ApplicationEvent registerDevice = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.CREATE_DEVICE_TABLE);
 		registerDevice.setState(EventState.CREATE_DEVICE_TABLE);
 		EventSystem.pushEvent(registerDevice);
-		//create device table
-		ApplicationEvent createTable = new ApplicationEvent(
-				JsonRequester.getDeviceID(),
-				ApplicationEventType.CREATE_DEVICE_TABLE);
+		// create device table
+		ApplicationEvent createTable = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.CREATE_DEVICE_TABLE);
 		createTable.setState(EventState.CREATE_DEVICE_TABLE);
 		EventSystem.pushEvent(createTable);
 		// delete all previous events
-		ApplicationEvent deleteAllEvents = new ApplicationEvent(
-				JsonRequester.getDeviceID(),
-				ApplicationEventType.DELETE_ALL_EVENTS);
+		ApplicationEvent deleteAllEvents = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.DELETE_ALL_EVENTS);
 		deleteAllEvents.setState(EventState.DELETE_ALL_EVENTS);
 		EventSystem.pushEvent(deleteAllEvents);
 		// test event
-		double[] val = { 1,2,3 };
+		double[] val = { 1, 2, 3 };
 		NavigationEvent nav = new NavigationEvent(JsonRequester.getDeviceID(), NavigationEventType.OBSTACLE_HUMAN, val);
 		nav.setReceiverId(JsonRequester.getDeviceID());
 		EventSystem.pushEvent(nav);
 		// get all events for this device
-		getAllEvents = new ApplicationEvent("0",
-				ApplicationEventType.GET_ALL_EVENTS);
+		getAllEvents = new ApplicationEvent("0", ApplicationEventType.GET_ALL_EVENTS);
 		getAllEvents.setState(EventState.GET_ALL_EVENTS);
 		getAllEvents.setReceiverId(JsonRequester.getDeviceID());
 
@@ -113,7 +106,7 @@ public class EventHandler {
 		};
 
 		navigationEventListener = new NavigationEventListener() {
-			
+
 			@Override
 			public void fired(NavigationEvent event) {
 				event.setState(EventState.DELETE_EVENT);
