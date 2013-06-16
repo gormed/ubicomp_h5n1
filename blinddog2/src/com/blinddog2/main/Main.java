@@ -1,10 +1,12 @@
 package com.blinddog2.main;
  
 import com.blinddog2.entities.Buergersteig;
+import com.blinddog2.entities.EntityManager;
 import com.blinddog2.entities.Grass;
 import com.blinddog2.entities.Houses;
 import com.blinddog2.entities.Person;
 import com.blinddog2.entities.SampleStaticObject;
+import com.blinddog2.entities.StaticObject;
 import com.blinddog2.entities.Street;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
@@ -40,6 +42,10 @@ public class Main extends SimpleApplication
     private SampleStaticObject sampleStaticObject;
     private Houses houses;
     private Person blindPerson;
+    private boolean zoomIn;
+    private boolean zoomOut;
+    private EntityManager entityManager;
+    private StaticObject staticObject1;
   
     //==========================================================================
     //===   Singleton
@@ -95,9 +101,10 @@ public class Main extends SimpleApplication
     private boolean camdown;
  
   public void simpleInitApp() {
+    entityManager = EntityManager.getInstance();
+    entityManager.initialize();
     /** Set up Physics */
     bulletAppState = new BulletAppState();
-    
     stateManager.attach(bulletAppState);
     //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
  
@@ -114,7 +121,9 @@ public class Main extends SimpleApplication
     buergersteig = new Buergersteig();
     sampleStaticObject = new SampleStaticObject();
     
-    blindPerson = new Person();
+    blindPerson = entityManager.createPerson("blindPerson");
+    staticObject1 = entityManager.createStaticObject("staticObject1");
+    
     bulletAppState.getPhysicsSpace().addCollisionListener(this);
     
 
@@ -123,7 +132,7 @@ flyCam.setEnabled(false);
 //create the camera Node
 camNode = new CameraNode("Camera Node", cam);
 ////This mode means that camera copies the movements of the target:
-//camNode.setControlDir(ControlDirection.SpatialToCamera);
+///camNode.setControlDir(ControlDirection.SpatialToCamera);
 ////Move camNode, e.g. behind and above the target:
 camNode.setLocalTranslation(new Vector3f(0, 300, -5));
 //Rotate the camNode to look at the target:
@@ -156,6 +165,8 @@ this.getRootNode().attachChild(camNode);
     inputManager.addMapping("CamRight", new KeyTrigger(KeyInput.KEY_RIGHT));
     inputManager.addMapping("CamUp", new KeyTrigger(KeyInput.KEY_UP));
     inputManager.addMapping("CamDown", new KeyTrigger(KeyInput.KEY_DOWN));
+        inputManager.addMapping("zoomIn", new KeyTrigger(KeyInput.KEY_N));
+    inputManager.addMapping("zoomOut", new KeyTrigger(KeyInput.KEY_M));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
     inputManager.addListener(this, "Left");
     inputManager.addListener(this, "Right");
@@ -166,6 +177,8 @@ this.getRootNode().attachChild(camNode);
     inputManager.addListener(this, "CamUp");
     inputManager.addListener(this, "CamDown");
     inputManager.addListener(this, "Jump");
+    inputManager.addListener(this, "zoomIn");
+    inputManager.addListener(this, "zoomOut");
   }
  
   /** These are our custom actions triggered by key presses.
@@ -189,6 +202,10 @@ this.getRootNode().attachChild(camNode);
       camup = value;
     } else if (binding.equals("CamDown")) {
       camdown = value;
+    } else if (binding.equals("zoomIn")) {
+      zoomIn = value;
+    } else if (binding.equals("zoomOut")) {
+      zoomOut = value;
     } 
   }
  
@@ -206,20 +223,31 @@ this.getRootNode().attachChild(camNode);
          bulletAppState.update(tpf);
     Vector3f vDir = new Vector3f(0,0,0.5f);
     Vector3f vLeft = new Vector3f(0.5f,0,0);
+    Vector3f camDir = new Vector3f(0,0,0.5f);
+    Vector3f camLeft = new Vector3f(0.5f,0,0);
+     Vector3f camZoom = new Vector3f(0,5f,0);
+    Vector3f camPos = camNode.getLocalTranslation();
     Vector3f oldPos = blindPerson.getModel().getLocalTranslation();
     walkDirection.set(0, 0, 0);
     if (left)  { walkDirection.addLocal(vLeft); }
     if (right) { walkDirection.addLocal(vLeft.negate()); }
     if (up)    { walkDirection.addLocal(vDir); }
     if (down)  { walkDirection.addLocal(vDir.negate()); }
-//    if (camleft)  { walkDirection.addLocal(vLeft); }
-//    if (camright) { walkDirection.addLocal(vLeft.negate()); }
-//    if (camup)    { walkDirection.addLocal(vDir); }
-//    if (camdown)  { walkDirection.addLocal(vDir.negate()); }
+    if (camleft)  { camPos.addLocal(camLeft); }
+    if (camright) { camPos.addLocal(camLeft.negate()); }
+    if (camup)    { camPos.addLocal(camDir); }
+    if (camdown)  { camPos.addLocal(camDir.negate()); }
+    if (zoomIn)    { camPos.addLocal(camZoom); }
+    if (zoomOut)  { camPos.addLocal(camZoom.negate()); }
      blindPerson.getBlindPersonControl().setWalkDirection(walkDirection);
+     camNode.setLocalTranslation(camPos);
             oldPos = oldPos.add(walkDirection);
-    
+            
+        
      blindPerson.update(tpf);
+//     Vector3f walkpoint = blindPerson.getPosition().add(blindPerson.getBlindPersonControl().getWalkDirection().mult(new Vector3f(10f,10f,10f)));
+//        drawLine(blindPerson.getPosition().x,blindPerson.getPosition().y, blindPerson.getPosition().z,walkpoint.x, walkpoint.y, walkpoint.z);
+        
   }
 
     public BulletAppState getBulletAppState() {
@@ -227,7 +255,7 @@ this.getRootNode().attachChild(camNode);
     }
   
     public void drawLine( float x1,float y1,float z1,float x2,float y2,float z2){
-     rootNode.detachChildNamed("line");
+    rootNode.detachChildNamed("line"); 
          Mesh m = new Mesh();
             m.setMode(Mesh.Mode.Lines);
 
@@ -236,7 +264,7 @@ this.getRootNode().attachChild(camNode);
             m.setBuffer(VertexBuffer.Type.Index, 2, new short[]{ 0, 1 });
             Geometry lineGeometry = new Geometry("line", m);
             Material mat = new Material(Main.getInstance().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-             mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
+             mat.setColor("Color", ColorRGBA.Red);   // set color of material to blue
             lineGeometry.setMaterial(mat);
             rootNode.attachChild(lineGeometry);
     }
@@ -245,25 +273,36 @@ this.getRootNode().attachChild(camNode);
     public void collision(PhysicsCollisionEvent event) {
         Spatial nodeA = event.getNodeA();
         Spatial nodeB = event.getNodeB();
-        float x1 = event.getLocalPointA().x;
-        float y1 = event.getLocalPointA().y;
-        float z1 = event.getLocalPointA().z;        
-        float x2 = event.getLocalPointB().x;
-        float y2 = event.getLocalPointB().y;
-        float z2 = event.getLocalPointB().z;
+        float x1 = event.getPositionWorldOnA().x;
+        float y1 = event.getPositionWorldOnA().y;
+        float z1 = event.getPositionWorldOnA().z;        
+        float x2 = event.getPositionWorldOnB().x;
+        float y2 = event.getPositionWorldOnB().y;
+        float z2 = event.getPositionWorldOnB().z;
         
-      
-       
-         if ( event.getNodeB().getName().equals("street") ) {
-            System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
-        } else if ( event.getNodeB().getName().equals("grass") ) {
-            System.out.println("x1 " + x1 + "z1 " + z1+"x2 "+ x2+"z2 "+ z2);   
-            // drawLine(x1, 1f, z1, x2, 1f, z2);
+      if(event.getNodeA().getName().equals("BlindPerson") ){
+        if ( event.getNodeB().getName().equals("SampleStaticObject") ) {
+            //System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
+            //System.out.println(blindPerson.getPosition());
         }
-         
-        
-       
-       
+        else if ( event.getNodeB().getName().equals("street") ) {
+            //System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
+        } 
+        else if ( event.getNodeB().getName().contains("staticObject") ) {
+            System.out.println("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
+        }
+        else if ( event.getNodeB().getName().equals("grass") ) {
+            //System.out.println("x1 " + x1 + "z1 " + z1+"x2 "+ x2+"z2 "+ z2);   
+             
+        } else if ( event.getNodeB().getName().equals("buergersteig") ) {
+            //System.out.println("x1 " + x1 + "z1 " + z1+"x2 "+ x2+"z2 "+ z2);   
+          
+        }  
+    }   
+      else if(event.getNodeA().getName().equals("staticObject") ){
+        //drawLine(x1, 1f, z1, x2, 1f, z2);
+
+      }
     }
     
 }

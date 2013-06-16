@@ -18,28 +18,38 @@ import com.jme3.scene.shape.Box;
  *
  * @author hady
  */
-public class Person {
+public class Person extends AbstractEntity {
     private Spatial model;
     private CharacterControl blindPersonControl;
     private Vector3f position;
 
-    public Person(){
-        
-        createModel();
+    
+    public Person(String name){
+        super(name);
+        this.position = new Vector3f(0f,0f,0f);
+        createModel(name,position);
     }
     
-    private void createModel(){
+    
+    public Person(String name, Vector3f position){
+        super(name);
+        this.position = position;
+        createModel(name, position);
+    }
+    
+    private void createModel(String name, Vector3f position){
 
         
     Box box = new Box(Vector3f.ZERO, 1, 1.8f, 1); // create cube shape at the origin
-      model = new Geometry("BlindPerson", box);  // create cube geometry from the shape
+      model = new Geometry(name, box);  // create cube geometry from the shape
        Material mat = new Material(Main.getInstance().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
        mat.setColor("Color", ColorRGBA.Blue);   // set color of material to blue
        model.setMaterial(mat);  
+       model.setLocalTranslation(position);
        Main.getInstance().getRootNode().attachChild(model); 
 
   
-    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(20.f, 6f, 1);
+    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
     blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     model.addControl(blindPersonControl);
     blindPersonControl.setJumpSpeed(20);
