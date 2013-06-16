@@ -44,7 +44,7 @@ public class EventToSpeechSynthesis implements OnInitListener {
 					TextToSpeech.QUEUE_FLUSH, null);
 		else {
 			ttsEngine.speak(
-					"Achtung, " + eventSymbols.get(event.getType().name())
+					"Achtung, " + event.getContent()
 							+ ", " + event.getData()[0] + " Meter vorraus!",
 					TextToSpeech.QUEUE_FLUSH, null);
 		}
