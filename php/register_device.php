@@ -1,13 +1,5 @@
 <?php
-function device_exists($deviceid) {
-	$sql = mysql_query("SELECT *FROM devices WHERE deviceid = '$deviceid'") or die (mysql_error());
-	if (mysql_num_rows($sql) > 0) {
-		return true;
-	}else{
-		return false;
-	}
-}
-
+require 'functions.php';
 $response = array();
 require_once __DIR__ . '/db_connect.php';
 $db = new DB_CONNECT();

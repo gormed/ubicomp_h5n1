@@ -50,14 +50,14 @@ public class JsonRequester {
 	public static final String TAG_RECEIVERID = "receiverid";
 
 	
-	private static final String REGISTER_DEVICE_URL = "http://192.168.1.92/ubicomp/register_device.php";
-	private static final String CREATE_DEVICE_URL = "http://192.168.1.92/ubicomp/create_device.php";
-	private static final String CREATE_URL = "http://192.168.1.92/ubicomp/create_event.php";
-	private static final String GET_ALL_URL = "http://192.168.1.92/ubicomp/get_all_events.php";
-	private static final String UPDATE_URL = "http://192.168.1.92/ubicomp/update_event.php";
-	private static final String DELETE_URL = "http://192.168.1.92/ubicomp/delete_event.php";
-	private static final String DELETE_ALL_URL = "http://192.168.1.92/ubicomp/delete_events.php";
-	private static final String GET_URL = "http://192.168.1.92/ubicomp/get_event.php";
+	private static final String REGISTER_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/register_device.php";
+	private static final String CREATE_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/create_device.php";
+	private static final String CREATE_URL = "http://gormed.no-ip.biz/ubicomp/create_event.php";
+	private static final String GET_ALL_URL = "http://gormed.no-ip.biz/ubicomp/get_all_events.php";
+	private static final String UPDATE_URL = "http://gormed.no-ip.biz/ubicomp/update_event.php";
+	private static final String DELETE_URL = "http://gormed.no-ip.biz/ubicomp/delete_event.php";
+	private static final String DELETE_ALL_URL = "http://gormed.no-ip.biz/ubicomp/delete_events.php";
+	private static final String GET_URL = "http://gormed.no-ip.biz/ubicomp/get_event.php";
 	// private static final String CREATE_URL = "http://54.235.186.77/ubicomp/api/post/event";
 	// private static final String DELETE_URL = "http://54.235.186.77/ubicomp/api/delete/event";
 	// private static final String GET_URL = "http://54.235.186.77/ubicomp/api/get/event/";
@@ -182,6 +182,7 @@ public class JsonRequester {
 				}
 				is.close();
 				json = sb.toString();
+				System.out.println(json);
 				try {
 					jsonObj = new JSONObject(json.trim());
 				} catch (JSONException e) {

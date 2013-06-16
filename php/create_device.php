@@ -1,12 +1,5 @@
 <?php
-function get_device_id($deviceid) {
-    $sql = mysql_query("SELECT *FROM devices WHERE deviceid = '$deviceid'") or die (mysql_error());
-        if (mysql_num_rows($sql) > 0) {
-            $sql = mysql_fetch_array($sql);
-            return $sql['id'];
-        }
-}
-
+require 'functions.php';
     $response = array();
     require_once __DIR__ . '/db_connect.php';
     $db = new DB_CONNECT();
