@@ -1,321 +1,193 @@
 package com.ubicomp.iseesomethingyoudont;
 
+import java.util.Locale;
 import java.util.UUID;
-
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.view.GestureDetectorCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.h5n1.eventsys.EventSystem;
 import com.h5n1.eventsys.JsonRequester;
+import com.h5n1.eventsys.events.EventState;
+import com.h5n1.eventsys.events.NavigationEvent;
+import com.h5n1.eventsys.events.RFIDEvent;
+import com.h5n1.eventsys.events.RFIDEvent.RFIDEventType;
+import com.h5n1.hardwareServices.GestureServices;
+import com.h5n1.hardwareServices.HapticalFeedbackServices;
+import com.h5n1.hardwareServices.LocationServices;
 import com.ubicomp.iseesomethingyoudont.util.SystemUiHider;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- * 
- * @see SystemUiHider
- */
-public class ControlActivity extends Activity implements OnTouchListener {
+
+public class ControlActivity extends Activity implements OnTouchListener, OnInitListener{
 
 	private GestureDetectorCompat detector = null;
 	private static final String DEBUG_TAG = "Gestures";
 	private static final int DATA_CHECK_CODE = 0;
 	private EventToSpeechSynthesis eventToSpeechSynthesis = null;
 	private EventSystem eventSystem;
-
 	private EventHandler eventHandler = null;
-	private LocationServices locationServices = null;
 	private String deviceId = "42";
-	
-	//DEBUG
-	private TextView gestureText = null;
+	private LocationServices locationServices;
+	private HapticalFeedbackServices vibrator;
+	private GestureServices gestures;
+	private static final boolean TOGGLE_ON_CLICK = false; // set=will toggle systemUI visibility upon interaction. Otherwise will show systemUI visibility upon interaction.
+	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION; // The flags to pass to {@link SystemUiHider#getInstance}.
+	private SystemUiHider mSystemUiHider; // The instance of the {@link SystemUiHider} for this activity.
+	private TextView gestureText = null; // DEBUG
 
+	// Called when app is created (not when displayed)
+	@Override // Main method of the android application
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		// Creates a unique device id
+		createDeviceId();
+		// initialises the json requester
+		JsonRequester.setDeviceID(deviceId);
+		
+		setContentView(R.layout.activity_control);
+		final View controlsView = findViewById(R.id.fullscreen_content_controls);
+		final View contentView = findViewById(R.id.fullscreen_content);
+		gestureText = (TextView) findViewById(R.id.gestureText);
+		
+		// Creates a unique device id
+		createDeviceId();
+		// initialises the json requester
+		JsonRequester.setDeviceID(deviceId);
+		
+		// WENN DEAKTIVIERT, ERKENNT ER ALLE GESTEN ALS LONG PRESS
+		// Set up the user interaction to manually show or hide the system UI.
+		contentView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if (TOGGLE_ON_CLICK) {} 
+				else {}}});
+				
+		// Check if speak engine is installed??
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, DATA_CHECK_CODE);
+	}	
+	
+	// Called when a new thing? is initiated, here: ttsengine
+	@Override
+	public void onInit(int status) {
+		eventToSpeechSynthesis.getTtsengine().setLanguage(Locale.GERMAN);
+		enableHardwareServices();
+	}
+	
+	// Creates the option menu
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	
+	// Tries to find the ttsengine, if not installed, install it
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == DATA_CHECK_CODE) {
+			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+				// ttesengine is  installed, create the TTS instance
+				eventToSpeechSynthesis = new EventToSpeechSynthesis(this);
+			} else {
+				// ttsengine is not installed, install it
+				Intent installIntent = new Intent();
+				installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+				startActivity(installIntent);
+			}
+		}
+	}
+
+	// Calls method when specific menu item is pressed
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.gpsMenu:
+	            showTest("GPS");
+	            return true;
+	        case R.id.rfidMenu:
+	        	createTestRFID();
+	        	showTest("RFID");
+	        	return true;
+	        case R.id.obstacleMenu:
+	        	showTest("OBSTACLE");
+	        	return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	// Applys a touch detector
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 		this.detector.onTouchEvent(event);
 		return super.onTouchEvent(event);
 	}
 	
-	private void createDeviceId() {
-		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-
-	    final String tmDevice, tmSerial, androidId;
-	    tmDevice = "" + tm.getDeviceId();
-	    tmSerial = "" + tm.getSimSerialNumber();
-	    androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-
-	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
-	    deviceId = deviceUuid.toString();
-	}
-
-	protected void onActivityResult(
-	        int requestCode, int resultCode, Intent data) {
-	    if (requestCode == DATA_CHECK_CODE) {
-	        if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-	            // success, create the TTS instance
-	        	eventToSpeechSynthesis = new EventToSpeechSynthesis(this);
-	    		eventHandler = new EventHandler(eventSystem, eventToSpeechSynthesis);
-	        	//ttsEngine = new TextToSpeech(this, ttsListener = new TTSListener());
-	        } else {
-	            // missing data, install it
-	            Intent installIntent = new Intent();
-	            installIntent.setAction(
-	                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-	            startActivity(installIntent);
-	        }
-	    }
-	}
-
-	class BlindGesturesListener extends GestureDetector.SimpleOnGestureListener {
-		private static final String DEBUG_TAG = "Gestures";
-		
-		
-	    @Override
-	    public boolean onDown(MotionEvent event) { 
-	        Log.d(DEBUG_TAG,"onDown: " + event.toString()); 
-	        gestureText.setText("Down".toCharArray(), 0, "Down".length());
-	        return true;
-	    }
-
-	    @Override
-	    public boolean onFling(MotionEvent event1, MotionEvent event2, 
-	            float velocityX, float velocityY) {
-	        Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString());
-	        gestureText.setText("Fling".toCharArray(), 0, "Fling".length());
-	        return true;
-	    }
-
-	    @Override
-	    public void onLongPress(MotionEvent event) {
-	        Log.d(DEBUG_TAG, "onLongPress: " + event.toString()); 
-	        gestureText.setText("LongPress".toCharArray(), 0, "LongPress".length());
-	    }
-
-	    @Override
-	    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-	            float distanceY) {
-	        Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+e2.toString());
-	        gestureText.setText("Scroll".toCharArray(), 0, "Scroll".length());
-	        return true;
-	    }
-
-	    @Override
-	    public void onShowPress(MotionEvent event) {
-	        Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
-	        gestureText.setText("ShowPress".toCharArray(), 0, "ShowPress".length());
-	    }
-
-	    @Override
-	    public boolean onSingleTapUp(MotionEvent event) {
-	        Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
-	        gestureText.setText("SingleTapUp".toCharArray(), 0, "SingleTapUp".length());
-	        return true;
-	    }
-
-	    @Override
-	    public boolean onDoubleTap(MotionEvent event) {
-	        Log.d(DEBUG_TAG, "onDoubleTap: " + event.toString());
-	        gestureText.setText("DoubleTap".toCharArray(), 0, "DoubleTap".length());
-	        return true;
-	    }
-
-	    @Override
-	    public boolean onDoubleTapEvent(MotionEvent event) {
-	        Log.d(DEBUG_TAG, "onDoubleTapEvent: " + event.toString());
-	        gestureText.setText("DoubleTapEvent".toCharArray(), 0, "DoubleTapEvent".length());
-	        return true;
-	    }
-
-	    @Override
-	    public boolean onSingleTapConfirmed(MotionEvent event) {
-	        Log.d(DEBUG_TAG, "onSingleTapConfirmed: " + event.toString());
-	        gestureText.setText("SingleTapConfirmed".toCharArray(), 0, "SingleTapConfirmed".length());
-	        return true;
-	    }
-	}
-
-	// ===========================================================================
-	// # Automatically Created Content Below
-	// ===========================================================================
-
-	/**
-	 * Whether or not the system UI should be auto-hidden after
-	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-	 */
-	private static final boolean AUTO_HIDE = true;
-
-	/**
-	 * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-	 * user interaction before hiding the system UI.
-	 */
-	private static final int AUTO_HIDE_DELAY_MILLIS = 15000;
-
-	/**
-	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
-	 * will show the system UI visibility upon interaction.
-	 */
-	private static final boolean TOGGLE_ON_CLICK = false;
-
-	/**
-	 * The flags to pass to {@link SystemUiHider#getInstance}.
-	 */
-	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
-
-	/**
-	 * The instance of the {@link SystemUiHider} for this activity.
-	 */
-	private SystemUiHider mSystemUiHider;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_control);
-
-		final View controlsView = findViewById(R.id.fullscreen_content_controls);
+	// Initialises all Hardware Services
+	public void enableHardwareServices(){
 		final View contentView = findViewById(R.id.fullscreen_content);
-		gestureText = (TextView) findViewById(R.id.gestureText);
-		
-		// Set up an instance of SystemUiHider to control the system UI for
-		// this activity.
-		mSystemUiHider = SystemUiHider.getInstance(this, contentView,
-				HIDER_FLAGS);
-		mSystemUiHider.setup();
-		mSystemUiHider
-				.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
-					// Cached values.
-					int mControlsHeight;
-					int mShortAnimTime;
-
-					@Override
-					@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-					public void onVisibilityChange(boolean visible) {
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-							// If the ViewPropertyAnimator API is available
-							// (Honeycomb MR2 and later), use it to animate the
-							// in-layout UI controls at the bottom of the
-							// screen.
-							if (mControlsHeight == 0) {
-								mControlsHeight = controlsView.getHeight();
-							}
-							if (mShortAnimTime == 0) {
-								mShortAnimTime = getResources().getInteger(
-										android.R.integer.config_shortAnimTime);
-							}
-							controlsView
-									.animate()
-									.translationY(visible ? 0 : mControlsHeight)
-									.setDuration(mShortAnimTime);
-						} else {
-							// If the ViewPropertyAnimator APIs aren't
-							// available, simply show or hide the in-layout UI
-							// controls.
-							controlsView.setVisibility(visible ? View.VISIBLE
-									: View.GONE);
-						}
-
-						if (visible && AUTO_HIDE) {
-							// Schedule a hide().
-							delayedHide(AUTO_HIDE_DELAY_MILLIS);
-						}
-					}
-				});
-
-		// Set up the user interaction to manually show or hide the system UI.
-		contentView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (TOGGLE_ON_CLICK) {
-					mSystemUiHider.toggle();
-				} else {
-					mSystemUiHider.show();
-				}
-			}
-		});
-
-		// Upon interacting with UI controls, delay any scheduled hide()
-		// operations to prevent the jarring behavior of controls going away
-		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(
-				mDelayHideTouchListener);
-
-		// ============================================================================
-		// # Own code goes below
-		// ============================================================================
-
-		// Instantiate the gesture detector with the
-		// application context and an implementation of
-		// GestureDetector.OnGestureListener
-		createDeviceId();
-		JsonRequester.setDeviceID(deviceId);
+		// apply a touch listener to the view
 		contentView.setOnTouchListener(this);
-		detector = new GestureDetectorCompat(this, new BlindGesturesListener());
-		
+		// Creates a vibrator mechanism
+		vibrator = new HapticalFeedbackServices(this);
+		// Creates the recognition of gestures -- VERURSACHT NOCH FEHLER WEGEN DER SPEECH SYNTHESIS
+		gestures = new GestureServices(gestureText, vibrator, eventToSpeechSynthesis, this);
+		// implementation of GestureDetector.OnGestureListener
+		detector = new GestureDetectorCompat(this, gestures);
+		// Creates location Services, GPS and WIFI Location
+		locationServices = new LocationServices(vibrator, eventToSpeechSynthesis, this);
+		// Creates event system
 		eventSystem = EventSystem.getInstance();
-		locationServices = new LocationServices((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
-		
-
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, DATA_CHECK_CODE);
-
+		// Creates the event handler
+		eventHandler = new EventHandler(eventSystem, eventToSpeechSynthesis);
+	}
+	
+	// Creates a unique device id
+	private void createDeviceId() {
+		// Creates access to telephony systems
+		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+		final String tmDevice, tmSerial, androidId;
+		// Creates device id
+		tmDevice = "" + tm.getDeviceId();
+		tmSerial = "" + tm.getSimSerialNumber();
+		androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+		UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+		deviceId = deviceUuid.toString();
 	}
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-
-		// Trigger the initial hide() shortly after the activity has been
-		// created, to briefly hint to the user that UI controls
-		// are available.
-		delayedHide(100);
+	// Creates a test RFID event
+	public void createTestRFID() {
+		// breite, höhe, tiefe
+		float[] size = { 40, 160, 60 };
+		float mass = 100;
+		RFIDEvent event = new RFIDEvent(JsonRequester.getDeviceID(), RFIDEventType.NEW_TAG, "Opa", size, mass);
+		// Sets an optional eventState
+		//event.setState(EventState.);
+		EventSystem.pushEvent(event);
 	}
-
-	/**
-	 * Touch listener to use for in-layout UI controls to delay hiding the
-	 * system UI. This is to prevent the jarring behavior of controls going away
-	 * while interacting with activity UI.
-	 */
-	View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-		@Override
-		public boolean onTouch(View view, MotionEvent motionEvent) {
-			if (AUTO_HIDE) {
-				delayedHide(AUTO_HIDE_DELAY_MILLIS);
-			}
-			return false;
-		}
-	};
-
-	Handler mHideHandler = new Handler();
-	Runnable mHideRunnable = new Runnable() {
-		@Override
-		public void run() {
-			mSystemUiHider.hide();
-		}
-	};
-
-	/**
-	 * Schedules a call to hide() in [delay] milliseconds, canceling any
-	 * previously scheduled calls.
-	 */
-	private void delayedHide(int delayMillis) {
-		mHideHandler.removeCallbacks(mHideRunnable);
-		mHideHandler.postDelayed(mHideRunnable, delayMillis);
+	
+	// Displays a test ghost message
+	public void showTest(String text){
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(this.getApplicationContext(), text, duration);
+		toast.show();
 	}
+	
+
+	
 
 }

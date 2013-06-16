@@ -29,7 +29,7 @@ public class JsonPrototype {
 
 	public static void main(String[] args) {
 
-		new JsonPrototype();
+		new json_prototype_2();
 	}
 
 	public JsonPrototype() {

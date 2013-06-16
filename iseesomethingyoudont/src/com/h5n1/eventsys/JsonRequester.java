@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -19,7 +18,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,8 +29,8 @@ public class JsonRequester {
 	private static JSONObject jsonObj;
 	private static InputStream is;
 //	private static HashMap<Long, JSONObject> generatedEvents = new HashMap<Long, JSONObject>();
-	private static JSONArray events;
-	private static String token;
+//	private static JSONArray events;
+//	private static String token;
 	
 	private static String deviceID = "42";
 	public static String getDeviceID() {
@@ -42,7 +40,6 @@ public class JsonRequester {
 		JsonRequester.deviceID = deviceID;
 	}
 	
-	public static final String TAG_EVENTS = "events";
 	public static final String TAG_MESSAGE = "message";
 	public static final String TAG_CONTENT = "content";
 	public static final String TAG_TYPE = "type";
@@ -52,12 +49,15 @@ public class JsonRequester {
 	public static final String TAG_EVENTID = "eventid";
 	public static final String TAG_RECEIVERID = "receiverid";
 
-	private static final String CREATE_URL = "http://192.168.1.92/ubicomp/create_event.php";
-	private static final String GET_ALL_URL = "http://192.168.1.92/ubicomp/get_all_events.php";
-	private static final String UPDATE_URL = "http://192.168.1.92/ubicomp/update_event.php";
-	private static final String DELETE_URL = "http://192.168.1.92/ubicomp/delete_event.php";
-	private static final String DELETE_ALL_URL = "http://192.168.1.92/ubicomp/delete_events.php";
-	private static final String GET_URL = "http://192.168.1.92/ubicomp/get_event.php";
+	
+	private static final String REGISTER_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/register_device.php";
+	private static final String CREATE_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/create_device.php";
+	private static final String CREATE_URL = "http://gormed.no-ip.biz/ubicomp/create_event.php";
+	private static final String GET_ALL_URL = "http://gormed.no-ip.biz/ubicomp/get_all_events.php";
+	private static final String UPDATE_URL = "http://gormed.no-ip.biz/ubicomp/update_event.php";
+	private static final String DELETE_URL = "http://gormed.no-ip.biz/ubicomp/delete_event.php";
+	private static final String DELETE_ALL_URL = "http://gormed.no-ip.biz/ubicomp/delete_events.php";
+	private static final String GET_URL = "http://gormed.no-ip.biz/ubicomp/get_event.php";
 	// private static final String CREATE_URL = "http://54.235.186.77/ubicomp/api/post/event";
 	// private static final String DELETE_URL = "http://54.235.186.77/ubicomp/api/delete/event";
 	// private static final String GET_URL = "http://54.235.186.77/ubicomp/api/get/event/";
@@ -78,6 +78,12 @@ public class JsonRequester {
 		params.add(new BasicNameValuePair(TAG_TYPE, event.getClass().getSimpleName() + "-" + event.getType().toString()));
 		params.add(new BasicNameValuePair(TAG_CONTENT, event.toJsonString()));
 		return makeHttpRequest(CREATE_URL, "POST", params);
+	}
+	
+	public static JSONObject registerDevice() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		return makeHttpRequest(REGISTER_DEVICE_URL, "POST", params);
 	}
 
 	public static JSONObject updateEvent(Event event) {
@@ -108,6 +114,12 @@ public class JsonRequester {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
 		return makeHttpRequest(DELETE_ALL_URL, "POST", params);
+	}
+	
+	public static JSONObject createDeviceTable() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		return makeHttpRequest(CREATE_DEVICE_URL, "POST", params);
 	}
 
 	public static JSONObject getAllEvents(String deviceid, String receiverid) {
@@ -170,6 +182,7 @@ public class JsonRequester {
 				}
 				is.close();
 				json = sb.toString();
+				System.out.println(json);
 				try {
 					jsonObj = new JSONObject(json.trim());
 				} catch (JSONException e) {

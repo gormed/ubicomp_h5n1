@@ -1,21 +1,14 @@
 package com.ubicomp.iseesomethingyoudont;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.json.JSONArray;
-
-import android.speech.tts.TextToSpeech;
 
 import com.h5n1.eventsys.EventSystem;
 import com.h5n1.eventsys.JsonRequester;
 import com.h5n1.eventsys.events.ApplicationEvent;
 import com.h5n1.eventsys.events.ApplicationEvent.ApplicationEventType;
 import com.h5n1.eventsys.events.CompanionEvent;
-import com.h5n1.eventsys.events.Event;
 import com.h5n1.eventsys.events.EventState;
 import com.h5n1.eventsys.events.GPSEvent;
 import com.h5n1.eventsys.events.MotionEvent;
@@ -46,20 +39,25 @@ public class EventHandler {
 	private ApplicationEvent getAllEvents;
 
 	public EventHandler(final EventSystem system, final EventToSpeechSynthesis eventToSpeechSynthesis) {
+		// register device
+		ApplicationEvent registerDevice = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.CREATE_DEVICE_TABLE);
+		registerDevice.setState(EventState.REGISTER_DEVICE);
+		EventSystem.pushEvent(registerDevice);
+		// create device table
+		ApplicationEvent createTable = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.CREATE_DEVICE_TABLE);
+		createTable.setState(EventState.CREATE_DEVICE_TABLE);
+		EventSystem.pushEvent(createTable);
 		// delete all previous events
-		ApplicationEvent appEvent = new ApplicationEvent(
-				JsonRequester.getDeviceID(),
-				ApplicationEventType.DELETE_ALL_EVENTS);
-		appEvent.setState(EventState.DELETE_ALL_EVENTS);
-		EventSystem.pushEvent(appEvent);
+		ApplicationEvent deleteAllEvents = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.DELETE_ALL_EVENTS);
+		deleteAllEvents.setState(EventState.DELETE_ALL_EVENTS);
+		EventSystem.pushEvent(deleteAllEvents);
 		// test event
-		double[] val = { 1,2,3 };
+		double[] val = { 1, 2, 3 };
 		NavigationEvent nav = new NavigationEvent(JsonRequester.getDeviceID(), NavigationEventType.OBSTACLE_HUMAN, val);
 		nav.setReceiverId(JsonRequester.getDeviceID());
 		EventSystem.pushEvent(nav);
 		// get all events for this device
-		getAllEvents = new ApplicationEvent("0",
-				ApplicationEventType.GET_ALL_EVENTS);
+		getAllEvents = new ApplicationEvent("0", ApplicationEventType.GET_ALL_EVENTS);
 		getAllEvents.setState(EventState.GET_ALL_EVENTS);
 		getAllEvents.setReceiverId(JsonRequester.getDeviceID());
 
@@ -101,11 +99,11 @@ public class EventHandler {
 		};
 
 		navigationEventListener = new NavigationEventListener() {
-			
+
 			@Override
 			public void fired(NavigationEvent event) {
 				event.setState(EventState.DELETE_EVENT);
-				eventToSpeechSynthesis.getTtsEngine().speak("Achtung, Hinderniss vorraus! " + event.getData()[0] + " meter. Typ " + event.getType().toString(), TextToSpeech.QUEUE_FLUSH, null);
+				eventToSpeechSynthesis.speakNavigaionEvent(event);
 				EventSystem.pushEvent(event);
 			}
 		};

@@ -1,46 +1,25 @@
 <?php
- 
-/*
- * Following code will delete a product from table
- * A product is identified by product id (id)
- */
- 
-// array for JSON response
+require 'functions.php';
 $response = array();
- 
-// check for required fields
+require_once __DIR__ . '/db_connect.php';
+$db = new DB_CONNECT();
+
 if (isset($_POST['deviceid']) && isset($_POST['eventid'])) {
+    $table = "d" . get_device_id($_POST['deviceid']);
     $deviceid = $_POST['deviceid'];
     $eventid = $_POST['eventid'];
  
-    // include db connect class
-    require_once __DIR__ . '/db_connect.php';
+    $result = mysql_query("DELETE FROM  $table WHERE eventid = $eventid AND deviceid = '$deviceid'");
  
-    // connecting to db
-    $db = new DB_CONNECT();
- 
-    // mysql update row with matched id
-    $result = mysql_query("DELETE FROM events WHERE eventid = $eventid AND deviceid = '$deviceid'");
- 
-    // check if row deleted or not
     if (mysql_affected_rows() > 0) {
-        // successfully updated
         $response["message"] = "Event successfully deleted";
- 
-        // echoing JSON response
         echo json_encode($response);
     } else {
-        // no product found
         $response["message"] = "No Event found";
- 
-        // echo no users JSON
         echo json_encode($response);
     }
 } else {
-    // required field is missing
     $response["message"] = "Required field(s) is missing";
- 
-    // echoing JSON response
     echo json_encode($response);
 }
 ?>

@@ -33,16 +33,24 @@ public class json_prototype_2 {
 	private static JSONObject jsonObj;
 	private static InputStream is;
 
-	private static final String TAG_EVENTS = "events";
-	private static final String TAG_CONTENT = "content";
-	private static final String TAG_TYPE = "type";
-	private static final String TAG_TIME = "time";
-	private static final String TAG_ID = "id";
-	private static final String CREATE_URL = "http://localhost/ubicomp/create_event.php";
-	private static final String GET_All_URL = "http://localhost/ubicomp/get_all_events.php";
-	private static final String UPDATE_URL = "http://localhost/ubicomp/update_event.php";
-	private static final String DELETE_URL = "http://localhost/ubicomp/delete_event.php";
-	private static final String GET_URL = "http://localhost/ubicomp/get_event.php";
+	public static final String TAG_EVENTS = "message";
+	public static final String TAG_MESSAGE = "message";
+	public static final String TAG_CONTENT = "content";
+	public static final String TAG_TYPE = "type";
+	public static final String TAG_TIME = "time";
+	public static final String TAG_ID = "id";
+	public static final String TAG_DEVICEID = "deviceid";
+	public static final String TAG_EVENTID = "eventid";
+	public static final String TAG_RECEIVERID = "receiverid";
+
+	private static final String REGISTER_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/register_device.php";
+	private static final String CREATE_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/create_device.php";
+	private static final String CREATE_URL = "http://gormed.no-ip.biz/ubicomp/create_event.php";
+	private static final String GET_ALL_URL = "http://gormed.no-ip.biz/ubicomp/get_all_events.php";
+	private static final String UPDATE_URL = "http://gormed.no-ip.biz/ubicomp/update_event.php";
+	private static final String DELETE_URL = "http://gormed.no-ip.biz/ubicomp/delete_event.php";
+	private static final String DELETE_ALL_URL = "http://gormed.no-ip.biz/ubicomp/delete_events.php";
+	private static final String GET_URL = "http://gormed.no-ip.biz/ubicomp/get_event.php";
 
 	public json_prototype_2() {
 		frame = new JFrame("JsonPrototype");
@@ -51,12 +59,36 @@ public class json_prototype_2 {
 		JScrollPane jsp = new JScrollPane(response);
 		frame.add(jsp);
 		frame.setVisible(true);
-		// newEvent("666", "BOOP");
+		registerDevice();
+		createDeviceTable();
+		newEvent("666", "BOOP");
 		// editEvent();
-		// getAllEvents();
-		// deleteEvent("1");
+		//getAllEvents();
+		deleteEvent("1");
 		// updateEvent("1","42","Sinn des Lebens");
-		// getEvent("1");
+		getEvent("1");
+	}
+
+	private static String deviceID = "42";
+
+	public static String getDeviceID() {
+		return deviceID;
+	}
+
+	public static void setDeviceID(String deviceID) {
+		json_prototype_2.deviceID = deviceID;
+	}
+
+	public static JSONObject createDeviceTable() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		return makeHttpRequest(CREATE_DEVICE_URL, "POST", params);
+	}
+
+	public static JSONObject registerDevice() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		return makeHttpRequest(REGISTER_DEVICE_URL, "POST", params);
 	}
 
 	public static void newEvent(String type, String content) {
@@ -88,7 +120,7 @@ public class json_prototype_2 {
 
 	public static void getAllEvents() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject getJsonObj = makeHttpRequest(GET_All_URL, "GET", params);
+		JSONObject getJsonObj = makeHttpRequest(GET_ALL_URL, "GET", params);
 		try {
 			events = getJsonObj.getJSONArray(TAG_EVENTS);
 			for (int i = 0; i < events.length(); i++) {
@@ -145,6 +177,7 @@ public class json_prototype_2 {
 			}
 			is.close();
 			json = sb.toString();
+			System.out.println(json);
 		} catch (Exception e) {
 			System.out.println("Error converting result " + e.toString());
 		}
