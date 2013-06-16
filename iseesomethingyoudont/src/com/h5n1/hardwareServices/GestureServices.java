@@ -21,10 +21,6 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	private Activity activity;
 	private EventToSpeechSynthesis ttsengine;
 
-	private long lastTapTime = 0;
-	private int taps = 0;
-	private Timer timer;
-	private TimerTask task;
 
 	public GestureServices(TextView gestureText,
 			HapticalFeedbackServices vibrator,
@@ -34,20 +30,6 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		this.gestureText = gestureText;
 		this.activity = activity;
 		ttsengine = eventToSpeechSynthesis;
-		timer = new Timer();
-	}
-
-	private TimerTask createTask() {
-		timer.purge();
-		return new TimerTask() {
-
-			@Override
-			public void run() {
-				cancel();
-				onMultiTap(taps);
-
-			}
-		};
 	}
 
 	@Override
@@ -94,38 +76,10 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
 //		gestureText.setText("SingleTapUp".toCharArray(), 0,
 //				"SingleTapUp".length());
-		checkTap();
 		// vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 
-	private void checkTap() {
-		long currentTapTime = System.currentTimeMillis();
-
-		long diff = currentTapTime - lastTapTime;
-
-		if (diff < 800) {
-			taps++;
-			if (task == null)
-				timer.schedule(task = createTask(), 1000);
-			else {
-				
-				synchronized (task) {
-					task.cancel();
-				}
-			}
-		} else {
-
-		}
-		System.out.println("Taps: " + taps);
-		lastTapTime = currentTapTime;
-	}
-
-	private void onMultiTap(int counter) {
-		System.out.println("MultiTaps: " + counter);
-		this.task = null;
-		this.taps = 0;
-	}
 
 	public boolean onDoubleTap(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDoubleTap: " + event.toString());
