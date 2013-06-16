@@ -36,7 +36,7 @@ public class LocationServices {
 		// Check if gps connection or location per wifi is enabled
 	    if (!locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
 	        long[] pattern = {200,100,200,100,500};
-	    	vibrator.vibratePattern(pattern, -1);
+	    	vibrator.vibrateSpecificTime(200);
 	    	showToast(activity, "GPS ist aus!");
 	    } 
 	}
@@ -48,6 +48,7 @@ public class LocationServices {
 		toast.show();
 	}
 
+	// Gives acces to all gps services
 	private void enableGPSServices(LocationManager locationManager) {
 		// Gives access to the location service
 		this.locationManager = locationManager;
@@ -105,6 +106,7 @@ public class LocationServices {
 		locationManager.requestLocationUpdates(ACCURACY_GPS_TIME, ACCURACY_GPS_LOCATION, criteria, locationListener, null);
 	}
 
+	// Removes all Updates
 	public void removeUpdates() {
 		locationManager.removeUpdates(this.locationListener);
 	}

@@ -1,5 +1,6 @@
 package com.ubicomp.iseesomethingyoudont;
 
+import java.util.Locale;
 import java.util.UUID;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -9,8 +10,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.view.GestureDetectorCompat;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.view.View.OnTouchListener;
 import android.widget.TextView;
 import com.h5n1.eventsys.EventSystem;
 import com.h5n1.eventsys.JsonRequester;
+import com.h5n1.eventsys.events.NavigationEvent;
 import com.h5n1.hardwareServices.GestureServices;
 import com.h5n1.hardwareServices.HapticalFeedbackServices;
 import com.h5n1.hardwareServices.LocationServices;
@@ -29,7 +33,7 @@ import com.ubicomp.iseesomethingyoudont.util.SystemUiHider;
  * @see SystemUiHider
  */
 
-public class ControlActivity extends Activity implements OnTouchListener {
+public class ControlActivity extends Activity implements OnTouchListener, OnInitListener{
 
 	private GestureDetectorCompat detector = null;
 	private static final String DEBUG_TAG = "Gestures";
@@ -52,7 +56,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_control);
-		/*final View controlsView = findViewById(R.id.fullscreen_content_controls);
+		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
 		gestureText = (TextView) findViewById(R.id.gestureText);
 
@@ -65,9 +69,9 @@ public class ControlActivity extends Activity implements OnTouchListener {
 			@Override
 			public void onClick(View view) {
 				if (TOGGLE_ON_CLICK) {
-					mSystemUiHider.toggle();
+					//mSystemUiHider.toggle();
 				} else {
-					mSystemUiHider.show();
+					//mSystemUiHider.show();
 				}
 			}
 		});
@@ -81,72 +85,76 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		// ============================================================================
 		// # Own code goes below
 		// ============================================================================
-		createDeviceId();
+	/*	createDeviceId();
 		JsonRequester.setDeviceID(deviceId);
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 		startActivityForResult(checkIntent, DATA_CHECK_CODE);*/
+		// Check if speak engine is installed??
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, DATA_CHECK_CODE);
 		enableHardwareServices();
 	}	
 	
 	
 	
-	
+	// Initialises all Hardware Swervices
 	public void enableHardwareServices(){
 		final View contentView = findViewById(R.id.fullscreen_content);
 		// apply a touch listener to the view
 		contentView.setOnTouchListener(this);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		// Creates a vibrator mechanism
 		vibrator = new HapticalFeedbackServices(this);
 		// Creates the recognition of gestures -- VERURSACHT NOCH FEHLER WEGEN DER SPEECH SYNTHESIS
-		//gestures = new GestureServices(gestureText, vibrator, eventToSpeechSynthesis, this);
-		
+		gestures = new GestureServices(gestureText, vibrator, eventToSpeechSynthesis, this);
 		// implementation of GestureDetector.OnGestureListener
-		//detector = new GestureDetectorCompat(this, gestures);
+		detector = new GestureDetectorCompat(this, gestures);
 		// Creates location Services, GPS and WIFI Location
 		locationServices = new LocationServices(vibrator, this);
 		// Creates event system
 		eventSystem = EventSystem.getInstance();
-		
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		//startActivityForResult(checkIntent, DATA_CHECK_CODE);
 	}
+	
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+			// Inflate the menu; this adds items to the action bar if it is present.
+			//getMenuInflater().inflate(R.menu.main, menu);
+			return true;
+		}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == DATA_CHECK_CODE) {
 			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 				// success, create the TTS instance
 				eventToSpeechSynthesis = new EventToSpeechSynthesis(this);
-				eventHandler = new EventHandler(eventSystem, eventToSpeechSynthesis);
 			} else {
 				// missing data, install it
 				Intent installIntent = new Intent();
 				installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
 				startActivity(installIntent);
+				Log.i("HATAHATAHATA", "Fail");
 			}
 		}
+	}
+	
+	@Override
+	public void onInit(int status) {
+		// TODO Auto-generated method stub
+		eventHandler = new EventHandler(eventSystem, eventToSpeechSynthesis);
+		eventToSpeechSynthesis.getTtsengine().setLanguage(Locale.GERMAN);
+		Log.i("HATAHATAHATA", "Success");
+		// DEBUG
+		eventToSpeechSynthesis.speakTest("onInit");
+		Log.i("HATATATATATA", "Er sollte gesprochen haben");
+		enableHardwareServices();
 	}
 	
 	
 	
 	
 	
-	/*public boolean onCreateOptionsMenu(Menu menu) {
-			// Inflate the menu; this adds items to the action bar if it is present.
-			getMenuInflater().inflate(R.menu.main, menu);
-			return true;
-		}*/
+	
 	
 	
 	
@@ -289,13 +297,7 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		//delayedHide(100);
 	}
 	
-	public HapticalFeedbackServices getVibrator(){
-		return vibrator;
-	}
 	
-	public EventToSpeechSynthesis getTtsEngine(){
-		return eventToSpeechSynthesis;
-	}
 	
 	
 
@@ -311,13 +313,11 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		}
 	};
 
-	Handler mHideHandler = new Handler();
-	Runnable mHideRunnable = new Runnable() {
-		@Override
-		public void run() {
-			mSystemUiHider.hide();
-		}
-	};
+
+
+
+
+	
 
 
 }
