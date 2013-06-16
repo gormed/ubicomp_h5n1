@@ -122,4 +122,9 @@ public class LocationServices {
 		Toast toast = Toast.makeText(activity.getApplicationContext(), text, duration);
 		toast.show();
 	}
+
+	public GPSEvent getUpdateLocation() {
+		return updateLocation;
+	}
+	
 }

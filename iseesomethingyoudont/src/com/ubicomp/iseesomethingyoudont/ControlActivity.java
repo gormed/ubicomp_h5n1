@@ -1,6 +1,7 @@
 package com.ubicomp.iseesomethingyoudont;
 
 import java.util.Locale;
+import java.util.Random;
 import java.util.UUID;
 import android.app.Activity;
 import android.content.Context;
@@ -47,6 +48,14 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION; // The flags to pass to {@link SystemUiHider#getInstance}.
 	private SystemUiHider mSystemUiHider; // The instance of the {@link SystemUiHider} for this activity.
 	private TextView gestureText = null; // DEBUG
+	
+	//RFID Emulation
+	private static String[] handicap = {"Buggy", "Baum", "Telefonzelle", "Blumen", "Laterne", "Wasserspender", "Mülltonne", "Bank", "Schwarzes Loch", "Bierzelt"};
+    private static float[] radius = {0.5f, 1.0f, 0.75f, 2.0f, 3.6f, 5.7f, 0.01f, 1.11f, 1.53f, 2.22f};
+    private static float[] masse = {10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 90f, 100f};
+    // (Elastischer Eindringmodul – EIT),
+    // Kompressionsmodul K - er beschreibt, welche allseitige Druckänderung nötig ist, 
+    // um eine bestimmte Volumenänderung hervorzurufen
 
 	// Called when app is created (not when displayed)
 	@Override // Main method of the android application
@@ -165,10 +174,17 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 
 	// Creates a test RFID event
 	public void createTestRFID() {
+		
+		Random rnd = new Random();
+		
 		// breite, höhe, tiefe
-		float[] size = { 40, 160, 60 };
-		float mass = 100;
-		RFIDEvent event = new RFIDEvent(JsonRequester.getDeviceID(), RFIDEventType.NEW_TAG, "Opa", size, mass);
+		float[] size = { radius[rnd.nextInt(9)], radius[rnd.nextInt(9)], radius[rnd.nextInt(9)]};
+		float mass = masse[rnd.nextInt(9)];
+		String name = handicap[rnd.nextInt(9)];
+		double longitude = locationServices.getUpdateLocation().getLo() + rnd.nextFloat();
+		double latitude = locationServices.getUpdateLocation().getLa() + rnd.nextFloat();
+		
+		RFIDEvent event = new RFIDEvent(JsonRequester.getDeviceID(), RFIDEventType.NEW_TAG, name, size, mass, longitude, latitude);
 		// Sets an optional eventState
 		//event.setState(EventState.);
 		EventSystem.pushEvent(event);

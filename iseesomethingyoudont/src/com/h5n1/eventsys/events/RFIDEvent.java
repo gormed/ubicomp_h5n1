@@ -22,6 +22,9 @@ public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 	private String name;
 	private float[] size;
 	private float mass;
+	
+	private double longitude;
+	private double latitude;
 
 	public RFIDEvent(String deviceid, JSONObject json) {
 		super();
@@ -29,11 +32,13 @@ public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 
 	}
 
-	public RFIDEvent(String deviceid, RFIDEventType type, String name, float[] size, float mass) {
+	public RFIDEvent(String deviceid, RFIDEventType type, String name, float[] size, float mass, double longitude, double latitude) {
 		this.type = type;
 		this.name = name;
 		this.mass = mass;
 		this.size = size;
+		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 
 	public RFIDEventType getType() {
