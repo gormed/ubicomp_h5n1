@@ -28,6 +28,7 @@ public class LocationServices {
 	private String deviceid;
 	private EventToSpeechSynthesis ttsengine;
 
+	// Creates all location services
 	public LocationServices(HapticalFeedbackServices vibrator, EventToSpeechSynthesis ttsengine, Activity activity) {
 		this.deviceid = JsonRequester.getDeviceID();
 		this.ttsengine = ttsengine;

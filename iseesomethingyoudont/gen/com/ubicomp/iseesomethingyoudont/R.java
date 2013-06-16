@@ -30,6 +30,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int fullscreen_content=0x7f080000;
         public static final int fullscreen_content_controls=0x7f080001;
         public static final int gestureText=0x7f080002;
+        public static final int gpsMenu=0x7f080004;
+        public static final int obstacleMenu=0x7f080006;
+        public static final int rfidMenu=0x7f080005;
     }
     public static final class layout {
         public static final int activity_control=0x7f030000;
