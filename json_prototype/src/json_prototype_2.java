@@ -43,8 +43,8 @@ public class json_prototype_2 {
 	public static final String TAG_EVENTID = "eventid";
 	public static final String TAG_RECEIVERID = "receiverid";
 
-	private static final String REGISTER_DEVICE_URL = "http://192.168.1.92/ubicomp/register_device.php";
-	private static final String CREATE_DEVICE_URL = "http://192.168.1.92/ubicomp/create_device.php";
+	private static final String REGISTER_DEVICE_URL = "http://localhost/register_device.php";
+	private static final String CREATE_DEVICE_URL = "http://localhost/create_device.php";
 	private static final String CREATE_URL = "http://192.168.1.92/ubicomp/create_event.php";
 	private static final String GET_ALL_URL = "http://192.168.1.92/ubicomp/get_all_events.php";
 	private static final String UPDATE_URL = "http://192.168.1.92/ubicomp/update_event.php";
@@ -59,6 +59,7 @@ public class json_prototype_2 {
 		JScrollPane jsp = new JScrollPane(response);
 		frame.add(jsp);
 		frame.setVisible(true);
+		registerDevice();
 		createDeviceTable();
 		// newEvent("666", "BOOP");
 		// editEvent();
