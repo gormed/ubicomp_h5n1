@@ -16,7 +16,7 @@ if (isset($_POST['deviceid']) && isset($_POST['eventid']) && isset($_POST['recei
 		$sql = "SELECT * FROM $table WHERE eventid = $eventid AND deviceid = '$deviceid'";
 	}
 
-	$result = mysql_query($sql) or die(mysql_error() . "//get_event");
+	$result = mysql_query($sql) or die(mysql_error());
  
 	if (!empty($result)) {
 		if (mysql_num_rows($result) > 0) {
