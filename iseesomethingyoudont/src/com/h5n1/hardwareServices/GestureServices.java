@@ -1,7 +1,10 @@
 package com.h5n1.hardwareServices;
 
+import com.ubicomp.iseesomethingyoudont.EventToSpeechSynthesis;
+
 import android.app.Activity;
 import android.content.Context;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -13,11 +16,13 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	private TextView gestureText;
 	private HapticalFeedbackServices vibrator;
 	private Activity activity;
+	private TextToSpeech ttsengine;
 
-	public GestureServices(TextView gestureText, HapticalFeedbackServices vibrator, Activity activity) {
+	public GestureServices(TextView gestureText, HapticalFeedbackServices vibrator, EventToSpeechSynthesis eventToSpeechSynthesis, Activity activity) {
 		this.vibrator = vibrator;
 		this.gestureText = gestureText;
 		this.activity = activity;
+		ttsengine = eventToSpeechSynthesis.getTtsEngine();
 	}
 	
 	// Anzeige nur zu DEBUG ZWECKEN!!
@@ -111,6 +116,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		// long[] pattern = {100,100,100};
 		vibrator.vibrateSpecificTime(300);
 		// vibrator.vibratePattern(pattern, -1);
+		//ttsengine.speak("hallo", TextToSpeech.QUEUE_FLUSH, null);
 		return true;
 	}
 }

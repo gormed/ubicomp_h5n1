@@ -3,11 +3,12 @@ package com.h5n1.hardwareServices;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Vibrator;
+import android.speech.tts.TextToSpeech;
 
 public class HapticalFeedbackServices {
 
 	private Vibrator vibrator;
-
+	
 	// Creates a vibrator
 	public HapticalFeedbackServices(Activity activity) {
 		// Enable Vibrator

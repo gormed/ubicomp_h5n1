@@ -15,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class LocationServices {
 	public static final int ACCURACY_GPS_TIME = 1000;
@@ -34,9 +35,17 @@ public class LocationServices {
 		
 		// Check if gps connection or location per wifi is enabled
 	    if (!locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-	        long[] pattern = {100,200,100,500,100,200,100};
+	        long[] pattern = {200,100,200,100,500};
 	    	vibrator.vibratePattern(pattern, -1);
-	    }	
+	    	showToast(activity, "GPS ist aus!");
+	    } 
+	}
+	
+	// Anzeige nur zu DEBUG ZWECKEN!!
+	private void showToast(Activity activity, String text){
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(activity.getApplicationContext(), text, duration);
+		toast.show();
 	}
 
 	private void enableGPSServices(LocationManager locationManager) {
