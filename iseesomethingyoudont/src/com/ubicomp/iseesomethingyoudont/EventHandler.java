@@ -41,7 +41,7 @@ public class EventHandler {
 	public EventHandler(final EventSystem system, final EventToSpeechSynthesis eventToSpeechSynthesis) {
 		// register device
 		ApplicationEvent registerDevice = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.CREATE_DEVICE_TABLE);
-		registerDevice.setState(EventState.CREATE_DEVICE_TABLE);
+		registerDevice.setState(EventState.REGISTER_DEVICE);
 		EventSystem.pushEvent(registerDevice);
 		// create device table
 		ApplicationEvent createTable = new ApplicationEvent(JsonRequester.getDeviceID(), ApplicationEventType.CREATE_DEVICE_TABLE);
