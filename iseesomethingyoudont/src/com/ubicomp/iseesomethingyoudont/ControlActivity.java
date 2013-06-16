@@ -18,7 +18,10 @@ import android.view.View.OnTouchListener;
 import android.widget.TextView;
 import com.h5n1.eventsys.EventSystem;
 import com.h5n1.eventsys.JsonRequester;
+import com.h5n1.eventsys.events.EventState;
 import com.h5n1.eventsys.events.NavigationEvent;
+import com.h5n1.eventsys.events.RFIDEvent;
+import com.h5n1.eventsys.events.RFIDEvent.RFIDEventType;
 import com.h5n1.hardwareServices.GestureServices;
 import com.h5n1.hardwareServices.HapticalFeedbackServices;
 import com.h5n1.hardwareServices.LocationServices;
@@ -92,10 +95,11 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	
 	// Creates the option menu
 	public boolean onCreateOptionsMenu(Menu menu) {
-			// Inflate the menu; this adds items to the action bar if it is present.
-			//getMenuInflater().inflate(R.menu.main, menu);
-			return true;
-		}
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
 	
 	// Tries to find the ttsengine, if not installed, install it
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,7 +123,14 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 		enableHardwareServices();
 	}
 	
-	
+	public void createRFIDEvent() {
+		float mass = 100;
+		// b, h, t
+		float[] size = { 40, 160, 60 };
+		RFIDEvent event = new RFIDEvent(JsonRequester.getDeviceID(), RFIDEventType.NEW_TAG, "Oma", size, mass);
+		//event.setState(EventState.)
+		EventSystem.pushEvent(event);
+	}
 	
 	
 	

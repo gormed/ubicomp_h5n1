@@ -19,7 +19,9 @@ public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 	}
 
 	private RFIDEventType type;
-	private String data;
+	private String name;
+	private float[] size;
+	private float mass;
 
 	public RFIDEvent(String deviceid, JSONObject json) {
 		super();
@@ -27,23 +29,38 @@ public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 
 	}
 
-	public RFIDEvent(String deviceid, RFIDEventType type, String data) {
+	public RFIDEvent(String deviceid, RFIDEventType type, String name, float[] size, float mass) {
 		this.type = type;
-		this.data = data;
+		this.name = name;
+		this.mass = mass;
+		this.size = size;
 	}
 
 	public RFIDEventType getType() {
 		return type;
 	}
 
-	public String getData() {
-		return data;
+	public float getMass() {
+		return mass;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public float[] getSize() {
+		return size;
 	}
 
 	public String toJsonString() {
 		JSONObject obj = new JSONObject();
 		try {
-			obj.accumulate("data", data);
+			for (int i = 0; i < size.length; i++) {
+				obj.accumulate(i+"", size[i]);
+			}
+			obj.accumulate("length", size.length);
+			obj.accumulate("mass", mass);
+			obj.accumulate("name", name);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
