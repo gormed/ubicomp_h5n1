@@ -92,10 +92,11 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	
 	// Creates the option menu
 	public boolean onCreateOptionsMenu(Menu menu) {
-			// Inflate the menu; this adds items to the action bar if it is present.
-			//getMenuInflater().inflate(R.menu.main, menu);
-			return true;
-		}
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
 	
 	// Tries to find the ttsengine, if not installed, install it
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

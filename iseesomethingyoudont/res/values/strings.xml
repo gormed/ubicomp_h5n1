@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">iseesomethingyoudont</string>
-    <string name="dummy_button">Menu2</string>
-    <string name="dummy_content">I SEE\nSOMETHING\nYOU DON\'T22</string>
+    <string name="app_name">isee</string>
+    <string name="action_settings">RFID</string>
+    <string name="hello_world"></string>
+    <string name="gps">GPS</string>
+    <string name="rfid">RFID</string>
+    <string name="obstacle">Hinderniss</string>
+    <string name="event">Events</string>
+  	<string name="dummy_content">I SEE\nSOMETHING\nYOU DON\'T22</string>
 
 </resources>
