@@ -49,6 +49,12 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	@Override // Main method of the android application
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// Creates a unique device id
+		createDeviceId();
+		// initialises the json requester
+		JsonRequester.setDeviceID(deviceId);
+		
 		setContentView(R.layout.activity_control);
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
@@ -68,10 +74,6 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 		startActivityForResult(checkIntent, DATA_CHECK_CODE);
 		// Starts all hardware services
 		//enableHardwareServices();
-		// Creates a unique device id
-		createDeviceId();
-		// initialises the json requester
-		JsonRequester.setDeviceID(deviceId);
 	}	
 	
 	// Initialises all Hardware Services
