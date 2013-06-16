@@ -178,7 +178,7 @@ public class EventSystem {
 				break;
 			case CREATE_DEVICE_TABLE:
 				if (temp instanceof ApplicationEvent) {
-					obj = JsonRequester.createDeviceTable(temp.getDeviceId());
+					obj = JsonRequester.createDeviceTable();
 				}
 				break;
 			case DELETE_ALL_EVENTS:

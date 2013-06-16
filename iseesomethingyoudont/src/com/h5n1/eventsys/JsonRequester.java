@@ -118,9 +118,9 @@ public class JsonRequester {
 		return makeHttpRequest(DELETE_ALL_URL, "POST", params);
 	}
 	
-	public static JSONObject createDeviceTable(String deviceid) {
+	public static JSONObject createDeviceTable() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
 		return makeHttpRequest(CREATE_DEVICE_URL, "POST", params);
 	}
 
