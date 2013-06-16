@@ -67,6 +67,7 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
     // Kompressionsmodul K - er beschreibt, welche allseitige Druckänderung nötig ist, 
     // um eine bestimmte Volumenänderung hervorzurufen
 
+
 	// Called when app is created (not when displayed)
 	@Override // Main method of the android application
 	protected void onCreate(Bundle savedInstanceState) {
