@@ -42,7 +42,6 @@ public class JsonRequester {
 		JsonRequester.deviceID = deviceID;
 	}
 	
-	public static final String TAG_EVENTS = "events";
 	public static final String TAG_MESSAGE = "message";
 	public static final String TAG_CONTENT = "content";
 	public static final String TAG_TYPE = "type";
@@ -83,7 +82,7 @@ public class JsonRequester {
 		return makeHttpRequest(CREATE_URL, "POST", params);
 	}
 	
-	public static JSONObject registerDevice(String deviceid) {
+	public static JSONObject registerDevice() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
 		return makeHttpRequest(REGISTER_DEVICE_URL, "POST", params);
@@ -119,9 +118,9 @@ public class JsonRequester {
 		return makeHttpRequest(DELETE_ALL_URL, "POST", params);
 	}
 	
-	public static JSONObject createDeviceTable(String deviceid) {
+	public static JSONObject createDeviceTable() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
 		return makeHttpRequest(CREATE_DEVICE_URL, "POST", params);
 	}
 

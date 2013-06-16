@@ -1,15 +1,24 @@
 <?php
+function get_device_id($deviceid) {
+    $sql = mysql_query("SELECT *FROM devices WHERE deviceid = '$deviceid'") or die (mysql_error());
+        if (mysql_num_rows($sql) > 0) {
+            $sql = mysql_fetch_array($sql);
+            return $sql['id'];
+        }
+}
+
     $response = array();
     require_once __DIR__ . '/db_connect.php';
     $db = new DB_CONNECT();
 
 if (isset($_POST['deviceid'])) {
-    $table = "d".$_POST['deviceid'];
+    $deviceid = $_POST['deviceid'];
+    $table = "d" . get_device_id($_POST['deviceid']);
 
     $sql = mysql_query("CREATE TABLE $table(id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), deviceid VARCHAR(128) NOT NULL, receiverid VARCHAR(128) NOT NULL, eventid INT NOT NULL, type VARCHAR(128) NOT NULL, time TIMESTAMP, content VARCHAR(256) NOT NULL)");
 
     if ($sql) {
-        $response["message"] = "Table d" . $deviceid . " created successfully";
+        $response["message"] = "Table d" . get_device_id($_POST['deviceid']) . " created successfully";
         echo json_encode($response);
     } else {
         $response["message"] = "Error creating table: " . mysql_error();
