@@ -280,7 +280,7 @@ this.getRootNode().attachChild(camNode);
         float y2 = event.getPositionWorldOnB().y;
         float z2 = event.getPositionWorldOnB().z;
         
-      if(event.getNodeA().getName().equals("BlindPerson") ){
+      if(event.getNodeA().getName().equals("blindPerson") ){
         if ( event.getNodeB().getName().equals("SampleStaticObject") ) {
             //System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
             //System.out.println(blindPerson.getPosition());
@@ -288,7 +288,7 @@ this.getRootNode().attachChild(camNode);
         else if ( event.getNodeB().getName().equals("street") ) {
             //System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
         } 
-        else if ( event.getNodeB().getName().contains("staticObject") ) {
+        else if ( event.getNodeB().getName().equals("staticObject1")) {
             System.out.println("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
         }
         else if ( event.getNodeB().getName().equals("grass") ) {
