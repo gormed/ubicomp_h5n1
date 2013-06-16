@@ -46,5 +46,6 @@ public class EventToSpeechSynthesis implements OnInitListener {
 	
 	public void speakTest(){
 		ttsEngine.speak("Das ist ein Test", TextToSpeech.QUEUE_FLUSH, null);
+		System.out.println("HALLO");
 	}
 }
