@@ -12,21 +12,17 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.widget.Toast;
 
-public class EventToSpeechSynthesis implements OnInitListener {
+public class EventToSpeechSynthesis {
 
 	private Dictionary<String, String> eventSymbols;
 	private TextToSpeech ttsEngine;
 
 	public EventToSpeechSynthesis(ControlActivity activity) {
-		ttsEngine = new TextToSpeech(activity, this);
+		ttsEngine = new TextToSpeech(activity, activity);
 		eventSymbols = new Hashtable<String, String>();
-	}
-
-	@Override
-	public void onInit(int arg0) {
-		ttsEngine.setLanguage(Locale.GERMAN);
 		fillNavigationDictionary();
 	}
+	
 
 	private void fillNavigationDictionary() {
 		String[] navigation = { "kleines Objekt", "mittleres Objekt", "goßes Objekt", "Mensch", "Straße", "Wand", "Tür", "Auto", "Motorad", "Fahrrad", "Mysterium" };
@@ -44,8 +40,11 @@ public class EventToSpeechSynthesis implements OnInitListener {
 		}
 	}
 	
-	public void speakTest(){
-		ttsEngine.speak("Das ist ein Test", TextToSpeech.QUEUE_FLUSH, null);
-		System.out.println("HALLO");
+	public void speakTest(String text){
+		ttsEngine.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+	}
+	
+	TextToSpeech getTtsengine(){
+		return ttsEngine;
 	}
 }

@@ -1,5 +1,6 @@
 package com.ubicomp.iseesomethingyoudont;
 
+import java.util.Locale;
 import java.util.UUID;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.view.GestureDetectorCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -31,7 +33,7 @@ import com.ubicomp.iseesomethingyoudont.util.SystemUiHider;
  * @see SystemUiHider
  */
 
-public class ControlActivity extends Activity implements OnTouchListener {
+public class ControlActivity extends Activity implements OnTouchListener, OnInitListener{
 
 	private GestureDetectorCompat detector = null;
 	private static final String DEBUG_TAG = "Gestures";
@@ -88,24 +90,20 @@ public class ControlActivity extends Activity implements OnTouchListener {
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 		startActivityForResult(checkIntent, DATA_CHECK_CODE);*/
+		// Check if speak engine is installed??
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, DATA_CHECK_CODE);
 		enableHardwareServices();
 	}	
 	
 	
 	
-	
+	// Initialises all Hardware Swervices
 	public void enableHardwareServices(){
 		final View contentView = findViewById(R.id.fullscreen_content);
 		// apply a touch listener to the view
 		contentView.setOnTouchListener(this);
-		
-		
-		// Check if speak engine is installed??
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, DATA_CHECK_CODE);
-		
-		
 		// Creates a vibrator mechanism
 		vibrator = new HapticalFeedbackServices(this);
 		// Creates the recognition of gestures -- VERURSACHT NOCH FEHLER WEGEN DER SPEECH SYNTHESIS
@@ -130,10 +128,6 @@ public class ControlActivity extends Activity implements OnTouchListener {
 			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 				// success, create the TTS instance
 				eventToSpeechSynthesis = new EventToSpeechSynthesis(this);
-				eventHandler = new EventHandler(eventSystem, eventToSpeechSynthesis);
-				Log.i("HATAHATAHATA", "Success");
-				eventToSpeechSynthesis.speakTest();
-				Log.i("HATATATATATA", "Er sollte gesprochen haben");
 			} else {
 				// missing data, install it
 				Intent installIntent = new Intent();
@@ -142,6 +136,18 @@ public class ControlActivity extends Activity implements OnTouchListener {
 				Log.i("HATAHATAHATA", "Fail");
 			}
 		}
+	}
+	
+	@Override
+	public void onInit(int status) {
+		// TODO Auto-generated method stub
+		eventHandler = new EventHandler(eventSystem, eventToSpeechSynthesis);
+		eventToSpeechSynthesis.getTtsengine().setLanguage(Locale.GERMAN);
+		Log.i("HATAHATAHATA", "Success");
+		// DEBUG
+		eventToSpeechSynthesis.speakTest("onInit");
+		Log.i("HATATATATATA", "Er sollte gesprochen haben");
+		enableHardwareServices();
 	}
 	
 	
@@ -306,6 +312,10 @@ public class ControlActivity extends Activity implements OnTouchListener {
 			return false;
 		}
 	};
+
+
+
+
 
 	
 
