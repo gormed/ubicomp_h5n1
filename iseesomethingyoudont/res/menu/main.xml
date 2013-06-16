@@ -7,17 +7,20 @@
         android:title="@string/event">
         <menu>
             <item
-                android:id="@+id/action_settings"
+                android:id="@+id/gpsMenu"
                 android:orderInCategory="100"
                 android:showAsAction="ifRoom|withText"
                 android:title="@string/gps"/>
+            
+            
+                <!--android:onClick="menuTest()"/>-->
             <item
-                android:id="@+id/action_settings"
+                android:id="@+id/rfidMenu"
                 android:orderInCategory="100"
                 android:showAsAction="ifRoom|withText"
                 android:title="@string/rfid"/>
             <item
-                android:id="@+id/action_settings"
+                android:id="@+id/obstacleMenu"
                 android:orderInCategory="100"
                 android:showAsAction="ifRoom|withText"
                 android:title="@string/obstacle"/>
