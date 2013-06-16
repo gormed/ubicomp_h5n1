@@ -29,9 +29,9 @@
 	"default": {
 
 		// address
-		"host": "192.168.1.92",
+		"host": "gormed.no-ip.biz",
 
-		//"port": 21,
+		//"port": 22,
 
 		// credentials
 		"username": "nobody",  // or null for anonymous login
