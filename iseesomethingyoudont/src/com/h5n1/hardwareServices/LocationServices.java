@@ -6,6 +6,7 @@ import com.h5n1.eventsys.events.EventState;
 import com.h5n1.eventsys.events.GPSEvent;
 import com.h5n1.eventsys.events.GPSEvent.GPSEventType;
 import com.ubicomp.iseesomethingyoudont.ControlActivity;
+import com.ubicomp.iseesomethingyoudont.EventToSpeechSynthesis;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 public class LocationServices {
@@ -24,9 +26,11 @@ public class LocationServices {
 	private LocationListener locationListener;
 	private GPSEvent updateLocation;
 	private String deviceid;
+	private EventToSpeechSynthesis eventToSpeechSynthesis;
 
-	public LocationServices(HapticalFeedbackServices vibrator, Activity activity) {
+	public LocationServices(HapticalFeedbackServices vibrator, EventToSpeechSynthesis eventToSpeechSynthesis, Activity activity) {
 		this.deviceid = JsonRequester.getDeviceID();
+		this.eventToSpeechSynthesis = eventToSpeechSynthesis;
 		updateLocation = new GPSEvent(deviceid, GPSEventType.UPDATE_LOCATION, 0, 0);
 		updateLocation.setState(EventState.NEW_UPDATE_EVENT);
 		// Creates the locationManager within the application context
@@ -38,6 +42,16 @@ public class LocationServices {
 	        long[] pattern = {200,100,200,100,500};
 	    	vibrator.vibrateSpecificTime(200);
 	    	showToast(activity, "GPS ist aus!");
+	    	
+	    	try{
+	    		eventToSpeechSynthesis.speakTest("Achtung: GPS ist deaktiviert");
+	    	} catch (Exception e){
+	    		//String msg = e.getMessage();
+	    		//Log.i("EXCEPTIONHATATA", msg);
+	    	}
+	    	
+	    	//eventToSpeechSynthesis.speakTest("Achtung: GPS ist deaktiviert");
+	    	
 	    } 
 	}
 	

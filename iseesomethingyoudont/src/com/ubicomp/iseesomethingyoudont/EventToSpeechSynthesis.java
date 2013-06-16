@@ -28,7 +28,7 @@ public class EventToSpeechSynthesis {
 		String[] navigation = { "kleines Objekt", "mittleres Objekt", "goßes Objekt", "Mensch", "Straße", "Wand", "Tür", "Auto", "Motorad", "Fahrrad", "Mysterium" };
 		int i = 0;
 		for (NavigationEventType evt : NavigationEventType.values()) {
-			eventSymbols.put(evt.name(), navigation[i++]);
+			eventSymbols.put(evt.name(), navigation[i++]); 
 		}
 	}
 

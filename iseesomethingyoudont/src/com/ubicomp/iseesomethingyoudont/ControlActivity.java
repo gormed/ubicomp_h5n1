@@ -111,7 +111,7 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 		// implementation of GestureDetector.OnGestureListener
 		detector = new GestureDetectorCompat(this, gestures);
 		// Creates location Services, GPS and WIFI Location
-		locationServices = new LocationServices(vibrator, this);
+		locationServices = new LocationServices(vibrator, eventToSpeechSynthesis, this);
 		// Creates event system
 		eventSystem = EventSystem.getInstance();
 	}
@@ -145,9 +145,12 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 		eventToSpeechSynthesis.getTtsengine().setLanguage(Locale.GERMAN);
 		Log.i("HATAHATAHATA", "Success");
 		// DEBUG
-		eventToSpeechSynthesis.speakTest("onInit");
+		//eventToSpeechSynthesis.speakTest("onInit");
 		Log.i("HATATATATATA", "Er sollte gesprochen haben");
-		enableHardwareServices();
+		if(eventToSpeechSynthesis != null){
+			enableHardwareServices();
+		}
+		
 	}
 	
 	
