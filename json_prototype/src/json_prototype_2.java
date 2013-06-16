@@ -61,10 +61,10 @@ public class json_prototype_2 {
 		frame.setVisible(true);
 		registerDevice();
 		createDeviceTable();
-		// newEvent("666", "BOOP");
+		newEvent("666", "BOOP");
 		// editEvent();
-		getAllEvents();
-		// deleteEvent("1");
+		//getAllEvents();
+		deleteEvent("1");
 		// updateEvent("1","42","Sinn des Lebens");
 		getEvent("1");
 	}

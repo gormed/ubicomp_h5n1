@@ -25,7 +25,7 @@ $result = mysql_query($sql) or die(mysql_error());
  
 
 if (mysql_num_rows($result) > 0) {
-    $response[$table] = array();
+    $response['events'] = array();
  
     while ($row = mysql_fetch_array($result)) {
         $event = array();
@@ -37,7 +37,7 @@ if (mysql_num_rows($result) > 0) {
         $event ["content"] = $row["content"];
         $event ["time"] = $row["time"];
 
-        array_push($response[$table], $event);
+        array_push($response['events'], $event);
     }
 
     $response["message"]= "Events successfully displayed.";
@@ -46,7 +46,7 @@ if (mysql_num_rows($result) > 0) {
 } else {
 
     $response["message"] = "No events found";
-    $response[$table] = array();
+    $response['events'] = array();
 
     echo json_encode($response);
 }
