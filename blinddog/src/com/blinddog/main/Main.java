@@ -70,17 +70,17 @@ public class Main extends SimpleApplication{
     street = entityManager.createStreet("Street",  new Vector3f(0f, 0f, 0f));
     grass = entityManager.createGrass("grass",  new Vector3f(0f, 0f, 0f));
 
-    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(Person.PERSON_RADIUS, Person.PERSON_HEIGHT, 1);
+    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 3f, 1);
     blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     
      
-    blindPerson = entityManager.createPerson("blindPerson", new Vector3f(0f, 0f, 0f));
+    blindPerson = entityManager.createPerson("blindPerson", new Vector3f(10f, 0f, 10f));
 
     blindPerson.getCollidableEntityNode().addControl(blindPersonControl);
     blindPersonControl.setJumpSpeed(20);
     blindPersonControl.setFallSpeed(30);
     blindPersonControl.setGravity(30);
-    blindPersonControl.setPhysicsLocation(new Vector3f(0, 0, 0));
+    blindPersonControl.setPhysicsLocation(new Vector3f(0, 10, 0));
  
     // We attach the scene and the player to the rootNode and the physics space,
     // to make them appear in the game world.
