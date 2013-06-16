@@ -18,6 +18,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	private Activity activity;
 	private EventToSpeechSynthesis ttsengine;
 
+
 	// creates gesture services
 	public GestureServices(TextView gestureText, HapticalFeedbackServices vibrator, EventToSpeechSynthesis eventToSpeechSynthesis, Activity activity) {
 		this.vibrator = vibrator;
@@ -26,6 +27,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		ttsengine = eventToSpeechSynthesis;
 	}
 	
+
 	@Override
 	public boolean onDown(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onDown: " + event.toString());
@@ -109,4 +111,5 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		Toast toast = Toast.makeText(activity.getApplicationContext(), text, duration);
 		toast.show();
 	}
+	
 }

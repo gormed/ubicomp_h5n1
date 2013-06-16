@@ -2,8 +2,6 @@ package com.ubicomp.iseesomethingyoudont;
 
 import java.util.Locale;
 import java.util.UUID;
-
-import android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +10,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings.System;
+import java.util.Random;
+import java.util.UUID;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.view.GestureDetectorCompat;
@@ -55,11 +59,28 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	private AudioManager audioManager;
 	private ConnectivityManager connectivityManager;
 	private NetworkInfo networkInfo;
+	//RFID Emulation
+	private static String[] handicap = {"Buggy", "Baum", "Telefonzelle", "Blumen", "Laterne", "Wasserspender", "Mülltonne", "Bank", "Schwarzes Loch", "Bierzelt"};
+    private static float[] radius = {0.5f, 1.0f, 0.75f, 2.0f, 3.6f, 5.7f, 0.01f, 1.11f, 1.53f, 2.22f};
+    private static float[] masse = {10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 90f, 100f};
+    // (Elastischer Eindringmodul – EIT),
+    // Kompressionsmodul K - er beschreibt, welche allseitige Druckänderung nötig ist, 
+    // um eine bestimmte Volumenänderung hervorzurufen
+	
+	
+	
+	
+
 
 	// Called when app is created (not when displayed)
-	@Override 
+	@Override // Main method of the android application
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// Creates a unique device id
+		createDeviceId();
+		// initialises the json requester
+		JsonRequester.setDeviceID(deviceId);
 		setContentView(R.layout.activity_control);
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
@@ -202,24 +223,30 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 
 	// Creates a test RFID event
 	public void createTestRFID() {
+		Random rnd = new Random();
+		
 		// breite, höhe, tiefe
-		float[] size = { 40, 160, 60 };
-		float mass = 100;
-		//RFIDEvent event = new RFIDEvent(JsonRequester.getDeviceID(), RFIDEventType.NEW_TAG, "Opa", size, mass);
+		float[] size = { radius[rnd.nextInt(9)], radius[rnd.nextInt(9)], radius[rnd.nextInt(9)]};
+		float mass = masse[rnd.nextInt(9)];
+		String name = handicap[rnd.nextInt(9)];
+		double longitude = locationServices.getUpdateLocation().getLo() + rnd.nextFloat();
+		double latitude = locationServices.getUpdateLocation().getLa() + rnd.nextFloat();
+		
+		RFIDEvent event = new RFIDEvent(JsonRequester.getDeviceID(), RFIDEventType.NEW_TAG, name, size, mass, longitude, latitude);
 		// Sets an optional eventState
 		//event.setState(EventState.);
-	//	EventSystem.pushEvent(event);
+		EventSystem.pushEvent(event);
 	}
 	
 	// Checks if all required objects are available, kills if not
-	private void checkRequired(){
-		if(audioManager.isWiredHeadsetOn() && locationServices.checkGPSOn() && networkInfo.isConnectedOrConnecting()){
-		} else {
-			//eventToSpeechSynthesis.stopSpeaking();
-			//eventToSpeechSynthesis.speakTest("Ihr Gerät unterstützt die benötigten Funktionen nicht");
-			//android.os.Process.killProcess(android.os.Process.myPid());
+		private void checkRequired(){
+			if(audioManager.isWiredHeadsetOn() && locationServices.checkGPSOn() && networkInfo.isConnectedOrConnecting()){
+			} else {
+				//eventToSpeechSynthesis.stopSpeaking();
+				//eventToSpeechSynthesis.speakTest("Ihr Gerät unterstützt die benötigten Funktionen nicht");
+				//android.os.Process.killProcess(android.os.Process.myPid());
+			}
 		}
-	}
 	
 	// Displays a test ghost message
 	public void showTest(String text){
