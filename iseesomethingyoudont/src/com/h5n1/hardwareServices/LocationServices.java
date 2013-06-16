@@ -44,8 +44,8 @@ public class LocationServices {
 	        long[] pattern = {200,100,200,100,500};
 	    	vibrator.vibrateSpecificTime(200);
 	    	showToast(activity, "GPS ist aus!");
-	    	ttsengine.stopSpeaking();
-	    	ttsengine.speakTest("Achtung: GPS ist deaktiviert");
+	    	//ttsengine.stopSpeaking();
+	    	//ttsengine.speakTest("Achtung: GPS ist deaktiviert");
 	    } 
 	}
 	
