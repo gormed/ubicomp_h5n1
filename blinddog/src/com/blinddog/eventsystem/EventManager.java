@@ -2,7 +2,6 @@ package com.blinddog.eventsystem;
 
 import com.blinddog.entities.Person;
 import com.blinddog.entities.base.AbstractEntity;
-import com.jme3.bounding.BoundingVolume;
 import com.blinddog.eventsystem.listener.KeyInputListener;
 //import eventsystem.listener.MouseInputListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -10,11 +9,9 @@ import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 //import entities.Creep;
 //import entities.base.AbstractEntity;
-import com.blinddog.eventsystem.listener.CollisionListener;
 import com.blinddog.eventsystem.listener.EntityListener;
 import com.blinddog.eventsystem.listener.MouseInputListener;
 import com.blinddog.eventsystem.listener.PersonListener;
-import com.jme3.math.Vector3f;
 //import eventsystem.listener.TimerEventListener;
 
 /**
@@ -54,10 +51,6 @@ public class EventManager {
     //==========================================================================
     //===   Private Fields
     //==========================================================================
-
-    
-    /** The collision handler. */
-    private CollisionHandler collisionHandler = CollisionHandler.getInstance();
     
             
         /** The input handler. */
@@ -78,29 +71,10 @@ public class EventManager {
      */
     public void update(float tpf) {
         //timerHandler.update(tpf);
-        collisionHandler.update(tpf);
+       
     }
 
-    /**
-     * Adds a CollisionListener to the manager that listens to collision-events
-     * from the list of BoundingVolumes given.
-     * @param listener the listener to add
-     * @param boundingVolumes the list of bv to listen to
-     */
-    public void addCollisionListener(
-            CollisionListener listener, BoundingVolume... boundingVolumes) {
-        collisionHandler.addCollisionListener(listener, boundingVolumes);
-    }
-
-    /**
-     * Removes a CollisionListener from the manager and the according 
-     * BoundingVolumes if not listened to by other listeners.
-     * @param listener the listener to remove
-     */
-    public void removeCollisionListener(
-            CollisionListener listener) {
-        collisionHandler.removeCollisionListener(listener);
-    }
+   
        
     /**
      * Adds a KeyInputListener for one or more mappings.

@@ -5,6 +5,7 @@ import com.blinddog.entities.base.SimpleClickable;
 import com.jme3.scene.Node;
 import com.blinddog.entities.nodes.ClickableEntityNode;
 import com.blinddog.main.Main;
+import com.jme3.math.Vector3f;
 
 /**
  * The class ClickableEntity.
@@ -35,11 +36,11 @@ public abstract class ClickableEntity extends AbstractEntity implements SimpleCl
      * @see entities.base.AbstractEntity#createNode(mazetd.MazeTDGame)
      */
     @Override
-    public Node createNode(Main game) {
+    public Node createNode(Main game,  Vector3f position) {
         
         clickableEntityNode =
                 new ClickableEntityNode(name + "s_GeometryNode", this);
-        super.createNode(game).attachChild(clickableEntityNode);
+        super.createNode(game, position).attachChild(clickableEntityNode);
         
         return clickableEntityNode;
     }

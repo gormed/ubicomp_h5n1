@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.blinddog.entities;
 
 import com.jme3.collision.CollisionResult;
@@ -39,7 +43,6 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.post.filters.GammaCorrectionFilter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +54,7 @@ import java.util.Map;
  * @author Hans Ferchland
  * @version 0.3
  */
-public class Person extends CollidableEntity {
+public class ModelObject extends CollidableEntity {
     //==========================================================================
     //===   Constants
     //==========================================================================
@@ -134,7 +137,7 @@ public class Person extends CollidableEntity {
      * @param healthPoints the HP of the creep
      * @param maxHealthPoints the max health points
      */
-    public Person(String name, Vector3f position) {
+    public ModelObject(String name, Vector3f position) {
         super(name);
         this.position = position;
         
@@ -170,15 +173,12 @@ public class Person extends CollidableEntity {
         
         // if moving do this part
        CollisionResults results = new CollisionResults();
-       BoundingVolume v = bound.clone();
-       v.setCenter(position);
-       Main.getInstance().getRootNode().collideWith(v, results);
-//       HashMap<Integer, AbstractEntity> objects = EntityManager.getInstance().getObjectHashMap(); 
-//        for(Map.Entry<Integer, AbstractEntity> e : objects.entrySet())  {
-//            e.getValue().getGeometryNode().collideWith(v,results);
-//        }
+       HashMap<Integer, AbstractEntity> objects = EntityManager.getInstance().getObjectHashMap(); 
+        for(Map.Entry<Integer, AbstractEntity> e : objects.entrySet())  {
+            e.getValue().getGeometryNode().collideWith(this.bound,results);
+        }
         if (results.size() > 0) {
-             System.out.println(results.getClosestCollision().getGeometry().getName() );
+             System.out.println("BOOOM");
         }
         else {
          System.out.println("---");
@@ -261,28 +261,7 @@ public class Person extends CollidableEntity {
      * @param tpf the time-gap
      */
     private void moveUpdate(float tpf) {
-        if (moving) {
-            position = collidableEntityNode.getLocalTranslation();
-
-            Vector3f dir = destination.subtract(position);
-            float distance = dir.length();
-            dir.normalizeLocal();
-            dir.multLocal(speed * tpf);
-
-            if (distance < PERSON_MIN_DISTANCE) {
-                // moving ended because the creep is at the target
-           
-                    // event otherwise we are attacking a tower or are 
-                    // at the goal.
-                    PersonHandler.getInstance().invokePersonAction(
-                            PersonEventType.ReachedEnd, this, null);
-                    moving = false;
-
-                }
-            } 
-            // apply translation to the geometry
-            collidableEntityNode.setLocalTranslation(position);
-            debugGeometry.setLocalTranslation(position);
+      
         }
  
     /**

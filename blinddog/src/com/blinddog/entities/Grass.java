@@ -1,38 +1,14 @@
 package com.blinddog.entities;
 
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial.CullHint;
-import com.jme3.scene.shape.Cylinder;
-import com.jme3.scene.shape.Quad;
 
 import com.blinddog.entities.CollidableEntity;
-import com.blinddog.entities.base.EntityManager;
 import com.blinddog.entities.geometry.ClickableGeometry;
 import com.blinddog.entities.nodes.CollidableEntityNode;
-import com.blinddog.eventsystem.EventManager;
-import com.blinddog.eventsystem.PersonHandler;
 import com.blinddog.eventsystem.events.CollisionEvent;
-import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
-import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Random;
 import com.blinddog.main.Main;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -95,8 +71,8 @@ public class Grass extends CollidableEntity {
      * @see entities.base.CollidableEntity#createNode(mazetd.MazeTDGame)
      */
     @Override
-    public CollidableEntityNode createNode(Main game) {
-        super.createNode(game);
+    public CollidableEntityNode createNode(Main game,  Vector3f position) {
+        super.createNode(game, position);
         createDebugGeometry(game);
         createGeometry(game);
 

@@ -7,7 +7,6 @@ import com.blinddog.entities.Street;
 import com.blinddog.entities.base.EntityManager;
 import com.blinddog.eventsystem.EventManager;
 import com.blinddog.eventsystem.listener.KeyInputListener;
-import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
@@ -19,6 +18,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
@@ -63,36 +63,16 @@ public class Main extends SimpleApplication{
         eventManager = EventManager.getInstance();
         entityManager.initialize();
         ScreenRayCast3D.getInstance().initialize();
-        Collider3D.getInstance().initialize();
     /** Set up Physics */
    
     buergersteig = entityManager.createBuergersteig("Buergersteig",  new Vector3f(0f, 0f, 0f));
     street = entityManager.createStreet("Street",  new Vector3f(0f, 0f, 0f));
     grass = entityManager.createGrass("grass",  new Vector3f(0f, 0f, 0f));
 
-    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 3f, 1);
-    blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     
      
-    blindPerson = entityManager.createPerson("blindPerson", new Vector3f(10f, 0f, 10f));
-
-    blindPerson.getCollidableEntityNode().addControl(blindPersonControl);
-    blindPersonControl.setJumpSpeed(20);
-    blindPersonControl.setFallSpeed(30);
-    blindPersonControl.setGravity(30);
-    blindPersonControl.setPhysicsLocation(new Vector3f(0, 10, 0));
+    blindPerson = entityManager.createPerson("blindPerson", new Vector3f(0f, 0f, 0f));
  
-    // We attach the scene and the player to the rootNode and the physics space,
-    // to make them appear in the game world.
-
-    
-    bulletAppState = new BulletAppState();
-    stateManager.attach(bulletAppState);
-    bulletAppState.getPhysicsSpace().add(buergersteig.getLandscape());
-    bulletAppState.getPhysicsSpace().add(street.getLandscape());
-    bulletAppState.getPhysicsSpace().add(grass.getLandscape());
-    bulletAppState.getPhysicsSpace().add(blindPersonControl);
-    //bulletAppState.getPhysicsSpace().addCollisionListener(this);
 
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -135,7 +115,6 @@ public class Main extends SimpleApplication{
     eventManager.addKeyInputEvent("Right", new KeyTrigger(KeyInput.KEY_L));
     eventManager.addKeyInputEvent("Up", new KeyTrigger(KeyInput.KEY_I));
     eventManager.addKeyInputEvent("Down", new KeyTrigger(KeyInput.KEY_K));
-    eventManager.addKeyInputEvent("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
     eventManager.addKeyInputListener(new KeyInputListener() {
 
             //EVtl auslagern in InputHolder
@@ -148,11 +127,9 @@ public class Main extends SimpleApplication{
                 up = isPressed;
               } else if (name.equals("Down")) {
                 down = isPressed;
-              } else if (name.equals("Jump")) {
-                blindPersonControl.jump();
-    }
+              } 
           }
-      }, "Left","Right","Up","Down","Jump");
+      }, "Left","Right","Up","Down");
    
   }
 
@@ -184,14 +161,16 @@ public class Main extends SimpleApplication{
         //    Vector3f camLeft = cam.getLeft().clone().multLocal(0.4f);
             Vector3f vDir = new Vector3f(0,0,0.5f);
             Vector3f vLeft = new Vector3f(0.5f,0,0);
-            Vector3f oldPos = blindPerson.getPosition();
+            Vector3f oldPos = blindPerson.getGeometryNode().getLocalTranslation();
             walkDirection.set(0, 0, 0);
             if (left)  { walkDirection.addLocal(vLeft); }
             if (right) { walkDirection.addLocal(vLeft.negate()); }
             if (up)    { walkDirection.addLocal(vDir); }
             if (down)  { walkDirection.addLocal(vDir.negate()); }
-            blindPersonControl.setWalkDirection(walkDirection);
             oldPos = oldPos.add(walkDirection);
+            System.out.println(oldPos);
+            blindPerson.getGeometryNode().setLocalTranslation(oldPos);
+            blindPerson.getBound().transform(new Transform(oldPos));
             blindPerson.moveTo(oldPos);
             //System.out.println("Objects: " + entityManager.getObjectHashMap());
     eventManager.update(tpf);

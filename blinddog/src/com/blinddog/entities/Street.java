@@ -27,7 +27,6 @@ import com.blinddog.entities.nodes.CollidableEntityNode;
 import com.blinddog.eventsystem.PersonHandler;
 import com.blinddog.eventsystem.events.CollisionEvent;
 import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
-import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
 import java.util.HashSet;
 import java.util.Queue;
@@ -92,8 +91,8 @@ public class Street extends CollidableEntity {
      * @see entities.base.CollidableEntity#createNode(mazetd.MazeTDGame)
      */
     @Override
-    public CollidableEntityNode createNode(Main game) {
-        super.createNode(game);
+    public CollidableEntityNode createNode(Main game, Vector3f position) {
+        super.createNode(game, position);
         createDebugGeometry(game);
         createGeometry(game);
         return collidableEntityNode;
@@ -166,6 +165,6 @@ public class Street extends CollidableEntity {
     }
 
     public void onCollision(CollisionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //
     }
 }

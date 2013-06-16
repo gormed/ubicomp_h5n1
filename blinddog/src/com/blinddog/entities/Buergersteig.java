@@ -1,38 +1,16 @@
 package com.blinddog.entities;
 
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial.CullHint;
-import com.jme3.scene.shape.Cylinder;
-import com.jme3.scene.shape.Quad;
 
 import com.blinddog.entities.CollidableEntity;
-import com.blinddog.entities.base.EntityManager;
 import com.blinddog.entities.geometry.ClickableGeometry;
 import com.blinddog.entities.nodes.CollidableEntityNode;
-import com.blinddog.eventsystem.PersonHandler;
 import com.blinddog.eventsystem.events.CollisionEvent;
-import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
-import com.blinddog.eventsystem.port.Collider3D;
 import com.blinddog.eventsystem.port.ScreenRayCast3D;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Random;
 import com.blinddog.main.Main;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -92,8 +70,8 @@ public class Buergersteig extends CollidableEntity {
      * @see entities.base.CollidableEntity#createNode(mazetd.MazeTDGame)
      */
     @Override
-    public CollidableEntityNode createNode(Main game) {
-        super.createNode(game);
+    public CollidableEntityNode createNode(Main game,  Vector3f position) {
+        super.createNode(game, position);
         createDebugGeometry(game);
         createGeometry(game);
 
@@ -133,6 +111,7 @@ public class Buergersteig extends CollidableEntity {
         //assetManager.registerLocator("assets/Scenes/town/", ZipLocator.class);
         sceneModel = game.getAssetManager().loadModel("Scenes/buergersteig.j3o");
         sceneModel.setLocalScale(2f);
+        setBound(sceneModel.getWorldBound());
 
         // We set up collision detection for the scene by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
@@ -167,6 +146,8 @@ public class Buergersteig extends CollidableEntity {
     }
 
     public void onCollision(CollisionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       //TODO
     }
+
+
 }

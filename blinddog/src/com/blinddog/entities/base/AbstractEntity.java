@@ -2,6 +2,7 @@ package com.blinddog.entities.base;
 
 import com.jme3.scene.Node;
 import com.blinddog.main.Main;
+import com.jme3.math.Vector3f;
 
 /**
  * The class AbstractEntity. This class is the parent of all entitys!
@@ -50,9 +51,9 @@ public abstract class AbstractEntity {
      * @param game the game
      * @return the created main-geometry node
      */
-    public Node createNode(Main game) {
+    public Node createNode(Main game, Vector3f position) {
         geometryNode = new Node(name + "s_GeometryNode");
-        
+        geometryNode.setLocalTranslation(position);
         return geometryNode;
     }
 

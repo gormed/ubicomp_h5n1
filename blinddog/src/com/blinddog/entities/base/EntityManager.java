@@ -11,7 +11,6 @@ import com.blinddog.entities.Person ;
 import com.blinddog.entities.Street;
 import com.blinddog.eventsystem.PersonHandler;
 import com.blinddog.eventsystem.events.PersonEvent.PersonEventType;
-import com.blinddog.eventsystem.port.Collider3D;
 import java.util.HashMap;
 import java.util.Map;
 import com.blinddog.main.Main;
@@ -82,8 +81,7 @@ public class EntityManager {
     /** The ray cast3d. */
     private ScreenRayCast3D rayCast3D = ScreenRayCast3D.getInstance();
     
-    /** The collider3d. */
-    private Collider3D collider3D = Collider3D.getInstance();
+
     
     /** The initialized. */
     private boolean initialized = false;
@@ -158,6 +156,7 @@ public class EntityManager {
         for (Map.Entry<Integer, AbstractEntity> e : clone.entrySet()) {
             e.getValue().update(tpf);
         }
+
     }
 
     /**
@@ -169,10 +168,10 @@ public class EntityManager {
     public Buergersteig createBuergersteig(String name, Vector3f position) {
         Buergersteig t = new Buergersteig(name, position);
 
+        Node geometryNode = t.createNode(game, position);
+        game.getRootNode().attachChild(t.getGeometryNode());
         addEntity(t);
         objectHashMap.put(t.getEntityId(), t);
-        Node geometryNode = t.createNode(game);
-        Collider3D.getInstance().addCollisonObject(geometryNode);
         //ScreenRayCast3D.getInstance().addClickableObject(geometryNode);
         return t;
     }
@@ -184,11 +183,11 @@ public class EntityManager {
      */
     public Street createStreet(String name, Vector3f position) {
         Street t = new Street(name, position);
-
+        Node geometryNode = t.createNode(game, position);
+          game.getRootNode().attachChild(t.getGeometryNode());
         addEntity(t);
         objectHashMap.put(t.getEntityId(), t);
-        Node geometryNode = t.createNode(game);
-        Collider3D.getInstance().addCollisonObject(geometryNode);
+
         //ScreenRayCast3D.getInstance().addClickableObject(geometryNode);
         return t;
     }
@@ -200,11 +199,12 @@ public class EntityManager {
      */
     public Grass createGrass(String name, Vector3f position) {
         Grass t = new Grass(name, position);
-
+        Node geometryNode = t.createNode(game, position);
+          game.getRootNode().attachChild(t.getGeometryNode());
         addEntity(t);
         objectHashMap.put(t.getEntityId(), t);
-        Node geometryNode = t.createNode(game);
-        Collider3D.getInstance().addCollisonObject(geometryNode);
+
+        
         //ScreenRayCast3D.getInstance().addClickableObject(geometryNode);
         return t;
     }
@@ -218,11 +218,11 @@ public class EntityManager {
      */
     public Person createPerson(String name, Vector3f position) {
         Person c = new Person(name, position);
-
+        Node geometryNode = c.createNode(game, position);
+          game.getRootNode().attachChild(c.getGeometryNode());
         addEntity(c);
         personHashMap.put(c.getEntityId(), c);
-        Node geometryNode = c.createNode(game);
-        Collider3D.getInstance().addCollisonObject(geometryNode);
+        
         PersonHandler.getInstance().
                 invokePersonAction(
                 PersonEventType.Created, c, null);
