@@ -90,7 +90,7 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public boolean onSingleTapConfirmed(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onSingleTapConfirmed: " + event.toString());
 		gestureText.setText("SingleTapConfirmed".toCharArray(), 0, "SingleTapConfirmed".length());
-		vibrator.vibrateSpecificTime(100);
+		//vibrator.vibrateSpecificTime(100);
 		return true;
 	}
 }
