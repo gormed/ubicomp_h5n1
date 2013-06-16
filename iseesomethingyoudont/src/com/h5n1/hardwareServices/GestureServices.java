@@ -21,7 +21,6 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	private Activity activity;
 	private EventToSpeechSynthesis ttsengine;
 
-<<<<<<< HEAD
 	private long lastTapTime = 0;
 	private int taps = 0;
 	private Timer timer;
@@ -30,18 +29,13 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	public GestureServices(TextView gestureText,
 			HapticalFeedbackServices vibrator,
 			EventToSpeechSynthesis eventToSpeechSynthesis, Activity activity) {
-=======
 
-	// creates gesture services
-	public GestureServices(TextView gestureText, HapticalFeedbackServices vibrator, EventToSpeechSynthesis eventToSpeechSynthesis, Activity activity) {
->>>>>>> appHardware-Services
 		this.vibrator = vibrator;
 		this.gestureText = gestureText;
 		this.activity = activity;
 		ttsengine = eventToSpeechSynthesis;
 		timer = new Timer();
 	}
-<<<<<<< HEAD
 
 	private TimerTask createTask() {
 		timer.purge();
@@ -55,17 +49,6 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 			}
 		};
 	}
-
-	// Anzeige nur zu DEBUG ZWECKEN!!
-	private void showToast(String text) {
-		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(activity.getApplicationContext(), text,
-				duration);
-		toast.show();
-	}
-=======
-	
->>>>>>> appHardware-Services
 
 	@Override
 	public boolean onDown(MotionEvent event) {
@@ -163,16 +146,8 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent event) {
 		Log.d(DEBUG_TAG, "onSingleTapConfirmed: " + event.toString());
-<<<<<<< HEAD
 		gestureText.setText("SingleTapConfirmed".toCharArray(), 0,
 				"SingleTapConfirmed".length());
-=======
-		gestureText.setText("SingleTapConfirmed".toCharArray(), 0, "SingleTapConfirmed".length());
-
-		//vibrator.vibrateSpecificTime(100);
-
->>>>>>> appHardware-Services
-		vibrator.vibrateSpecificTime(100);
 
 		ttsengine.stopSpeaking();
 		ttsengine.speakTest("Ein Druck");
