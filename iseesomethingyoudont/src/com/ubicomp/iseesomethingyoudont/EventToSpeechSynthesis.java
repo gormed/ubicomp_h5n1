@@ -31,7 +31,7 @@ public class EventToSpeechSynthesis {
 		if (event.getType() != NavigationEventType.OBSTACLE_CUSTOM)
 			ttsEngine.speak("Achtung, " + eventSymbols.get(event.getType().name()) + ", " + event.getData()[0] + " Meter vorraus!", TextToSpeech.QUEUE_FLUSH, null);
 		else {
-			ttsEngine.speak("Achtung, " + event.getContent() + ", " + event.getData()[0] + " Meter vorraus!", TextToSpeech.QUEUE_FLUSH, null);
+			//ttsEngine.speak("Achtung, " + event.getContent() + ", " + event.getData()[0] + " Meter vorraus!", TextToSpeech.QUEUE_FLUSH, null);
 		}
 	}
 

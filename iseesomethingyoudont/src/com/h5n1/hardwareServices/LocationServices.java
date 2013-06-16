@@ -73,7 +73,6 @@ public class LocationServices {
 
 			public void onProviderEnabled(String provider) {
 				EventSystem.pushEvent(new GPSEvent(deviceid, GPSEventType.SIGNAL_FOUND, 0, 0));
-				ttsengine.speakTest("GPS wurde aktiviert");
 			}
 
 			public void onStatusChanged(String provider, int status, Bundle extras) {
