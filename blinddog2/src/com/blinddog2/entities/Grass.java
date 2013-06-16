@@ -15,19 +15,19 @@ import com.jme3.scene.Spatial;
  *
  * @author hady
  */
-public class Street {
+public class Grass {
     private Spatial model;
     private RigidBodyControl landscape;
 
-    public Street(){
+    public Grass(){
         
         createModel();
     }
     
     private void createModel(){
          // load street Model
-    model = Main.getInstance().getAssetManager().loadModel("Scenes/street.j3o");
-    model.setName("street");
+    model = Main.getInstance().getAssetManager().loadModel("Scenes/grass.j3o");
+    model.setName("grass");
     model.setLocalScale(2f);
     CollisionShape cs =
             CollisionShapeFactory.createMeshShape((Node) model);
@@ -36,13 +36,15 @@ public class Street {
     Main.getInstance().getRootNode().attachChild(model);
     Main.getInstance().getBulletAppState().getPhysicsSpace().add(landscape);
     }
-        public Spatial getModel() {
+
+    public Spatial getModel() {
         return model;
     }
 
     public RigidBodyControl getLandscape() {
         return landscape;
     }
+    
 }
 
 

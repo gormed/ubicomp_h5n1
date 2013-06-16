@@ -15,19 +15,19 @@ import com.jme3.scene.Spatial;
  *
  * @author hady
  */
-public class Street {
+public class SampleStaticObject {
     private Spatial model;
     private RigidBodyControl landscape;
 
-    public Street(){
+    public SampleStaticObject(){
         
         createModel();
     }
     
     private void createModel(){
          // load street Model
-    model = Main.getInstance().getAssetManager().loadModel("Scenes/street.j3o");
-    model.setName("street");
+    model = Main.getInstance().getAssetManager().loadModel("Scenes/SampleStaticObject.j3o");
+    model.setName("SampleStaticObject");
     model.setLocalScale(2f);
     CollisionShape cs =
             CollisionShapeFactory.createMeshShape((Node) model);

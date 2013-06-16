@@ -15,19 +15,19 @@ import com.jme3.scene.Spatial;
  *
  * @author hady
  */
-public class Street {
+public class Houses {
     private Spatial model;
     private RigidBodyControl landscape;
 
-    public Street(){
+    public Houses(){
         
         createModel();
     }
     
     private void createModel(){
          // load street Model
-    model = Main.getInstance().getAssetManager().loadModel("Scenes/street.j3o");
-    model.setName("street");
+    model = Main.getInstance().getAssetManager().loadModel("Scenes/houses.j3o");
+    model.setName("houses");
     model.setLocalScale(2f);
     CollisionShape cs =
             CollisionShapeFactory.createMeshShape((Node) model);
@@ -44,5 +44,4 @@ public class Street {
         return landscape;
     }
 }
-
 
