@@ -12,11 +12,11 @@ if (!isset($_GET['deviceid']) || !isset($_GET['receiverid'])) {
 }
 
 if ($_GET['deviceid'] != "0") {
-    $table = "d" . get_device_id($_GET['deviceid']);
+    $table = "d" . get_id($_GET['deviceid']);
     $deviceid = $_GET['deviceid'];
     $sql = "SELECT * FROM $table WHERE deviceid = '$deviceid'";
 } else if ($_GET['receiverid'] != "0"){
-    $table = "d" . get_device_id($_GET['receiverid']);
+    $table = "d" . get_id($_GET['receiverid']);
     $receiverid = $_GET['receiverid'];
     $sql = "SELECT * FROM $table WHERE receiverid = '$receiverid'";
 } 

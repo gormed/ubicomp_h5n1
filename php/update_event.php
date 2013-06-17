@@ -5,7 +5,7 @@ require_once __DIR__ . '/db_connect.php';
 $db = new DB_CONNECT();
 
 if (isset($_POST['deviceid']) && isset($_POST['receiverid']) && isset($_POST['eventid']) && isset($_POST['content'])) {
-    $table = "d" . get_device_id($_POST['deviceid']);   
+    $table = "d" . get_id($_POST['deviceid']);   
     $deviceid = $_POST['deviceid'];
     $eventid = $_POST['eventid'];
     $content = $_POST['content'];
