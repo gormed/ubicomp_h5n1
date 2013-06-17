@@ -18,7 +18,7 @@
 		<link>
 			<name>json</name>
 			<type>2</type>
-			<location>../json/src</location>
+			<locationURI>json/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
