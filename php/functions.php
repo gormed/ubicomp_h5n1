@@ -28,7 +28,7 @@ function get_events($id) {
     $result = mysql_query($sql) or die(mysql_error());
 
 	if (mysql_num_rows($result) > 0) {
-   		$response['events'] = array();
+   		$response[$table] = array();
  
    		while ($row = mysql_fetch_array($result)) {
        		$event = array();
@@ -39,9 +39,11 @@ function get_events($id) {
         	$event ["type"] = $row["type"];
         	$event ["content"] = $row["content"];
         	$event ["time"] = $row["time"];
-        	array_push($response['events'], $event);
+            array_push($response[$table], $event);
     	}
-    return $response;
+
+        return $response; 
+
     }
 }
 ?>
