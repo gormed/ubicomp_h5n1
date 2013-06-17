@@ -50,13 +50,13 @@ public class Person extends AbstractEntity {
        Main.getInstance().getRootNode().attachChild(model); 
 
   
-    BoxCollisionShape capsuleShape = new BoxCollisionShape(new Vector3f(0.5f, 0.8f, 0.5f));
+    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 0.5f, 1);
     blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     model.addControl(blindPersonControl);
     blindPersonControl.setJumpSpeed(20);
     blindPersonControl.setFallSpeed(30);
-    blindPersonControl.setGravity(6f);
-    blindPersonControl.setPhysicsLocation(new Vector3f(0, 10, 0));    
+    blindPersonControl.setGravity(30);
+    blindPersonControl.setPhysicsLocation(new Vector3f(0, 0, 0));    
     
     
     Main.getInstance().getBulletAppState().getPhysicsSpace().setGravity(new Vector3f(0f,-6f,0f));

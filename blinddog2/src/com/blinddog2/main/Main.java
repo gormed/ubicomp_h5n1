@@ -16,13 +16,18 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
@@ -30,6 +35,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.shape.Sphere;
  
 /**
  * Example 9 - How to make walls and floors solid.
@@ -49,6 +55,8 @@ public class Main extends SimpleApplication
     private EntityManager entityManager;
     private StaticObject staticObject1;
     private EventHandler eventHandler;
+    private Geometry mark;
+    private Node shootables;
   
     //==========================================================================
     //===   Singleton
@@ -67,6 +75,34 @@ public class Main extends SimpleApplication
      */
     public static Main getInstance() {
         return MainHolder.INSTANCE;
+    }
+
+    private void shootRay() {
+        CollisionResults results = new CollisionResults();
+        Vector3f shootDir = new Vector3f(10f,-10f,10f).mult(blindPerson.getBlindPersonControl().getWalkDirection());
+        Ray ray = new Ray(blindPerson.getPosition(), shootDir);
+        shootables.collideWith(ray, results);
+        // 4. Print thwwe rewwsults
+        System.out.println("----- Collisions? " + results.size() + "-----");
+        for (int i = 1; i < results.size(); i++) {
+          // For each hit, we know distance, impact point, name of geometry.
+          float dist = results.getCollision(i).getDistance();
+          Vector3f pt = results.getCollision(i).getContactPoint();
+          String hit = results.getCollision(i).getGeometry().getName();
+          System.out.println("* Collision #" + i);
+          System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+        }
+        // 5. Use the results (we mark the hit object)
+        if (results.size() > 0) {
+          // The closest collision point is what was truly hit:
+          CollisionResult closest = results.getClosestCollision();
+          // Let's interact - we mark the hit with a red dot.
+          mark.setLocalTranslation(closest.getContactPoint());
+          rootNode.attachChild(mark);
+        } else {
+          // No hits? Then remove the red mark.
+          rootNode.detachChild(mark);
+        }
     }
 
     /**
@@ -118,15 +154,27 @@ public class Main extends SimpleApplication
     //setewretr
     setUpKeys();
     setUpLight();
- 
-   
+    
+    initMark();  
+    
+    
     street = new Street();
     grass = new Grass();
     buergersteig = new Buergersteig();
-    sampleStaticObject = new SampleStaticObject();
-    
+    sampleStaticObject = new SampleStaticObject();   
     blindPerson = entityManager.createPerson("blindPerson");
     staticObject1 = entityManager.createStaticObject("staticObject1");
+    
+    shootables = new Node("Shootables");
+    rootNode.attachChild(shootables);
+    shootables.attachChild(street.getModel());
+    shootables.attachChild(grass.getModel());
+    shootables.attachChild(buergersteig.getModel());
+    shootables.attachChild(sampleStaticObject.getModel());
+    shootables.attachChild(blindPerson.getModel());
+    shootables.attachChild(staticObject1.getModel());
+   
+    
     
     bulletAppState.getPhysicsSpace().addCollisionListener(this);
     
@@ -138,9 +186,9 @@ camNode = new CameraNode("Camera Node", cam);
 ////This mode means that camera copies the movements of the target:
 ///camNode.setControlDir(ControlDirection.SpatialToCamera);
 ////Move camNode, e.g. behind and above the target:
-camNode.setLocalTranslation(new Vector3f(0, 300, -5));
+camNode.setLocalTranslation(new Vector3f(0, 300, -500));
 //Rotate the camNode to look at the target:
-camNode.lookAt(new Vector3f(0f,-20f,0f), Vector3f.UNIT_Y);
+camNode.lookAt(new Vector3f(0f,-20f,200f), Vector3f.UNIT_Y);
 
 this.getRootNode().attachChild(camNode);
 
@@ -172,6 +220,7 @@ this.getRootNode().attachChild(camNode);
         inputManager.addMapping("zoomIn", new KeyTrigger(KeyInput.KEY_N));
     inputManager.addMapping("zoomOut", new KeyTrigger(KeyInput.KEY_M));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+    inputManager.addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     inputManager.addListener(this, "Left");
     inputManager.addListener(this, "Right");
     inputManager.addListener(this, "Up");
@@ -183,6 +232,7 @@ this.getRootNode().attachChild(camNode);
     inputManager.addListener(this, "Jump");
     inputManager.addListener(this, "zoomIn");
     inputManager.addListener(this, "zoomOut");
+    inputManager.addListener(this, "Shoot");
   }
  
   /** These are our custom actions triggered by key presses.
@@ -211,6 +261,10 @@ this.getRootNode().attachChild(camNode);
     } else if (binding.equals("zoomOut")) {
       zoomOut = value;
     } 
+    
+    if (binding.equals("Shoot") && !value) {
+        shootRay();
+    }
   }
  
   /**
@@ -247,11 +301,11 @@ this.getRootNode().attachChild(camNode);
      camNode.setLocalTranslation(camPos);
             oldPos = oldPos.add(walkDirection);
             
-        
+        System.out.println(blindPerson.getPosition());
      blindPerson.update(tpf);
-     Vector3f walkpoint = blindPerson.getPosition().add(blindPerson.getBlindPersonControl().getWalkDirection().mult(new Vector3f(10f,10f,10f)));
+         Vector3f walkpoint = blindPerson.getPosition().add(blindPerson.getBlindPersonControl().getWalkDirection().mult(new Vector3f(10f,10f,10f)));
         drawLine(blindPerson.getPosition().x,blindPerson.getPosition().y, blindPerson.getPosition().z,walkpoint.x, walkpoint.y, walkpoint.z);
-        
+        shootRay();
   }
 
     public BulletAppState getBulletAppState() {
@@ -272,7 +326,14 @@ this.getRootNode().attachChild(camNode);
             lineGeometry.setMaterial(mat);
             rootNode.attachChild(lineGeometry);
     }
-    
+     /** A red ball that marks the last spot that was "hit" by the "shot". */
+  protected void initMark() {
+    Sphere sphere = new Sphere(30, 30, 0.2f);
+    mark = new Geometry("marker", sphere);
+    Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    mark_mat.setColor("Color", ColorRGBA.Red);
+    mark.setMaterial(mark_mat);
+  }
     
     public void collision(PhysicsCollisionEvent event) {
         Spatial nodeA = event.getNodeA();

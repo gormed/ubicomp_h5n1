@@ -59,6 +59,7 @@ public class EventHandler {
 			public void fired(GPSEvent event) {
                             if (event.getType() == GPSEvent.GPSEventType.UPDATE_LOCATION ){
                                 //...
+                                
                             }
 			}
 		};
