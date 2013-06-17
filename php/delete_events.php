@@ -5,7 +5,7 @@ require_once __DIR__ . '/db_connect.php';
 $db = new DB_CONNECT();
  
 if (isset($_POST['deviceid'])) {
-    $table = "d" . get_device_id($_POST['deviceid']);
+    $table = "d" . get_id($_POST['deviceid']);
     $deviceid = $_POST['deviceid'];
 
     $result = mysql_query("DELETE FROM $table WHERE deviceid = '$deviceid'");
@@ -15,7 +15,7 @@ if (isset($_POST['deviceid'])) {
         $response["message"] = "Events successfully deleted";
         echo json_encode($response);
     } else {
-        $response["message"] = "No Events found while trying to delete all events";
+        $response["message"] = "No Events found while trying to delete all events for " . $table . " device " . $deviceid;
         echo json_encode($response);
     }
 } else {

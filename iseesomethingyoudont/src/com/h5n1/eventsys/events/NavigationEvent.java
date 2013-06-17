@@ -36,7 +36,6 @@ public class NavigationEvent extends Event<NavigationEvent.NavigationEventType> 
 			}
 			this.content = content.getString("content");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
