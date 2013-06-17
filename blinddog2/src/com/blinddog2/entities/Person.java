@@ -5,6 +5,7 @@
 package com.blinddog2.entities;
 
 import com.blinddog2.main.Main;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.material.Material;
@@ -49,14 +50,16 @@ public class Person extends AbstractEntity {
        Main.getInstance().getRootNode().attachChild(model); 
 
   
-    CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+    BoxCollisionShape capsuleShape = new BoxCollisionShape(new Vector3f(0.5f, 0.8f, 0.5f));
     blindPersonControl = new CharacterControl(capsuleShape, 0.05f);
     model.addControl(blindPersonControl);
     blindPersonControl.setJumpSpeed(20);
     blindPersonControl.setFallSpeed(30);
-    blindPersonControl.setGravity(30);
+    blindPersonControl.setGravity(6f);
     blindPersonControl.setPhysicsLocation(new Vector3f(0, 10, 0));    
     
+    
+    Main.getInstance().getBulletAppState().getPhysicsSpace().setGravity(new Vector3f(0f,-6f,0f));
     Main.getInstance().getBulletAppState().getPhysicsSpace().add(blindPersonControl);
     
     
