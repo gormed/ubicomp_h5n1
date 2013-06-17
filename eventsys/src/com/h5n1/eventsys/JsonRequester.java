@@ -6,9 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,36 +18,49 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.h5n1.eventsys.events.Event;
 
+@SuppressWarnings("rawtypes")
 public class JsonRequester {
 	private static String json;
 	private static JSONObject jsonObj;
 	private static InputStream is;
-	private static ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String, String>>();
-	private static HashMap<Long, JSONObject> generatedEvents = new HashMap<Long, JSONObject>();
-	private static JSONArray events;
-	private static String token;
+//	private static HashMap<Long, JSONObject> generatedEvents = new HashMap<Long, JSONObject>();
+//	private static JSONArray events;
+//	private static String token;
 	
-	private static Integer deviceID = (new Random(System.currentTimeMillis()).nextInt(Integer.MAX_VALUE));
-	public static Integer getDeviceID() {
+	private static String deviceID = "42";
+	public static String getDeviceID() {
 		return deviceID;
 	}
+	public static void setDeviceID(String deviceID) {
+		JsonRequester.deviceID = deviceID;
+	}
+	
+	
+	public static final String TAG_DEVICES = "devices";
 	public static final String TAG_EVENTS = "events";
+	public static final String TAG_MESSAGE = "message";
 	public static final String TAG_CONTENT = "content";
 	public static final String TAG_TYPE = "type";
 	public static final String TAG_TIME = "time";
 	public static final String TAG_ID = "id";
+	public static final String TAG_DEVICEID = "deviceid";
+	public static final String TAG_EVENTID = "eventid";
+	public static final String TAG_RECEIVERID = "receiverid";
 
-	private static final String CREATE_URL = "http://192.168.1.92/ubicomp/create_event.php";
-	private static final String GET_All_URL = "http://192.168.1.92/ubicomp/get_all_events.php";
-	private static final String UPDATE_URL = "http://192.168.1.92/ubicomp/update_event.php";
-	private static final String DELETE_URL = "http://192.168.1.92/ubicomp/delete_event.php";
-	private static final String GET_URL = "http://192.168.1.92/ubicomp/get_event.php";
+	private static final String OUTPUT_URL = "http://gormed.no-ip.biz/ubicomp/output.php";
+	private static final String REGISTER_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/register_device.php";
+	private static final String CREATE_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/create_device.php";
+	private static final String CREATE_URL = "http://gormed.no-ip.biz/ubicomp/create_event.php";
+	private static final String GET_ALL_URL = "http://gormed.no-ip.biz/ubicomp/get_all_events.php";
+	private static final String UPDATE_URL = "http://gormed.no-ip.biz/ubicomp/update_event.php";
+	private static final String DELETE_URL = "http://gormed.no-ip.biz/ubicomp/delete_event.php";
+	private static final String DELETE_ALL_URL = "http://gormed.no-ip.biz/ubicomp/delete_events.php";
+	private static final String GET_URL = "http://gormed.no-ip.biz/ubicomp/get_event.php";
 	// private static final String CREATE_URL = "http://54.235.186.77/ubicomp/api/post/event";
 	// private static final String DELETE_URL = "http://54.235.186.77/ubicomp/api/delete/event";
 	// private static final String GET_URL = "http://54.235.186.77/ubicomp/api/get/event/";
@@ -64,60 +75,103 @@ public class JsonRequester {
 	
 	public static JSONObject newEvent(Event event) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("type", event.getClass().getSimpleName() + "_" + event.getType().toString()));
-		params.add(new BasicNameValuePair("content", event.toJsonString()));
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		params.add(new BasicNameValuePair(TAG_EVENTID, ""+event.getEventId()));
+		params.add(new BasicNameValuePair(TAG_RECEIVERID, ""+event.getReceiverId()));
+		params.add(new BasicNameValuePair(TAG_TYPE, event.getClass().getSimpleName() + "-" + event.getType().toString()));
+		params.add(new BasicNameValuePair(TAG_CONTENT, event.toJsonString()));
 		return makeHttpRequest(CREATE_URL, "POST", params);
 	}
-
-	public static JSONObject updateEvent(String id, String type, String content) {
+	
+	public static JSONObject outputDevices() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair(TAG_ID, id));
-		params.add(new BasicNameValuePair(TAG_TYPE, type));
-		params.add(new BasicNameValuePair(TAG_CONTENT, content));
+		params.add(new BasicNameValuePair(TAG_DEVICES, TAG_DEVICES));
+		return makeHttpRequest(OUTPUT_URL, "GET", params);
+	}
+	
+	public static JSONObject outputEvents() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_EVENTS, TAG_EVENTS));
+		return makeHttpRequest(OUTPUT_URL, "GET", params);
+	}
+	
+	public static JSONObject registerDevice() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		return makeHttpRequest(REGISTER_DEVICE_URL, "POST", params);
+	}
+	
+
+	public static JSONObject updateEvent(Event event) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		params.add(new BasicNameValuePair(TAG_EVENTID, ""+event.getEventId()));
+		params.add(new BasicNameValuePair(TAG_RECEIVERID, event.getReceiverId()));
+		params.add(new BasicNameValuePair(TAG_CONTENT, event.toJsonString()));
 		return makeHttpRequest(UPDATE_URL, "POST", params);
 	}
 
-	public static JSONObject getEvent(String id) {
+	public static JSONObject getEvent(String deviceid, String receiverid, Long eventid) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("id", id));
+		params.add(new BasicNameValuePair(TAG_EVENTID, eventid+""));
+		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
+		params.add(new BasicNameValuePair(TAG_RECEIVERID, receiverid));
 		return makeHttpRequest(GET_URL, "GET", params);
 	}
 
-	public static JSONObject deleteEvent(String id) {
+	public static JSONObject deleteEvent(String deviceid, Long eventid) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("id", id));
+		params.add(new BasicNameValuePair(TAG_EVENTID, eventid+""));
+		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
 		return makeHttpRequest(DELETE_URL, "POST", params);
 	}
-
-	public static ArrayList<HashMap<String, String>> getAllEvents() {
-		eventsList.clear();
+	
+	public static JSONObject deleteEvents(String deviceid) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		JSONObject getJsonObj = makeHttpRequest(GET_All_URL, "GET", params);
-		try {
-			events = getJsonObj.getJSONArray(TAG_EVENTS);
-			for (int i = 0; i < events.length(); i++) {
-				JSONObject c = events.getJSONObject(i);
-				String id = c.getString(TAG_ID);
-				String type = c.getString(TAG_TYPE);
-				String time = c.getString(TAG_TIME);
-				String content = c.getString(TAG_CONTENT);
-				HashMap<String, String> map = new HashMap<String, String>();
-				map.put(TAG_ID, id);
-				map.put(TAG_TYPE, type);
-				map.put(TAG_TIME, time);
-				map.put(TAG_CONTENT, content);
-				eventsList.add(map);
-			}
-			return eventsList;
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
+		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
+		return makeHttpRequest(DELETE_ALL_URL, "POST", params);
+	}
+	
+	public static JSONObject createDeviceTable() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
+		return makeHttpRequest(CREATE_DEVICE_URL, "POST", params);
+	}
+
+	public static JSONObject getAllEvents(String deviceid, String receiverid) {
+//		JSONArray array = new JSONArray();
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICEID, deviceid));
+		params.add(new BasicNameValuePair(TAG_RECEIVERID, receiverid));
+		JSONObject getJsonObj = makeHttpRequest(GET_ALL_URL, "GET", params);
+		return getJsonObj;
+//		try {
+//			array.put(new JSONObject(getJsonObj.get(TAG_MESSAGE)) );
+//			events = getJsonObj.getJSONArray(TAG_EVENTS);
+//			for (int i = 0; i < events.length(); i++) {
+//				JSONObject c = events.getJSONObject(i);
+//				String id = c.getString(TAG_ID);
+//				String type = c.getString(TAG_TYPE);
+//				String time = c.getString(TAG_TIME);
+//				String content = c.getString(TAG_CONTENT);
+//				JSONObject event = new JSONObject();
+//				event.put(TAG_ID, id);
+//				event.put(TAG_TYPE, type);
+//				event.put(TAG_TIME, time);
+//				event.put(TAG_CONTENT, content);
+//				array.put(event);
+//			}
+//			return array;
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
 	}
 
 	public static JSONObject makeHttpRequest(String url, String method,
 			List<NameValuePair> params) {
 		try {
+			jsonObj = null;
 			if (method == "POST") {
 				DefaultHttpClient httpClient = new DefaultHttpClient();
 				HttpPost httpPost = new HttpPost(url);
@@ -134,30 +188,31 @@ public class JsonRequester {
 				HttpEntity httpEntity = httpResponse.getEntity();
 				is = httpEntity.getContent();
 			}
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(
+						is, "utf-8"), 8);
+				StringBuilder sb = new StringBuilder();
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					sb.append(line + "\n");
+				}
+				is.close();
+				json = sb.toString();
+				System.out.println(json);
+				try {
+					jsonObj = new JSONObject(json.trim());
+				} catch (JSONException e) {
+					System.out.println("Error parsing data " + e.toString());
+				}
+			} catch (Exception e) {
+				System.out.println("Error converting result " + e.toString());
+			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "utf-8"), 8);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-			is.close();
-			json = sb.toString();
-		} catch (Exception e) {
-			System.out.println("Error converting result " + e.toString());
-		}
-		try {
-			jsonObj = new JSONObject(json.trim());
-		} catch (JSONException e) {
-			System.out.println("Error parsing data " + e.toString());
 		}
 		return jsonObj;
 	}

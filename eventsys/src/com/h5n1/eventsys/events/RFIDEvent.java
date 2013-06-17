@@ -1,5 +1,8 @@
 package com.h5n1.eventsys.events;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.h5n1.eventsys.events.Event;
 // 1) RFID-Events
 
@@ -12,32 +15,60 @@ import com.h5n1.eventsys.events.Event;
 public class RFIDEvent extends Event<RFIDEvent.RFIDEventType> {
 
 	public enum RFIDEventType {
-		NEW_TAG,
-		UPDATE_TAG,
-		REMOVE_TAG	
+		NEW_TAG, UPDATE_TAG, REMOVE_TAG
 	}
 
 	private RFIDEventType type;
-	private String data;
+	private String name;
+	private float[] size;
+	private float mass;
+	
+	private double longitude;
+	private double latitude;
 
-	public RFIDEvent(String json) {
-		
+	public RFIDEvent(String deviceid, JSONObject json) {
+		super();
+		this.deviceId = deviceid;
+
 	}
 
-	public RFIDEvent(RFIDEventType type, String data) {
+	public RFIDEvent(String deviceid, RFIDEventType type, String name, float[] size, float mass, double longitude, double latitude) {
 		this.type = type;
-		this.data = data;
+		this.name = name;
+		this.mass = mass;
+		this.size = size;
+		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 
 	public RFIDEventType getType() {
 		return type;
 	}
 
-	public String getData() {
-		return data;
+	public float getMass() {
+		return mass;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public float[] getSize() {
+		return size;
 	}
 
 	public String toJsonString() {
-		return this.data;
+		JSONObject obj = new JSONObject();
+		try {
+			for (int i = 0; i < size.length; i++) {
+				obj.accumulate(i+"", size[i]);
+			}
+			obj.accumulate("length", size.length);
+			obj.accumulate("mass", mass);
+			obj.accumulate("name", name);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj.toString();
 	}
 }
