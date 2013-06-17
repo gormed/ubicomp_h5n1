@@ -50,8 +50,9 @@ public class StaticObject extends AbstractEntity {
     /** Make brick physical with a mass > 0.0f. */
     RigidBodyControl modelPhy = new RigidBodyControl(2f);
     /** Add physical brick to physics space. */
-    modelPhy.setMass(1f);
+
     model.addControl(modelPhy);
+    modelPhy.setMass(1f);
      Main.getInstance().getBulletAppState().getPhysicsSpace().add(modelPhy);
     
     

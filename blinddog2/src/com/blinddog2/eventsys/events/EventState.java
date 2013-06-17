@@ -1,0 +1,14 @@
+package com.blinddog2.eventsys.events;
+
+public enum EventState {
+	REGISTER_DEVICE,
+	CREATE_DEVICE_TABLE,
+	NEW_EVENT,
+	NEW_UPDATE_EVENT,
+	UPDATE_EVENT,
+	NEW_DELETE_EVENT,
+	DELETE_EVENT,
+	DELETE_ALL_EVENTS,
+	GET_ALL_EVENTS,
+	GET_EVENT
+}

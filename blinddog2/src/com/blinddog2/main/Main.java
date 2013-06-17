@@ -8,6 +8,8 @@ import com.blinddog2.entities.Person;
 import com.blinddog2.entities.SampleStaticObject;
 import com.blinddog2.entities.StaticObject;
 import com.blinddog2.entities.Street;
+import com.blinddog2.events.EventHandler;
+import com.blinddog2.eventsys.EventSystem;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -46,6 +48,7 @@ public class Main extends SimpleApplication
     private boolean zoomOut;
     private EntityManager entityManager;
     private StaticObject staticObject1;
+    private EventHandler eventHandler;
   
     //==========================================================================
     //===   Singleton
@@ -101,6 +104,7 @@ public class Main extends SimpleApplication
     private boolean camdown;
  
   public void simpleInitApp() {
+    eventHandler = new EventHandler(EventSystem.getInstance());
     entityManager = EntityManager.getInstance();
     entityManager.initialize();
     /** Set up Physics */
@@ -111,7 +115,7 @@ public class Main extends SimpleApplication
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
    
-
+    //setewretr
     setUpKeys();
     setUpLight();
  
@@ -245,8 +249,8 @@ this.getRootNode().attachChild(camNode);
             
         
      blindPerson.update(tpf);
-//     Vector3f walkpoint = blindPerson.getPosition().add(blindPerson.getBlindPersonControl().getWalkDirection().mult(new Vector3f(10f,10f,10f)));
-//        drawLine(blindPerson.getPosition().x,blindPerson.getPosition().y, blindPerson.getPosition().z,walkpoint.x, walkpoint.y, walkpoint.z);
+     Vector3f walkpoint = blindPerson.getPosition().add(blindPerson.getBlindPersonControl().getWalkDirection().mult(new Vector3f(10f,10f,10f)));
+        drawLine(blindPerson.getPosition().x,blindPerson.getPosition().y, blindPerson.getPosition().z,walkpoint.x, walkpoint.y, walkpoint.z);
         
   }
 
@@ -288,7 +292,7 @@ this.getRootNode().attachChild(camNode);
         else if ( event.getNodeB().getName().equals("street") ) {
             //System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
         } 
-        else if ( event.getNodeB().getName().equals("staticObject1")) {
+        else if ( event.getNodeB().getName().indexOf("staticObject")>=0) {
             System.out.println("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
         }
         else if ( event.getNodeB().getName().equals("grass") ) {
