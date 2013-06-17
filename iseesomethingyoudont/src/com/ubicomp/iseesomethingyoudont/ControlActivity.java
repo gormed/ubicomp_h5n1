@@ -60,12 +60,12 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	private ConnectivityManager connectivityManager;
 	private NetworkInfo networkInfo;
 	//RFID Emulation
-	private static String[] handicap = {"Buggy", "Baum", "Telefonzelle", "Blumen", "Laterne", "Wasserspender", "Mülltonne", "Bank", "Schwarzes Loch", "Bierzelt"};
+	private static String[] handicap = {"Buggy", "Baum", "Telefonzelle", "Blumen", "Laterne", "Wasserspender", "Mï¿½lltonne", "Bank", "Schwarzes Loch", "Bierzelt"};
     private static float[] radius = {0.5f, 1.0f, 0.75f, 2.0f, 3.6f, 5.7f, 0.01f, 1.11f, 1.53f, 2.22f};
     private static float[] masse = {10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 90f, 100f};
-    // (Elastischer Eindringmodul – EIT),
-    // Kompressionsmodul K - er beschreibt, welche allseitige Druckänderung nötig ist, 
-    // um eine bestimmte Volumenänderung hervorzurufen
+    // (Elastischer Eindringmodul ï¿½ EIT),
+    // Kompressionsmodul K - er beschreibt, welche allseitige Druckï¿½nderung nï¿½tig ist, 
+    // um eine bestimmte Volumenï¿½nderung hervorzurufen
 
 
 	// Called when app is created (not when displayed)
@@ -119,7 +119,7 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	@Override
 	public void onPause(){
 		super.onPause();//
-		// Wenn man den kill außerhalb des if macht, wird die app sofort bei start gekillt
+		// Wenn man den kill auï¿½erhalb des if macht, wird die app sofort bei start gekillt
 		if(eventToSpeechSynthesis != null ){
 			eventToSpeechSynthesis.stopSpeaking();
 			android.os.Process.killProcess(android.os.Process.myPid());
@@ -221,9 +221,9 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	public void createTestRFID() {
 		Random rnd = new Random();
 		
-		// breite, höhe, tiefe
-		float[] size = { radius[rnd.nextInt(9)], radius[rnd.nextInt(9)], radius[rnd.nextInt(9)]};
-		float mass = masse[rnd.nextInt(9)];
+		// breite, hoehe, tiefe
+		double[] size = { radius[rnd.nextInt(9)], radius[rnd.nextInt(9)], radius[rnd.nextInt(9)]};
+		double mass = masse[rnd.nextInt(9)];
 		String name = handicap[rnd.nextInt(9)];
 		double longitude = locationServices.getUpdateLocation().getLo() + rnd.nextFloat();
 		double latitude = locationServices.getUpdateLocation().getLa() + rnd.nextFloat();
@@ -239,7 +239,7 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 			if(audioManager.isWiredHeadsetOn() && locationServices.checkGPSOn() && networkInfo.isConnectedOrConnecting()){
 			} else {
 				//eventToSpeechSynthesis.stopSpeaking();
-				//eventToSpeechSynthesis.speakTest("Ihr Gerät unterstützt die benötigten Funktionen nicht");
+				//eventToSpeechSynthesis.speakTest("Ihr Gerï¿½t unterstï¿½tzt die benï¿½tigten Funktionen nicht");
 				//android.os.Process.killProcess(android.os.Process.myPid());
 			}
 		}

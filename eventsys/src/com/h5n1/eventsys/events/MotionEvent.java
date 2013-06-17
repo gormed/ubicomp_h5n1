@@ -16,9 +16,10 @@ public class MotionEvent extends Event<MotionEvent.MotionEventType> {
 	private float[] motionVector;
 	private MotionEventType type;
 
-	public MotionEvent(String deviceid, JSONObject json) {
+	public MotionEvent(String deviceid, MotionEventType type, JSONObject json) {
 		super();
 		this.deviceId = deviceid;
+		this.type = type;
 	}
 
 	public MotionEvent(String deviceid, MotionEventType type,

@@ -17,16 +17,13 @@ public class NavigationEvent extends Event<NavigationEvent.NavigationEventType> 
 	private double[] data;
 	private String content;
 	
-	public NavigationEvent(String deviceid, JSONObject json) {
+	public NavigationEvent(String deviceid, NavigationEventType type, JSONObject json) {
 		super();
 		this.deviceId = deviceid;
 		try {
 			setReceiverId(json.getString(JsonRequester.TAG_RECEIVERID));
 			setEventId(json.getInt(JsonRequester.TAG_EVENTID));
-			String type = json.getString(JsonRequester.TAG_TYPE);
-			String[] split = type.split("[-]");
-			String eventType = split[1];
-			this.type = NavigationEventType.valueOf(eventType);
+			this.type = type;
 			JSONObject content = new JSONObject(json.getString(JsonRequester.TAG_CONTENT));
 			int length = content.getInt("length");
 			data = new double[length];

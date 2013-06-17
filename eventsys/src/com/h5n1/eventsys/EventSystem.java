@@ -12,12 +12,18 @@ import org.json.JSONObject;
 
 import com.h5n1.eventsys.events.ApplicationEvent;
 import com.h5n1.eventsys.events.CompanionEvent;
+import com.h5n1.eventsys.events.ApplicationEvent.ApplicationEventType;
+import com.h5n1.eventsys.events.CompanionEvent.CompanionEventType;
 import com.h5n1.eventsys.events.Event;
 import com.h5n1.eventsys.events.EventState;
 import com.h5n1.eventsys.events.GPSEvent;
+import com.h5n1.eventsys.events.GPSEvent.GPSEventType;
 import com.h5n1.eventsys.events.MotionEvent;
+import com.h5n1.eventsys.events.MotionEvent.MotionEventType;
 import com.h5n1.eventsys.events.NavigationEvent;
+import com.h5n1.eventsys.events.NavigationEvent.NavigationEventType;
 import com.h5n1.eventsys.events.RFIDEvent;
+import com.h5n1.eventsys.events.RFIDEvent.RFIDEventType;
 import com.h5n1.eventsys.listener.EventListener;
 import com.h5n1.eventsys.JsonRequester;
 
@@ -89,37 +95,22 @@ public class EventSystem {
 					JSONArray events = eventContent.getJSONArray("events");
 					for (int j = 0; j < events.length(); j++) {
 						JSONObject event = (JSONObject) events.get(j);
-						int id = event.getInt(JsonRequester.TAG_ID);
-						String deviceid = event
-								.getString(JsonRequester.TAG_DEVICEID);
-						String time = event.getString(JsonRequester.TAG_TIME);
-						String type = event.getString(JsonRequester.TAG_TYPE);
-						String[] split = type.split("[-]");
-						
-						Event incomingEvent = null;
-						if (split[0].equals(GPSEvent.class.getSimpleName())) {
-							incomingEvent = new GPSEvent(deviceid, event);
-						} else if (split[0].equals(RFIDEvent.class.getSimpleName())) {
-							incomingEvent = new RFIDEvent(deviceid, event);
-						} else if (split[0].equals(CompanionEvent.class.getSimpleName())) {
-							incomingEvent = new CompanionEvent(deviceid, event);
-						} else if (split[0].equals(MotionEvent.class.getSimpleName())) {
-							incomingEvent = new MotionEvent(deviceid, event);
-						} else if (split[0].equals(ApplicationEvent.class.getSimpleName())) {
-							incomingEvent = new ApplicationEvent(deviceid, event);
-						} else if (split[0].equals(NavigationEvent.class.getSimpleName())) {
-							incomingEvent = new NavigationEvent(deviceid, event);
-						}
-						incomingEvents.offer(incomingEvent);
-//						System.out.println(id + " " + eventid + " " + deviceid
-//								+ " " + receivcerid + " " + time);
+						incomingEvents.offer(convertJSONToEvent(event));
+						// System.out.println(id + " " + eventid + " " +
+						// deviceid
+						// + " " + receivcerid + " " + time);
 					}
 					break;
 				case UPDATE_EVENT:
 
 					break;
 				case GET_EVENT:
-
+					JSONObject event = eventContent.getJSONObject("event");
+					incomingEvents.offer(convertJSONToEvent(event));
+					break;
+				case GET_ALL_DEVICES:
+					JSONObject devices = eventContent.getJSONObject("devices");
+					incomingEvents.offer(convertJSONToEvent(devices));
 					break;
 				default:
 					break;
@@ -133,6 +124,36 @@ public class EventSystem {
 			}
 		}
 		updateInEvents(timeGap);
+	}
+	
+	private Event convertJSONToEvent(JSONObject event) throws JSONException {
+		int id = event.getInt(JsonRequester.TAG_ID);
+		String deviceid = event
+				.getString(JsonRequester.TAG_DEVICEID);
+		String time = event.getString(JsonRequester.TAG_TIME);
+		String type = event.getString(JsonRequester.TAG_TYPE);
+		String[] split = type.split("[-]");
+
+		Event incomingEvent = null;
+		if (split[0].equals(GPSEvent.class.getSimpleName())) {
+			incomingEvent = new GPSEvent(deviceid, GPSEventType.valueOf(split[1]), event);
+		} else if (split[0].equals(RFIDEvent.class
+				.getSimpleName())) {
+			incomingEvent = new RFIDEvent(deviceid, RFIDEventType.valueOf(split[1]), event);
+		} else if (split[0].equals(CompanionEvent.class
+				.getSimpleName())) {
+			incomingEvent = new CompanionEvent(deviceid, CompanionEventType.valueOf(split[1]), event);
+		} else if (split[0].equals(MotionEvent.class
+				.getSimpleName())) {
+			incomingEvent = new MotionEvent(deviceid, MotionEventType.valueOf(split[1]), event);
+		} else if (split[0].equals(ApplicationEvent.class
+				.getSimpleName())) {
+			incomingEvent = new ApplicationEvent(deviceid, ApplicationEventType.valueOf(split[1]), event);
+		} else if (split[0].equals(NavigationEvent.class
+				.getSimpleName())) {
+			incomingEvent = new NavigationEvent(deviceid, NavigationEventType.valueOf(split[1]), event);
+		}
+		return incomingEvent;
 	}
 
 	public void updateInEvents(float timeGap) {
@@ -189,6 +210,16 @@ public class EventSystem {
 							temp.getReceiverId());
 				}
 				break;
+			case GET_ALL_DEVICE_EVENTS:
+				if (temp instanceof ApplicationEvent) {
+					obj = JsonRequester.outputEvents();
+				}
+				break;
+			case GET_ALL_DEVICES:
+				if (temp instanceof ApplicationEvent) {
+					obj = JsonRequester.outputDevices();
+				}
+				break;
 			case UPDATE_EVENT:
 				obj = JsonRequester.updateEvent(temp);
 				break;
@@ -196,6 +227,7 @@ public class EventSystem {
 				obj = JsonRequester.getEvent(temp.getDeviceId(),
 						temp.getReceiverId(), temp.getEventId());
 				break;
+
 			default:
 				break;
 			}

@@ -24,17 +24,14 @@ public class GPSEvent extends Event<GPSEvent.GPSEventType> {
 	private double lo, la;
 	private GPSEventType type;
 
-	public GPSEvent(String deviceid, JSONObject json) {
+	public GPSEvent(String deviceid, GPSEventType type, JSONObject json) {
 		super();
 		this.deviceId = deviceid;
 
 		try {
 			setReceiverId( json.getString(JsonRequester.TAG_RECEIVERID) );
 			setEventId(json.getInt(JsonRequester.TAG_EVENTID));
-			String type = json.getString(JsonRequester.TAG_TYPE);
-			String[] split = type.split("[-]");
-			String eventType = split[1];
-			this.type = GPSEventType.valueOf(eventType);
+			this.type = type;
 			JSONObject content = json.getJSONObject(JsonRequester.TAG_CONTENT);
 			lo = content.getDouble("lo");
 			la = content.getDouble("la");

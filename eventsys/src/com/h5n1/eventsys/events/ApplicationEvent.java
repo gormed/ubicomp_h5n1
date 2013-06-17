@@ -1,7 +1,10 @@
 package com.h5n1.eventsys.events;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.h5n1.eventsys.JsonRequester;
 
 public class ApplicationEvent extends Event<ApplicationEvent.ApplicationEventType> {
 	
@@ -12,13 +15,37 @@ public class ApplicationEvent extends Event<ApplicationEvent.ApplicationEventTyp
 		GET_ALL_EVENTS,
 		CONNECT_DEVICE,
 		DISCONNECT_DEVICE,
+		GET_ALL_DEVICES,
+		GET_ALL_DEVICE_EVENTS
 	}
 	
 	private ApplicationEventType type;
+	private JSONArray devices = null;
+	private JSONArray events = null;
 	
-	public ApplicationEvent(String deviceid, JSONObject json) {
+	public ApplicationEvent(String deviceid, ApplicationEventType type, JSONObject json) {
 		super();
 		this.deviceId = deviceid;
+		this.type = type;
+		try {
+			if (type == ApplicationEventType.GET_ALL_DEVICES) {
+				setReceiverId(json.getString(JsonRequester.TAG_RECEIVERID));
+				setEventId(json.getInt(JsonRequester.TAG_EVENTID));
+				JSONObject content = new JSONObject(json.getString(JsonRequester.TAG_CONTENT));
+				devices = content.getJSONArray("devices");
+				
+			} else if (type == ApplicationEventType.GET_ALL_DEVICE_EVENTS) {
+				setReceiverId(json.getString(JsonRequester.TAG_RECEIVERID));
+				setEventId(json.getInt(JsonRequester.TAG_EVENTID));
+				JSONObject content = new JSONObject(json.getString(JsonRequester.TAG_CONTENT));
+				devices = content.getJSONArray("events");
+				
+			} else {
+
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public ApplicationEvent(String deviceid, ApplicationEventType type) {
