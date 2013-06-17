@@ -75,4 +75,14 @@ public class GPSEvent extends Event<GPSEvent.GPSEventType> {
 	public void setLo(double lo) {
 		this.lo = lo;
 	}
+
+	public double getLo() {
+		return lo;
+	}
+
+	public double getLa() {
+		return la;
+	}
+	
+	
 }
