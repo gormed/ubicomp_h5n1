@@ -40,6 +40,9 @@ public class JsonRequester {
 		JsonRequester.deviceID = deviceID;
 	}
 	
+	
+	public static final String TAG_DEVICES = "devices";
+	public static final String TAG_EVENTS = "events";
 	public static final String TAG_MESSAGE = "message";
 	public static final String TAG_CONTENT = "content";
 	public static final String TAG_TYPE = "type";
@@ -49,7 +52,7 @@ public class JsonRequester {
 	public static final String TAG_EVENTID = "eventid";
 	public static final String TAG_RECEIVERID = "receiverid";
 
-	
+	private static final String OUTPUT_URL = "http://gormed.no-ip.biz/ubicomp/output.php";
 	private static final String REGISTER_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/register_device.php";
 	private static final String CREATE_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/create_device.php";
 	private static final String CREATE_URL = "http://gormed.no-ip.biz/ubicomp/create_event.php";
@@ -80,11 +83,24 @@ public class JsonRequester {
 		return makeHttpRequest(CREATE_URL, "POST", params);
 	}
 	
+	public static JSONObject outputDevices() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_DEVICES, TAG_DEVICES));
+		return makeHttpRequest(OUTPUT_URL, "GET", params);
+	}
+	
+	public static JSONObject outputEvents() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair(TAG_EVENTS, TAG_EVENTS));
+		return makeHttpRequest(OUTPUT_URL, "GET", params);
+	}
+	
 	public static JSONObject registerDevice() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair(TAG_DEVICEID, getDeviceID()));
 		return makeHttpRequest(REGISTER_DEVICE_URL, "POST", params);
 	}
+	
 
 	public static JSONObject updateEvent(Event event) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();

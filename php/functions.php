@@ -14,8 +14,16 @@ function get_id($deviceid) {
             return $sql['id'];
         }
 }
-function get_events($deviceid) {
-	$table = "d" . get_id($deviceid);
+function get_device_id($id) {
+    $sql = mysql_query("SELECT *FROM devices WHERE id = '$id'") or die (mysql_error());
+        if (mysql_num_rows($sql) > 0) {
+            $sql = mysql_fetch_array($sql);
+            return $sql['deviceid'];
+        }
+}
+function get_events($id) {
+	$table = "d" . $id;
+    $deviceid = get_device_id($id);
     $sql = "SELECT *FROM $table WHERE deviceid = '$deviceid'";
     $result = mysql_query($sql) or die(mysql_error());
 
@@ -31,17 +39,9 @@ function get_events($deviceid) {
         	$event ["type"] = $row["type"];
         	$event ["content"] = $row["content"];
         	$event ["time"] = $row["time"];
-
         	array_push($response['events'], $event);
     	}
-
-    $response["message"]= "Devices successfully displayed.";
-    echo json_encode($response);
-
-    }else{
-    $response["message"] = "No events found";
-    $response['events'] = array();
-    echo json_encode($response);
-	}
+    return $response;
+    }
 }
 ?>
