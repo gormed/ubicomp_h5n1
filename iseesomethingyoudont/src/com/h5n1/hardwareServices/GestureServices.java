@@ -23,9 +23,15 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	private Activity activity;
 	private EventToSpeechSynthesis ttsengine;
 	private Display display;
-	private long lastLongPress;
-	private long currentLongPress;
+	private long lastTime;
+	private long currentTime;
 	private int sosCounter = 0;
+	private float e1X;
+	private float e1Y;
+	private float e2X;
+	private float e2Y;
+	private float screenX;
+	private float screenY;
 
 
 	// creates gesture services
@@ -35,7 +41,9 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		this.activity = activity;
 		this.display = display;
 		ttsengine = eventToSpeechSynthesis;
-		lastLongPress = System.currentTimeMillis();
+		screenX = display.getWidth();
+		screenY = display.getHeight();
+		lastTime = System.currentTimeMillis();
 	}
 	
 
@@ -49,37 +57,25 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 
 	@Override
 	public void onLongPress(MotionEvent event) {
-		Log.d(DEBUG_TAG, "onLongPress: " + event.toString());
+		//Log.d(DEBUG_TAG, "onLongPress: " + event.toString());
 		gestureText.setText("LongPress".toCharArray(), 0, "LongPress".length());
 		//vibrator.vibrateSpecificTime(500);
-		
-		currentLongPress = System.currentTimeMillis();
-		//Log.i("HATATATATATA", "current" + Long.toString(currentLongPress));
-		//Log.i("HATATATATATA", "last" + Long.toString(lastLongPress));
-		//Log.i("HATATATATATA", "difference" + Long.toString(currentLongPress - lastLongPress));
-		//Log.i("HATATATATATA", "1");
-		// if difference current/last smaller than 1 second, do this
-		if (currentLongPress - lastLongPress < 5000){
+		// Gets the currents system time
+		currentTime = System.currentTimeMillis();
+		// if difference current/last smaller than mseconds second, do this
+		if (currentTime - lastTime < 3000){
 			sosCounter++;
-			Log.i("HATATATATATA", "current" + Long.toString(currentLongPress));
-			Log.i("HATATATATATA", "last" + Long.toString(lastLongPress));
-			Log.i("HATATATATATA", "difference" + Long.toString(currentLongPress - lastLongPress));
 			if(sosCounter >= 3){
-				// Starte den Sos Ruf
-				Log.i("HATATATATATA", "3");
-				showToast("Sie haben einen SOS ruf gestartet");
 				sosCounter = 0;
-			}
-			Log.i("HATATATATATA", "4");
-			sosCounter = 0;
-			
-			showToast("Counter zurück gesetzt");
+				// Call SOS method here!!!
+				ttsengine.stopSpeaking();
+				ttsengine.speakTest("Ein S O S Signal wird gesendet");
+			} else { }
 		} else {
-			
+			sosCounter = 0;
 		}
-		
-		lastLongPress = currentLongPress;
-		
+		lastTime = currentTime;
+		Log.i("HATATATATATA", Integer.toString(sosCounter));
 	}
 
 	@Override
@@ -93,17 +89,16 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 	@Override
 	public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
 		// Get data to check finger position
-		float e1X = event1.getX();
-		float e1Y = event1.getY();
-		float e2X = event2.getX();
-		float e2Y = event2.getY();
-		float screenX = display.getWidth();
-		float screenY = display.getHeight();
+		e1X = event1.getX();
+		e1Y = event1.getY();
+		e2X = event2.getX();
+		e2Y = event2.getY();
 		
 		// Checks, if close-gesture aczivated, Checks if e1 is in bottom left corner
 		if((0 <= e1X && e1X <= screenX*0.1) && (screenY*0.90 <= e1Y && e1Y <= screenY)){
 			// Checks if in upper right corner
 			if((screenX*0.9 <= e2X && e2X <= screenX) && (0 <= e2Y && e2Y <= screenY*0.1)){
+				vibrator.vibrateSpecificTime(5000);
 				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 		}
@@ -158,9 +153,4 @@ public class GestureServices extends GestureDetector.SimpleOnGestureListener {
 		Toast toast = Toast.makeText(activity.getApplicationContext(), text, duration);
 		toast.show();
 	}
-	
-	private void endAppAction(){
-		
-	}
-	
 }
