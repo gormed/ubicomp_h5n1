@@ -58,7 +58,7 @@ public class EventHandler {
 			@Override
 			public void fired(GPSEvent event) {
                             if (event.getType() == GPSEvent.GPSEventType.UPDATE_LOCATION ){
-                                //...
+                                
                                 
                             }
 			}
@@ -89,7 +89,7 @@ public class EventHandler {
 
 			@Override
 			public void fired(ApplicationEvent event) {
-
+                        
 			}
 		};
 
