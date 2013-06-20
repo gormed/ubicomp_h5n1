@@ -46,4 +46,8 @@ public class EventToSpeechSynthesis {
 	public void stopSpeaking() {
 		ttsEngine.stop();
 	}
+
+	public void shutdown(){
+		ttsEngine.shutdown();
+	}
 }

@@ -1,5 +1,8 @@
 package com.ubicomp.iseesomethingyoudont;
 
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 import android.app.Activity;
@@ -15,12 +18,14 @@ import java.util.UUID;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.view.GestureDetectorCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -59,6 +64,7 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	private AudioManager audioManager;
 	private ConnectivityManager connectivityManager;
 	private NetworkInfo networkInfo;
+	private Display display;
 	//RFID Emulation
 	private static String[] handicap = {"Buggy", "Baum", "Telefonzelle", "Blumen", "Laterne", "Wasserspender", "M�lltonne", "Bank", "Schwarzes Loch", "Bierzelt"};
     private static float[] radius = {0.5f, 1.0f, 0.75f, 2.0f, 3.6f, 5.7f, 0.01f, 1.11f, 1.53f, 2.22f};
@@ -107,6 +113,15 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 		eventToSpeechSynthesis.getTtsengine().setLanguage(Locale.GERMAN);
 		enableHardwareServices();
 		checkRequired();
+	}
+	
+	// Called when app is destroyed
+	public void onDestroy(){
+		if(eventToSpeechSynthesis!=null){
+			eventToSpeechSynthesis.shutdown();
+		}
+		android.os.Process.killProcess(android.os.Process.myPid());
+		
 	}
 	
 	// Called when app is enden (not killed)
@@ -184,10 +199,12 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 		final View contentView = findViewById(R.id.fullscreen_content);
 		// apply a touch listener to the view
 		contentView.setOnTouchListener(this);
+		// Gives access to display information
+		display = getWindowManager().getDefaultDisplay();
 		// Creates a vibrator mechanism
 		vibrator = new HapticalFeedbackServices(this);
 		// Creates the recognition of gestures -- VERURSACHT NOCH FEHLER WEGEN DER SPEECH SYNTHESIS
-		gestures = new GestureServices(gestureText, vibrator, eventToSpeechSynthesis, this);
+		gestures = new GestureServices(gestureText, vibrator, eventToSpeechSynthesis, display, this);
 		// implementation of GestureDetector.OnGestureListener
 		detector = new GestureDetectorCompat(this, gestures);
 		// Creates location Services, GPS and WIFI Location
@@ -235,14 +252,15 @@ public class ControlActivity extends Activity implements OnTouchListener, OnInit
 	}
 	
 	// Checks if all required objects are available, kills if not
-		private void checkRequired(){
-			if(audioManager.isWiredHeadsetOn() && locationServices.checkGPSOn() && networkInfo.isConnectedOrConnecting()){
-			} else {
-				//eventToSpeechSynthesis.stopSpeaking();
-				//eventToSpeechSynthesis.speakTest("Ihr Ger�t unterst�tzt die ben�tigten Funktionen nicht");
-				//android.os.Process.killProcess(android.os.Process.myPid());
-			}
+	private void checkRequired(){
+		if(audioManager.isWiredHeadsetOn() && locationServices.checkGPSOn() && networkInfo.isConnectedOrConnecting()){
+		} else {
+			//eventToSpeechSynthesis.stopSpeaking();
+			eventToSpeechSynthesis.speakTest("Ihr Gerät unterstützt die benötigten Funktionen nicht");
+			//android.os.Process.killProcess(android.os.Process.myPid());
+
 		}
+	}
 	
 	// Displays a test ghost message
 	public void showTest(String text){
