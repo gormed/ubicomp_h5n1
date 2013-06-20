@@ -8,8 +8,9 @@ import com.blinddog2.entities.Person;
 import com.blinddog2.entities.SampleStaticObject;
 import com.blinddog2.entities.StaticObject;
 import com.blinddog2.entities.Street;
-import com.blinddog2.events.EventHandler;
-import com.blinddog2.eventsys.EventSystem;
+import com.blinddog2.event.EventHandler;
+import com.blinddog2.event.EventHandler.Device;
+import com.h5n1.eventsys.EventSystem;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -36,6 +37,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.shape.Sphere;
+import java.util.logging.Level;
+import java.util.logging.Logger;
  
 /**
  * Example 9 - How to make walls and floors solid.
@@ -57,6 +60,7 @@ public class Main extends SimpleApplication
     private EventHandler eventHandler;
     private Geometry mark;
     private Node shootables;
+    private StaticObject staticObject2;
   
     //==========================================================================
     //===   Singleton
@@ -156,14 +160,15 @@ public class Main extends SimpleApplication
     setUpLight();
     
     initMark();  
-    
+    Logger.getLogger( "" ).setLevel( Level.WARNING );
     
     street = new Street();
     grass = new Grass();
     buergersteig = new Buergersteig();
     sampleStaticObject = new SampleStaticObject();   
-    blindPerson = entityManager.createPerson("blindPerson");
-    staticObject1 = entityManager.createStaticObject("staticObject1");
+     blindPerson = entityManager.createPerson("blindPerson");
+    staticObject1 = entityManager.createStaticObject("staticObject1",  new Vector3f(-20f,100f,10f));
+    staticObject2 = entityManager.createStaticObject("staticObject2",  new Vector3f(0f,200f,10f));
     
     shootables = new Node("Shootables");
     rootNode.attachChild(shootables);
@@ -171,7 +176,6 @@ public class Main extends SimpleApplication
     shootables.attachChild(grass.getModel());
     shootables.attachChild(buergersteig.getModel());
     shootables.attachChild(sampleStaticObject.getModel());
-    shootables.attachChild(blindPerson.getModel());
     shootables.attachChild(staticObject1.getModel());
    
     
@@ -278,6 +282,13 @@ this.getRootNode().attachChild(camNode);
   public void simpleUpdate(float tpf) {
 //Vector3f camDir = cam.getDirection().clone().multLocal(0.6f);
 //Vector3f camLeft = cam.getLeft().clone().multLocal(0.4f);
+    if(eventHandler.isGotAllDevices()){
+        for(Device d : eventHandler.getDevices()){
+           System.out.println("Device " + d.deviceid + " registered!");// entityManager.createPerson(d.deviceid);
+        }
+    }
+      
+      
          bulletAppState.update(tpf);
     Vector3f vDir = new Vector3f(0,0,0.5f);
     Vector3f vLeft = new Vector3f(0.5f,0,0);
@@ -301,7 +312,6 @@ this.getRootNode().attachChild(camNode);
      camNode.setLocalTranslation(camPos);
             oldPos = oldPos.add(walkDirection);
             
-        System.out.println(blindPerson.getPosition());
      blindPerson.update(tpf);
          Vector3f walkpoint = blindPerson.getPosition().add(blindPerson.getBlindPersonControl().getWalkDirection().mult(new Vector3f(10f,10f,10f)));
         drawLine(blindPerson.getPosition().x,blindPerson.getPosition().y, blindPerson.getPosition().z,walkpoint.x, walkpoint.y, walkpoint.z);
@@ -347,20 +357,21 @@ this.getRootNode().attachChild(camNode);
         
       if(event.getNodeA().getName().equals("blindPerson") ){
         if ( event.getNodeB().getName().equals("SampleStaticObject") ) {
-            //System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
+             fpsText.setText("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
             //System.out.println(blindPerson.getPosition());
         }
         else if ( event.getNodeB().getName().equals("street") ) {
-            //System.out.println("collision "+nodeB + " at " + event.getLocalPointB());
+            fpsText.setText("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
         } 
         else if ( event.getNodeB().getName().indexOf("staticObject")>=0) {
-            System.out.println("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
+            //System.out.println("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
+            fpsText.setText("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
         }
         else if ( event.getNodeB().getName().equals("grass") ) {
-            //System.out.println("x1 " + x1 + "z1 " + z1+"x2 "+ x2+"z2 "+ z2);   
+             fpsText.setText("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1()); 
              
         } else if ( event.getNodeB().getName().equals("buergersteig") ) {
-            //System.out.println("x1 " + x1 + "z1 " + z1+"x2 "+ x2+"z2 "+ z2);   
+            fpsText.setText("collision mit " + event.getNodeB().getName() + " in " + event.getDistance1());
           
         }  
     }   

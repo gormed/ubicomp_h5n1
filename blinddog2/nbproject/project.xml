@@ -11,6 +11,7 @@
             <name>blinddog2</name>
             <explicit-platform explicit-source-supported="true"/>
             <source-roots>
+                <root id="src.src3.dir"/>
                 <root id="src.src2.dir"/>
                 <root id="src.dir"/>
             </source-roots>
