@@ -38,7 +38,7 @@ public class ApplicationEvent extends Event<ApplicationEvent.ApplicationEventTyp
 				setReceiverId(json.getString(JsonRequester.TAG_RECEIVERID));
 				setEventId(json.getInt(JsonRequester.TAG_EVENTID));
 				JSONObject content = new JSONObject(json.getString(JsonRequester.TAG_CONTENT));
-				devices = content.getJSONArray("events");
+				events = content.getJSONArray("events");
 				
 			} else {
 
@@ -70,5 +70,11 @@ public class ApplicationEvent extends Event<ApplicationEvent.ApplicationEventTyp
 		return type;
 	}
 
-
+	public JSONArray getDevices() {
+		return devices;
+	}
+	
+	public JSONArray getEvents() {
+		return events;
+	}
 }
