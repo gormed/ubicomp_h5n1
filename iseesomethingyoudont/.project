@@ -32,9 +32,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>eventsystem</name>
+			<name>eventsys</name>
 			<type>2</type>
-			<location>N:/Projects/githome/ubicomp_h5n1/eventsys/src</location>
+			<location>/home/hans/Git/ubicomp_h5n1/eventsys/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -52,15 +52,15 @@ public class JsonRequester {
 	public static final String TAG_EVENTID = "eventid";
 	public static final String TAG_RECEIVERID = "receiverid";
 
-	private static final String OUTPUT_URL = "http://gormed.no-ip.biz/ubicomp/output.php";
-	private static final String REGISTER_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/register_device.php";
-	private static final String CREATE_DEVICE_URL = "http://gormed.no-ip.biz/ubicomp/create_device.php";
-	private static final String CREATE_URL = "http://gormed.no-ip.biz/ubicomp/create_event.php";
-	private static final String GET_ALL_URL = "http://gormed.no-ip.biz/ubicomp/get_all_events.php";
-	private static final String UPDATE_URL = "http://gormed.no-ip.biz/ubicomp/update_event.php";
-	private static final String DELETE_URL = "http://gormed.no-ip.biz/ubicomp/delete_event.php";
-	private static final String DELETE_ALL_URL = "http://gormed.no-ip.biz/ubicomp/delete_events.php";
-	private static final String GET_URL = "http://gormed.no-ip.biz/ubicomp/get_event.php";
+	private static final String OUTPUT_URL = "http://192.168.212.101/ubicomp/output.php";
+	private static final String REGISTER_DEVICE_URL = "http://192.168.212.101/ubicomp/register_device.php";
+	private static final String CREATE_DEVICE_URL = "http://192.168.212.101/ubicomp/create_device.php";
+	private static final String CREATE_URL = "http://192.168.212.101/ubicomp/create_event.php";
+	private static final String GET_ALL_URL = "http://192.168.212.101/ubicomp/get_all_events.php";
+	private static final String UPDATE_URL = "http://192.168.212.101/ubicomp/update_event.php";
+	private static final String DELETE_URL = "http://192.168.212.101/ubicomp/delete_event.php";
+	private static final String DELETE_ALL_URL = "http://192.168.212.101/ubicomp/delete_events.php";
+	private static final String GET_URL = "http://192.168.212.101/ubicomp/get_event.php";
 	// private static final String CREATE_URL = "http://54.235.186.77/ubicomp/api/post/event";
 	// private static final String DELETE_URL = "http://54.235.186.77/ubicomp/api/delete/event";
 	// private static final String GET_URL = "http://54.235.186.77/ubicomp/api/get/event/";
