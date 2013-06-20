@@ -163,6 +163,7 @@ public class Main extends SimpleApplication
     Logger.getLogger( "" ).setLevel( Level.WARNING );
     
     street = new Street();
+    houses = new Houses();
     grass = new Grass();
     buergersteig = new Buergersteig();
     sampleStaticObject = new SampleStaticObject();   
