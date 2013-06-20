@@ -9,6 +9,6 @@
     <string name="obstacle">Test Hinderniss</string>
     <string name="exit">Exit</string>
     <string name="event">Events</string>
-  	<string name="dummy_content">I SEE\nSOMETHING\nYOU DON\'T22</string>
+  	<string name="dummy_content">I SEE\nSOMETHING\nYOU DON\'T</string>
 
 </resources>
