@@ -14,6 +14,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Sphere;
 
 /**
  *
@@ -40,8 +41,8 @@ public class StaticObject extends AbstractEntity {
     private void createModel(String name, Vector3f position){
 
         
-    Box box = new Box(Vector3f.ZERO, 1, 1, 1); 
-   model = new Geometry(name, box);
+    Sphere sphere = new Sphere(30, 30, 2f); 
+   model = new Geometry(name, sphere);
    Material mat = new Material(Main.getInstance().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md"); 
     model.setMaterial(mat);
     Main.getInstance().getRootNode().attachChild(model);
@@ -52,7 +53,7 @@ public class StaticObject extends AbstractEntity {
     /** Add physical brick to physics space. */
 
     model.addControl(modelPhy);
-    modelPhy.setMass(1f);
+    modelPhy.setMass(0.2f);
      Main.getInstance().getBulletAppState().getPhysicsSpace().add(modelPhy);
     
     

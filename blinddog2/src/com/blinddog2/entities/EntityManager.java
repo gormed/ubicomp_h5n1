@@ -165,7 +165,7 @@ public class EntityManager {
 
     
      public StaticObject createStaticObject(String name) {
-        StaticObject t = new StaticObject(name, new Vector3f(20f,200f,10f));
+        StaticObject t = new StaticObject(name, new Vector3f(0f,200f,10f));
         addEntity(t);
         staticObjectHashMap.put(t.getEntityId(), t);
         //rayCast3D.addClickableObject(geometryNode);
